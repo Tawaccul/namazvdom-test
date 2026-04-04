@@ -1,16 +1,21 @@
-part of '../stage_step_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class _Card extends StatelessWidget {
-  const _Card({required this.child});
+import '../../../app/theme/app_colors.dart';
+import '../../../app/theme/app_radii.dart';
+
+class StageCard extends StatelessWidget {
+  const StageCard({super.key, required this.child});
 
   final Widget child;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Container(
       padding: EdgeInsets.all(20.sp),
       decoration: BoxDecoration(
-        color: AppColors.card,
+        color: colors.card,
         borderRadius: BorderRadius.circular(AppRadii.card.r),
       ),
       child: child,

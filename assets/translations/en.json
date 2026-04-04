@@ -1,0 +1,472 @@
+{
+  "app": {
+    "loading": "Loading…",
+    "failedToStart": "Failed to start app",
+    "unknownError": "Unknown error",
+    "unknownRoute": "Unknown route: {route}"
+  },
+  "common": {
+    "back": "Back",
+    "next": "Next",
+    "retry": "Retry",
+    "cancel": "Cancel",
+    "save": "Save"
+  },
+  "errors": {
+    "prayerNotFound": "No data for the selected prayer",
+    "failedLoadPrayer": "Failed to load prayer. Please retry.",
+    "failedLoadAblution": "Failed to load ablution. Please retry."
+  },
+
+  "language": {
+    "title": "Language",
+    "chooseLanguage": "Choose language",
+    "russian": "Русский",
+    "english": "English"
+  },
+  "gender": {
+    "title": "Your gender",
+    "male": "Male",
+    "female": "Female"
+  },
+  "madhhab": {
+    "names": {
+      "hanafi": "Hanafi",
+      "shafii": "Shafi'i",
+      "maliki": "Maliki",
+      "hanbali": "Hanbali"
+    },
+    "info": {
+      "title": "What is madhhab",
+      "paragraph1": "Madhhab is an Arabic term that means a school of Islamic law. Four madhhabs are the most common among Sunni Muslims: Hanafi, Shafi'i, Maliki and Hanbali.",
+      "paragraph2": "The word madhhab comes from the Arabic root “zahaba”, which means “to go” or “to follow a path”.",
+      "sections": {
+        "hanafi": {
+          "title": "Hanafi madhhab",
+          "body": "The most widespread madhhab in many regions. It is known for a systematic fiqh approach and broad commentary tradition."
+        },
+        "maliki": {
+          "title": "Maliki madhhab",
+          "body": "Built in part on the practice of the people of Medina as an important source. Widespread in North and West Africa."
+        },
+        "shafii": {
+          "title": "Shafi'i madhhab",
+          "body": "Places strong emphasis on hadith and usul al-fiqh methodology. Widespread in parts of the Middle East and Asia."
+        },
+        "hanbali": {
+          "title": "Hanbali madhhab",
+          "body": "Known for strict reliance on primary textual sources and evidence. Widespread in some Arab countries."
+        }
+      }
+    }
+  },
+
+  "onboarding": {
+    "start": {
+      "title": "Choose your gender\nand language",
+      "gender": "Gender",
+      "language": "Language"
+    },
+    "madhhab": {
+      "title": "Choose your school\n(madhhab)",
+      "recommendationStart": "In Russia, the most common school is ",
+      "recommendationMid": "“Hanafi madhhab”.",
+      "recommendationEnd": " You can change your choice later in settings.",
+      "learnMore": "More about madhhabs",
+      "recommendedBadge": "Recommended"
+    }
+  },
+
+  "home": {
+    "ablution": {
+      "title": "Ablution",
+      "subtitle": "Small and large"
+    },
+    "prayers": {
+      "fajr": {
+        "title": "Fajr",
+        "subtitle": "Dawn prayer – 2 rakats"
+      },
+      "dhuhr": {
+        "title": "Zuhr",
+        "subtitle": "Midday prayer – 4 rakats"
+      },
+      "asr": {
+        "title": "Asr",
+        "subtitle": "Afternoon prayer – 4 rakats"
+      },
+      "maghrib": {
+        "title": "Maghrib",
+        "subtitle": "Sunset prayer – 3 rakats"
+      },
+      "isha": {
+        "title": "Isha",
+        "subtitle": "Night prayer – 4 rakats"
+      }
+    },
+    "additional": {
+      "title": "Additional prayers",
+      "subtitle": "Sunnah prayer, tahajjud, etc."
+    }
+  },
+
+  "menu": {
+    "aboutProject": "About the project",
+    "helpProject": "Help the project",
+    "theme": "Theme",
+    "language": "Language",
+    "yourGender": "Your gender",
+    "contactUs": "Contact us",
+    "rateApp": "Rate the app",
+    "tellFriends": "Tell your friends"
+  },
+
+  "theme": {
+    "title": "Theme",
+    "darkTheme": "Dark theme",
+    "textSize": "Text size",
+    "mode": {
+      "system": "System",
+      "off": "Turn off",
+      "on": "Turn on"
+    },
+    "textSizeLabel": {
+      "small": "Small",
+      "standard": "Standard",
+      "large": "Large"
+    }
+  },
+
+  "about": {
+    "title": "About the project",
+    "version": "version {value}",
+    "paragraph1": "Prayer is the most important precept of religion.",
+    "paragraph2": "This guide helps you learn step by step."
+  },
+
+  "stage": {
+    "selectStage": "Select a stage",
+    "selectSection": "Select the appropriate section",
+    "rakaatLabel": "{count} rakaat",
+    "progress": {
+      "rakaats": "{current} of {total} rakats",
+      "steps": "{current} of {total} steps"
+    },
+    "defaultStepTitle": "Step",
+    "prayerCompleted": "Prayer completed",
+    "prayerDefaultTitle": "Prayer",
+    "prayerTitleWithRakaats": "{title} - {count} rakats",
+    "onboarding": {
+      "step1": "To quickly switch between stages, click here",
+      "step2": "To go to the desired stage, click here",
+      "step3": "To turn on audio playback, click on the block with the desired verse."
+    },
+    "splash": {
+      "openDemo": "Open demo",
+      "failedLoad": "Failed to load prayer"
+    },
+    "demo": {
+      "takbir": {
+        "title": "Takbir",
+        "description": "Standing, raise your hands and say:",
+        "transliteration": "Allahu akbar",
+        "translation": "Allah is the Greatest"
+      },
+      "istiadha": {
+        "title": "Seeking protection",
+        "description": "Place your hands on your chest and say:",
+        "transliteration": "A'oothu billaahi minash-shaytanir-rajeem",
+        "translation": "I seek Allah's protection from the cursed devil"
+      }
+    }
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  "ablution": {
+    "title": "Ablution (Wudu)",
+    "description": "Step-by-step guide to performing ablution before prayer",
+    "progressSteps": "{current}/{total} steps",
+    "selectSection": "Select the appropriate section",
+    "steps": {
+      "1": {
+        "title": "Intention",
+        "description": "Before wudu, make intention in your heart, then say:",
+        "text": "In the name of Allah"
+      },
+      "2": {
+        "title": "Washing your wrists",
+        "description": "Wash both hands including the wrists and between the fingers (3 times)"
+      },
+      "3": {
+        "title": "Mouth rinsing",
+        "description": "Rinse the mouth using the right hand (3 times)"
+      },
+      "4": {
+        "title": "Nose flushing",
+        "description": "Sniff water into the nostrils and expel it (3 times)"
+      },
+      "5": {
+        "title": "Face washing",
+        "description": "Wash the entire face from forehead to chin and ear to ear (3 times)"
+      },
+      "6": {
+        "title": "Hand washing",
+        "description": "Wash both arms up to and including the elbows, starting with the right (3 times each)"
+      },
+      "7": {
+        "title": "Head wiping",
+        "description": "Wipe the head with wet hands from front to back and back again (once)"
+      },
+      "8": {
+        "title": "Wiping the ears",
+        "description": "Wipe the inside and back of both ears (once)"
+      },
+      "9": {
+        "title": "Foot washing",
+        "description": "Wash both feet including the ankles and between the toes, starting with the right (3 times each)"
+      }
+    }
+  },
+  
+
+  "surah": {
+    "names": {
+      "al_ikhlas": "Al-Ikhlas",
+      "al_falaq": "Al-Falaq",
+      "an_nas": "An-Nas"
+    },
+    "al_fatiha": {
+      "1": "In the name of Allah, the Most Gracious, the Most Merciful",
+      "2": "All praise is due to Allah, Lord of the worlds",
+      "3": "The Most Gracious, the Most Merciful",
+      "4": "Master of the Day of Judgment",
+      "5": "You alone we worship and You alone we ask for help",
+      "6": "Guide us to the straight path",
+      "7": "The path of those You have blessed"
+    },
+    "al_ikhlas": {
+      "0": "In the name of Allah, the Most Gracious, the Most Merciful",
+      "1": "Say: He is Allah, the One",
+      "2": "Allah, the Eternal Refuge",
+      "3": "He neither begets nor is born",
+      "4": "Nor is there to Him any equivalent"
+    },
+    "al_falaq": {
+      "0": "In the name of Allah, the Most Gracious, the Most Merciful",
+      "1": "Say: I seek refuge in the Lord of daybreak",
+      "2": "From the evil of what He created",
+      "3": "From the evil of darkness when it settles",
+      "4": "From the evil of those who blow on knots",
+      "5": "From the evil of an envier when he envies"
+    },
+    "an_nas": {
+      "0": "In the name of Allah, the Most Gracious, the Most Merciful",
+      "1": "Say: I seek refuge with the Lord of Mankind",
+      "2": "The King of Mankind",
+      "3": "The God of Mankind",
+      "4": "From the evil of the whisperer who withdraws (when one remembers Allah)",
+      "5": "Who whispers in the breasts of mankind",
+      "6": "From among the jinn and mankind"
+    },
+    "at_tahiyat": {
+      "1": "All compliments, prayers and pure words are due to Allah",
+      "2": "Peace be upon you, O Prophet, and the mercy of Allah and His blessings",
+      "3": "Peace be upon us and on the righteous slaves of Allah",
+      "4": "I bear witness that there is no deity worthy of worship except Allah, and I bear witness that Muhammad is His slave and Messenger"
+    },
+    "salawat": {
+      "1": "O Allah, send prayers upon Muhammad and upon the family of Muhammad",
+      "2": "As You sent prayers upon Ibrahim and upon the family of Ibrahim",
+      "3": "Indeed You are Praiseworthy, Most Glorious",
+      "4": "And send Your blessings upon Muhammad and upon the family of Muhammad",
+      "5": "As You sent blessings upon Ibrahim and upon the family of Ibrahim",
+      "6": "Indeed You are Praiseworthy, Most Glorious"
+    }
+  },
+  "fajr": {
+    "r1": {
+      "s1": {
+        "title": "Takbir",
+        "description": "Standing, he directs his gaze to the spot where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:",
+        "text": "Allah is the Greatest"
+      },
+      "s2": {
+        "title": "A prayer for protection from the devil",
+        "description": "He places his hands on his chest, laying his right hand over his left, and says:",
+        "text": "I seek Allah's protection from the cursed devil"
+      },
+      "s3": {
+        "title": "Reading Surah Al-Fatiha",
+        "description": "Standing, recite Surah Al-Fatiha:"
+      },
+      "s4": {
+        "title": "Ameen",
+        "description": "After this, he says:",
+        "text": "O Allah, answer our prayers!"
+      },
+      "s5": {
+        "title": "Reading additional Surahs",
+        "description": "Reciting additional Surahs is not obligatory. Any of the listed Surahs can be recited after Al-Fatiha."
+      },
+      "s6": {
+        "title": "Takbir",
+        "description": "Standing, raise your hands and say:",
+        "text": "Allah is Great"
+      },
+      "s7": {
+        "title": "Waist bow (ruku)",
+        "description": "You should now be in the bowing (rukoo') position. Say this 3 times:",
+        "text": "Glory be to my Lord the Supreme"
+      },
+      "s8": {
+        "title": "Straightening",
+        "description": "Next, come up from the bowing position into the standing position. As you are coming up say:",
+        "text": "Allah listens to the one who praises him"
+      },
+      "s9": {
+        "title": "Standing",
+        "description": "Now you should be in the standing position with your hands by your sides. In this position say:",
+        "text": "Our Lord, and to You belongs the praise"
+      },
+      "s10": {
+        "title": "Takbir",
+        "description": "As you go into the prostration (sujood) position, say:",
+        "text": "Allah is the Greatest"
+      },
+      "s11": {
+        "title": "Prostration (sajda)",
+        "description": "In the sujood position say the following 3 times:",
+        "text": "Glory be to my Lord Most High"
+      },
+      "s12": {
+        "title": "Takbir",
+        "description": "Next you come up into the sitting position, saying:",
+        "text": "Allah is the Greatest"
+      },
+      "s13": {
+        "title": "Sitting",
+        "description": "In the sitting position say the following (3 times):",
+        "text": "Allah, forgive me"
+      },
+      "s14": {
+        "title": "Takbir",
+        "description": "Next you come up into the standing position, saying:",
+        "text": "Allah is the Greatest"
+      },
+      "s15": {
+        "title": "Dua in prostration",
+        "description": "In the sujood position say the following 3 times:",
+        "text": "Glory be to my Lord Most High"
+      },
+      "s16": {
+        "title": "Takbir",
+        "description": "Next you come up into the standing position, saying:",
+        "text": "Allah is the Greatest"
+      }
+    },
+    "r2": {
+      "s1": {
+        "title": "Takbir",
+        "description": "Standing, he directs his gaze to the spot where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:",
+        "text": "Allah is the Greatest"
+      },
+      "s2": {
+        "title": "Reading Surah Al-Fatiha",
+        "description": "Standing recitation after Takbir:"
+      },
+      "s3": {
+        "title": "Ameen",
+        "description": "After this, he says:",
+        "text": "O Allah, answer our prayers!"
+      },
+      "s4": {
+        "title": "Reading additional Surahs",
+        "description": "Any of these Surahs can be recited after Al-Fatiha in the second Rak'ah as well."
+      },
+      "s5": {
+        "title": "Takbir",
+        "description": "Move toward bowing and say:",
+        "text": "Allah is the Greatest"
+      },
+      "s6": {
+        "title": "Waist bow (ruku)",
+        "description": "In rukoo' say this 3 times:",
+        "text": "Glory be to my Lord the Supreme"
+      },
+      "s7": {
+        "title": "Straightening",
+        "description": "As you rise from bowing say:",
+        "text": "Allah listens to the one who praises him"
+      },
+      "s8": {
+        "title": "Standing",
+        "description": "In standing say:",
+        "text": "Our Lord, and to You belongs the praise"
+      },
+      "s9": {
+        "title": "Takbir",
+        "description": "As you go into prostration say:",
+        "text": "Allah is the Greatest"
+      },
+      "s10": {
+        "title": "Prostration (sajda)",
+        "description": "In sujood say this 3 times:",
+        "text": "Glory be to my Lord Most High"
+      },
+      "s11": {
+        "title": "Takbir",
+        "description": "Come to the sitting position, saying:",
+        "text": "Allah is the Greatest"
+      },
+      "s12": {
+        "title": "Sitting",
+        "description": "In the sitting position say the following (3 times):",
+        "text": "Allah, forgive me"
+      },
+      "s13": {
+        "title": "Takbir",
+        "description": "Go into prostration again, saying:",
+        "text": "Allah is the Greatest"
+      },
+      "s14": {
+        "title": "Takbir",
+        "description": "Next you come up into the standing position, saying:",
+        "text": "Allah is the Greatest"
+      },
+      "s15": {
+        "title": "Reading at-tahiyat",
+        "description": "Then go into the sitting position. Raise your index finger on the right hand and recite:"
+      },
+      "s16": {
+        "title": "The end of prayer",
+        "description": "Then recite salawat:"
+      },
+      "s17": {
+        "title": "Turn your head to the right",
+        "description": "After completion, turn your head to the right and say:",
+        "text": "May Allah's peace and mercy be upon you"
+      },
+      "s18": {
+        "title": "Turn your head to the left",
+        "description": "Turn your head to the left and say:",
+        "text": "May Allah's peace and mercy be upon you"
+      }
+    },
+    "common": {
+      "allahu_akbar": "Allah is the Greatest"
+    }
+  }
+
+}

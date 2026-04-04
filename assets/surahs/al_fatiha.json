@@ -1,0 +1,40 @@
+{
+  "id": "al_fatiha",
+  "ayahs": [
+    {
+      "arabic": "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
+      "transliteration": "Bismillahir rahmanir rahim",
+      "translation_key": "surah.al_fatiha.1"
+    },
+    {
+      "arabic": "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ",
+      "transliteration": "Al hamdu lillahi rabbil 'alamin",
+      "translation_key": "surah.al_fatiha.2"
+    },
+    {
+      "arabic": "الرَّحْمَٰنِ الرَّحِيمِ",
+      "transliteration": "Arrahmanir rahim",
+      "translation_key": "surah.al_fatiha.3"
+    },
+    {
+      "arabic": "مَالِكِ يَوْمِ الدِّينِ",
+      "transliteration": "Maliki yawmiddin",
+      "translation_key": "surah.al_fatiha.4"
+    },
+    {
+      "arabic": "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ",
+      "transliteration": "Iyyaka na'budu wa iyyaka nasta'in",
+      "translation_key": "surah.al_fatiha.5"
+    },
+    {
+      "arabic": "اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ",
+      "transliteration": "Ihdinas siratal mustaqim",
+      "translation_key": "surah.al_fatiha.6"
+    },
+    {
+      "arabic": "صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ",
+      "transliteration": "Siratal ladhina an'amta alaihim ghairil maghdubi alaihim wa lad dallin",
+      "translation_key": "surah.al_fatiha.7"
+    }
+  ]
+}

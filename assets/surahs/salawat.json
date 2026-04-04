@@ -1,0 +1,41 @@
+{
+  "id": "salawat",
+  "ayahs": [
+    {
+      "arabic": "اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ",
+      "transliteration": "Allahumma salli 'ala Muhammad wa 'ala aali Muhammad",
+      "translation_key": "surah.salawat.1",
+      "translation": "Oh Allah, send prayers upon Muhammad and upon the family of Muhammad"
+    },
+    {
+      "arabic": "كَمَا صَلَّيْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ",
+      "transliteration": "Kamaa salyta 'ala Ibraheem wa 'ala aali Ibraheem",
+      "translation_key": "surah.salawat.2",
+      "translation": "As You sent prayers upon Ibrahim and upon the family of Ibrahim"
+    },
+    {
+      "arabic": "إِنَّكَ حَمِيدٌ مَجِيدٌ",
+      "transliteration": "Innaka hameedun Majeed",
+      "translation_key": "surah.salawat.3",
+      "translation": "Indeed You are praiseworthy, Most glorious"
+    },
+    {
+      "arabic": "اللَّهُمَّ بَارِك عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ",
+      "transliteration": "Wa baarik 'alaa Muhammad wa 'alaa aali Muhammad",
+      "translation_key": "surah.salawat.4",
+      "translation": "And send Your blessings upon Muhammad and upon the family of Muhammad"
+    },
+    {
+      "arabic": "كَمَا بَارَكْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ",
+      "transliteration": "Kamaa baarakta 'alaa Ibraheem wa 'alaa aali Ibraheem",
+      "translation_key": "surah.salawat.5",
+      "translation": "As You sent blessings upon Ibrahim and upon the family of Ibrahim"
+    },
+    {
+      "arabic": "إِنَّكَ حَمِيدٌ مَجِيدٌ",
+      "transliteration": "Innaka hameedun Majeed",
+      "translation_key": "surah.salawat.6",
+      "translation": "Indeed You are praiseworthy, Most glorious"
+    }
+  ]
+}

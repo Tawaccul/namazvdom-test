@@ -1,0 +1,75 @@
+{
+  "id": "ablution",
+  "title_key": "ablution.title",
+  "description_key": "ablution.description",
+  "steps": [
+    {
+      "id": 1,
+      "image": "assets/ablution/images/ablution_1.svg",
+      "audio": null,
+      "title_key": "ablution.steps.1.title",
+      "description_key": "ablution.steps.1.description",
+      "text": {
+        "arabic": "بِسْمِ ٱللّٰهِ",
+        "transliteration": "Bismillah",
+        "translation_key": "ablution.steps.1.text"
+      }
+    },
+    {
+      "id": 2,
+      "image": "assets/ablution/images/ablution_2.svg",
+      "audio": null,
+      "title_key": "ablution.steps.2.title",
+      "description_key": "ablution.steps.2.description"
+    },
+    {
+      "id": 3,
+      "image": "assets/ablution/images/ablution_3.svg",
+      "audio": null,
+      "title_key": "ablution.steps.3.title",
+      "description_key": "ablution.steps.3.description"
+    },
+    {
+      "id": 4,
+      "image": "assets/ablution/images/ablution_4.svg",
+      "audio": null,
+      "title_key": "ablution.steps.4.title",
+      "description_key": "ablution.steps.4.description"
+    },
+    {
+      "id": 5,
+      "image": "assets/ablution/images/ablution_5.svg",
+      "audio": null,
+      "title_key": "ablution.steps.5.title",
+      "description_key": "ablution.steps.5.description"
+    },
+    {
+      "id": 6,
+      "image": "assets/ablution/images/ablution_6.svg",
+      "audio": null,
+      "title_key": "ablution.steps.6.title",
+      "description_key": "ablution.steps.6.description"
+    },
+    {
+      "id": 7,
+      "image": "assets/ablution/images/ablution_7.svg",
+      "audio": null,
+      "title_key": "ablution.steps.7.title",
+      "description_key": "ablution.steps.7.description"
+    },
+    {
+      "id": 8,
+      "image": "assets/ablution/images/ablution_8.svg",
+      "audio": null,
+      "title_key": "ablution.steps.8.title",
+      "description_key": "ablution.steps.8.description"
+    },
+    {
+      "id": 9,
+      "image": "assets/ablution/images/ablution_9.svg",
+      "audio": null,
+      "title_key": "ablution.steps.9.title",
+      "description_key": "ablution.steps.9.description"
+    }
+  ]
+}

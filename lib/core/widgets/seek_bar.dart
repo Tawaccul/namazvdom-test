@@ -20,6 +20,7 @@ class SeekBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     final maxMs = duration.inMilliseconds.clamp(1, 1 << 31);
     final posMs = position.inMilliseconds.clamp(0, maxMs);
 
@@ -52,7 +53,7 @@ class SeekBar extends StatelessWidget {
               style: TextStyle(
                 fontSize: (compact ? 12 : 13).sp,
                 fontWeight: FontWeight.w500,
-                color: AppColors.textSecondary,
+                color: colors.textSecondary,
               ),
             ),
             Text(
@@ -60,7 +61,7 @@ class SeekBar extends StatelessWidget {
               style: TextStyle(
                 fontSize: (compact ? 12 : 13).sp,
                 fontWeight: FontWeight.w500,
-                color: AppColors.textSecondary,
+                color: colors.textSecondary,
               ),
             ),
           ],

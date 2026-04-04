@@ -39,6 +39,8 @@ dependencies:
   dio: ^5.7.0
   just_audio: ^0.9.42
   google_fonts: ^8.0.1
+  shared_preferences: ^2.5.4
+  easy_localization: ^3.0.8
 
 dev_dependencies:
   flutter_test:
@@ -60,6 +62,7 @@ flutter:
   uses-material-design: true
 
   assets:
+  -  assets/translations/
   -  assets/icons/back.svg
   -  assets/icons/slider-horizontal.svg
   -  assets/icons/play.svg
@@ -71,3 +74,80 @@ flutter:
   -  assets/icons/salat-1.png
   -  assets/audio/istiaza.mp3
   -  assets/audio/takbir.mp3
+  -  assets/icons/close-icon.svg
+  -  assets/icons/arrow-bottom.svg
+  -  assets/icons/check.svg
+  -  assets/icons/more-circle.svg
+  -  assets/icons/ablution.svg
+  -  assets/icons/additional-prayers.svg
+  -  assets/icons/numeration.svg
+  -  assets/icons/arrow-right-chevron.svg
+  -  assets/icons/bubbletail.svg
+  
+  -  assets/icons/planet.svg
+  -  assets/icons/user.svg
+  -  assets/icons/share.svg
+  -  assets/icons/heart.svg
+  -  assets/icons/mail.svg
+  -  assets/icons/info.svg
+  -  assets/icons/theme.svg
+   
+  -  assets/images/logo.png
+  -  assets/images/logo-white.png
+  -  assets/images/background.png
+  -  assets/ablution/
+  -  assets/ablution/images/
+  -  assets/ablution/images/male/
+  -  assets/ablution/images/female/
+  -  assets/ablution/images/female/b_ablution_female_1.svg
+  -  assets/ablution/images/female/b_ablution_female_2.svg
+  -  assets/ablution/images/female/b_ablution_female_3.svg
+  -  assets/ablution/images/female/b_ablution_female_4.svg
+  -  assets/ablution/images/female/b_ablution_female_5.svg
+  -  assets/ablution/images/female/b_ablution_female_6.svg
+  -  assets/ablution/images/female/b_ablution_female_7.svg
+  -  assets/ablution/images/female/b_ablution_female_8.svg
+  -  assets/ablution/images/female/b_ablution_female_9.svg
+  -  assets/ablution/images/female/w_ablution_female_1.svg
+  -  assets/ablution/images/female/w_ablution_female_2.svg
+  -  assets/ablution/images/female/w_ablution_female_3.svg
+  -  assets/ablution/images/female/w_ablution_female_4.svg
+  -  assets/ablution/images/female/w_ablution_female_5.svg
+  -  assets/ablution/images/female/w_ablution_female_6.svg
+  -  assets/ablution/images/female/w_ablution_female_7.svg
+  -  assets/ablution/images/female/w_ablution_female_8.svg
+  -  assets/ablution/images/female/w_ablution_female_9.svg
+  -  assets/ablution/images/male/b_ablution_male_1.svg
+  -  assets/ablution/images/male/b_ablution_male_2.svg
+  -  assets/ablution/images/male/b_ablution_male_3.svg
+  -  assets/ablution/images/male/b_ablution_male_4.svg
+  -  assets/ablution/images/male/b_ablution_male_5.svg
+  -  assets/ablution/images/male/b_ablution_male_6.svg
+  -  assets/ablution/images/male/b_ablution_male_7.svg
+  -  assets/ablution/images/male/b_ablution_male_8.svg
+  -  assets/ablution/images/male/b_ablution_male_9.svg
+  -  assets/ablution/images/male/w_ablution_male_1.svg
+  -  assets/ablution/images/male/w_ablution_male_2.svg
+  -  assets/ablution/images/male/w_ablution_male_3.svg
+  -  assets/ablution/images/male/w_ablution_male_4.svg
+  -  assets/ablution/images/male/w_ablution_male_5.svg
+  -  assets/ablution/images/male/w_ablution_male_6.svg
+  -  assets/ablution/images/male/w_ablution_male_7.svg
+  -  assets/ablution/images/male/w_ablution_male_8.svg
+  -  assets/ablution/images/male/w_ablution_male_9.svg
+  -  assets/namaz/images/
+  -  assets/namaz/images/at-tahiyat.svg
+  -  assets/namaz/images/ruku.svg
+  -  assets/namaz/images/seat.svg
+  -  assets/namaz/images/stay.svg
+  -  assets/namaz/images/sudjud.svg
+  -  assets/namaz/images/takbir.svg
+  -  assets/namaz/images/taslim-left.svg
+  -  assets/namaz/images/taslim-right.svg
+  -  assets/fajr/
+  -  assets/dhuhr/
+  -  assets/asr/
+  -  assets/maghrib/
+  -  assets/isha/
+  -  assets/fajr/images/
+  -  assets/surahs/

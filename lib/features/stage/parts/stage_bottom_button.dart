@@ -1,75 +1,33 @@
-part of '../stage_step_screen.dart';
+import 'package:flutter/material.dart';
 
-enum _BottomButtonVariant { primary, secondary }
+import '../../../app/ui_kit/app_button.dart';
 
-class _BottomButton extends StatelessWidget {
-  const _BottomButton({
+enum StageBottomButtonVariant { primary, secondary }
+
+class StageBottomButton extends StatelessWidget {
+  const StageBottomButton({
+    super.key,
     required this.variant,
     required this.label,
     required this.icon,
     required this.onTap,
   });
 
-  final _BottomButtonVariant variant;
+  final StageBottomButtonVariant variant;
   final String label;
   final String icon;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    final isPrimary = variant == _BottomButtonVariant.primary;
-    final bg = isPrimary ? AppColors.primary : AppColors.card;
-    final fg = isPrimary ? AppColors.card : AppColors.dark;
-
-    return Pressable(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(AppRadii.pill.r),
-      child: Container(
-        height: 58.h,
-        decoration: BoxDecoration(
-          color: bg,
-          borderRadius: BorderRadius.circular(AppRadii.pill.r),
-          boxShadow: isPrimary
-              ? [
-                  BoxShadow(
-                    color: AppColors.primary.withOpacity(0.25),
-                    blurRadius: 22,
-                    offset: const Offset(0, 12),
-                  ),
-                ]
-              : null,
-        ),
-        child: Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: isPrimary
-                ? [
-                    Text(
-                      label,
-                      style: TextStyle(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w500,
-                        color: fg,
-                      ),
-                    ),
-                    SizedBox(width: 12.w),
-                    SvgPicture.asset(icon, width: 22.w, color: fg),
-                  ]
-                : [
-                    SvgPicture.asset(icon, width: 22.w, color: fg),
-                    SizedBox(width: 12.w),
-                    Text(
-                      label,
-                      style: TextStyle(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w500,
-                        color: fg,
-                      ),
-                    ),
-                  ],
-          ),
-        ),
-      ),
+    final isPrimary = variant == StageBottomButtonVariant.primary;
+    return AppButton(
+      label: label,
+      onPressed: onTap,
+      size: AppButtonSize.large,
+      variant: isPrimary ? AppButtonVariant.primary : AppButtonVariant.card,
+      leadingIconAsset: isPrimary ? null : icon,
+      trailingIconAsset: isPrimary ? icon : null,
     );
   }
 }

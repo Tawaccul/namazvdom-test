@@ -1,7 +1,16 @@
-part of '../stage_step_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-class _AyahCard extends StatelessWidget {
-  const _AyahCard({
+import '../../../app/theme/app_colors.dart';
+import '../../../app/theme/app_radii.dart';
+import '../../../core/widgets/pressable.dart';
+import '../models/rakaat_models.dart';
+
+class StageAyahCard extends StatelessWidget {
+  const StageAyahCard({
+    super.key,
     required this.ayahIndex,
     required this.ayah,
     required this.selected,
@@ -21,9 +30,8 @@ class _AyahCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final borderColor = selected
-        ? AppColors.primary
-        : Colors.black.withOpacity(0.0);
+    final colors = context.colors;
+    final borderColor = selected ? colors.primary : Colors.transparent;
     final borderWidth = selected ? 2.0 : 0.0;
 
     return Pressable(
@@ -34,13 +42,13 @@ class _AyahCard extends StatelessWidget {
         curve: Curves.easeOut,
         padding: EdgeInsets.all(20.r),
         decoration: BoxDecoration(
-          color: AppColors.card,
+          color: colors.card,
           borderRadius: BorderRadius.circular(AppRadii.card.r),
           border: Border.all(color: borderColor, width: borderWidth),
           boxShadow: selected
               ? [
                   BoxShadow(
-                    color: AppColors.primary.withOpacity(0.10),
+                    color: colors.primary.withAlpha(26),
                     blurRadius: 18,
                     offset: const Offset(0, 10),
                   ),
@@ -63,7 +71,7 @@ class _AyahCard extends StatelessWidget {
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w500,
                 fontStyle: FontStyle.italic,
-                color: AppColors.dark,
+                color: colors.textPrimary,
               ),
             ),
             SizedBox(height: 8.h),
@@ -73,7 +81,7 @@ class _AyahCard extends StatelessWidget {
                 fontSize: 16.sp,
                 height: 1.48,
                 fontWeight: FontWeight.w400,
-                color: AppColors.textSecondary,
+                color: colors.textSecondary,
               ),
             ),
           ],
@@ -98,84 +106,87 @@ class _AyahPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final height = 60.h;
-    final iconAreaWidth = 40.w;
+    final colors = context.colors;
+    final height = 58.h;
+    final iconAreaWidth = 24.w;
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(AppRadii.pill.r),
-      child: SizedBox(
-        height: height,
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: DecoratedBox(
-                decoration: const BoxDecoration(color: AppColors.soft),
-              ),
-            ),
-            Positioned.fill(
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  final filledWidth =
-                      constraints.maxWidth * progress.clamp(0.0, 1.0);
-                  return Align(
-                    alignment: Alignment.centerLeft,
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 180),
-                      curve: Curves.easeOut,
-                      width: filledWidth,
-                      decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(0.10),
-                      ),
+      borderRadius: BorderRadius.circular(AppRadii.inner.r),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: DecoratedBox(decoration: BoxDecoration(color: colors.soft)),
+          ),
+          Positioned.fill(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final filledWidth =
+                    constraints.maxWidth * progress.clamp(0.0, 1.0);
+                return Align(
+                  alignment: Alignment.centerLeft,
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 180),
+                    curve: Curves.easeOut,
+                    width: filledWidth,
+                    decoration: BoxDecoration(
+                      color: colors.primary.withAlpha(26),
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             ),
-            Row(
-              children: [
-                SizedBox(
-                  width: iconAreaWidth,
-                  height: height,
-                  child: Pressable(
-                    onTap: onPlayPause,
-                    borderRadius: BorderRadius.circular(AppRadii.pill.r),
-                    child: Center(
-                      child: AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 180),
-                        transitionBuilder: (child, anim) =>
-                            ScaleTransition(scale: anim, child: child),
-                        child: SvgPicture.asset(
-                          isPlaying
-                              ? 'assets/icons/pause.svg'
-                              : 'assets/icons/play.svg',
-                          key: ValueKey(isPlaying),
-                          color: AppColors.primary,
+          ),
+          Row(
+            children: [
+              Container(
+                margin: EdgeInsets.only(left: 16.w),
+                width: iconAreaWidth,
+                height: height,
+                child: Pressable(
+                  onTap: onPlayPause,
+                  borderRadius: BorderRadius.circular(AppRadii.inner.r),
+                  child: Center(
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 180),
+                      transitionBuilder: (child, anim) =>
+                          ScaleTransition(scale: anim, child: child),
+                      child: SvgPicture.asset(
+                        isPlaying
+                            ? 'assets/icons/pause.svg'
+                            : 'assets/icons/play.svg',
+                        key: ValueKey(isPlaying),
+                        colorFilter: ColorFilter.mode(
+                          colors.primary,
+                          BlendMode.srcIn,
                         ),
                       ),
                     ),
                   ),
                 ),
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    child: Text(
-                      arabic,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.right,
-                      textDirection: TextDirection.rtl,
-                      style: GoogleFonts.notoNaskhArabic(
-                        fontSize: 24.sp,
-                        fontWeight: FontWeight.w400,
-                        color: AppColors.textSecondary,
-                      ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 16.w,
+                    vertical: 12.h,
+                  ),
+                  child: Text(
+                    arabic,
+                    textAlign: TextAlign.right,
+                    textDirection: TextDirection.rtl,
+                    textScaler: TextScaler.noScaling,
+                    style: GoogleFonts.notoNaskhArabic(
+                      fontSize: 24.sp,
+                      height: 1.4,
+                      fontWeight: FontWeight.w400,
+                      color: colors.textSecondary,
                     ),
                   ),
                 ),
-              ],
-            ),
-          ],
-        ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

@@ -1,0 +1,47 @@
+{
+  "id": "an_nas",
+  "ayahs": [
+    {
+      "arabic": "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
+      "transliteration": "Bismillahir rahmanir rahim",
+      "translation_key": "surah.an_nas.0",
+      "translation": "In the name of Allah, the Most Gracious, the Most Merciful"
+    },
+    {
+      "arabic": "قُلْ أَعُوذُ بِرَبِّ النَّاسِ",
+      "transliteration": "QuI a'oothu birabbinnas",
+      "translation_key": "surah.an_nas.1",
+      "translation": "Say: I seek refuge with the Lord of Mankind"
+    },
+    {
+      "arabic": "مَلِكِ النَّاسِ",
+      "transliteration": "Malikinnas",
+      "translation_key": "surah.an_nas.2",
+      "translation": "The King of Mankind"
+    },
+    {
+      "arabic": "إِلَٰهِ النَّاسِ",
+      "transliteration": "Ilaahinnas",
+      "translation_key": "surah.an_nas.3",
+      "translation": "The God of Mankind"
+    },
+    {
+      "arabic": "مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ",
+      "transliteration": "Min sharril waswaasil khannaas",
+      "translation_key": "surah.an_nas.4",
+      "translation": "From the evil of the whisperer who withdraws (when one remembers Allah)"
+    },
+    {
+      "arabic": "الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ",
+      "transliteration": "Allathee yuwaswisu fee sudoorinnaas",
+      "translation_key": "surah.an_nas.5",
+      "translation": "Who whispers in the breasts of mankind"
+    },
+    {
+      "arabic": "مِنَ الْجِنَّةِ وَالنَّاسِ",
+      "transliteration": "Minal jinnati wannas",
+      "translation_key": "surah.an_nas.6",
+      "translation": "From among the jinn and mankind"
+    }
+  ]
+}

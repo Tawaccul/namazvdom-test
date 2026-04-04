@@ -22,7 +22,7 @@ void main() {
     await tester.pumpWidget(
       ScreenUtilInit(
         designSize: const Size(375, 812),
-        builder: (_, __) {
+        builder: (context, child) {
           return MaterialApp(
             home: StageStepScreen(rakaats: rakaats, audio: audio),
           );
@@ -43,6 +43,8 @@ List<RakaatData> _fakeRakaats() {
       imageAsset: 'assets/icons/salat-1.png',
       steps: [
         RakaatStep(
+          title: 'Recitation',
+          movementDescription: 'Demo movement',
           arabic: 'الفاتحة',
           transliteration: 'Al-Fatiha',
           translation: 'The Opening',

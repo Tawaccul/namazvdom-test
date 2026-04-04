@@ -1,0 +1,35 @@
+{
+  "id": "al_ikhlas",
+  "ayahs": [
+    {
+      "arabic": "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
+      "transliteration": "Bismillahir rahmanir rahim",
+      "translation_key": "surah.al_ikhlas.0",
+      "translation": "In the name of Allah, the Most Gracious, the Most Merciful"
+    },
+    {
+      "arabic": "قُلْ هُوَ اللَّهُ أَحَدٌ",
+      "transliteration": "Qul hu wal lahu ahad",
+      "translation_key": "surah.al_ikhlas.1",
+      "translation": "Say: \"He is Allah, the One\""
+    },
+    {
+      "arabic": "اللَّهُ الصَّمَدُ",
+      "transliteration": "Allahus samad",
+      "translation_key": "surah.al_ikhlas.2",
+      "translation": "Allah is Eternal and Absolute."
+    },
+    {
+      "arabic": "لَمْ يَلِدْ وَلَمْ يُولَدْ",
+      "transliteration": "Lam Yalid Wa Lam Yūlad",
+      "translation_key": "surah.al_ikhlas.3",
+      "translation": "He begets not, nor was He begotten."
+    },
+    {
+      "arabic": "وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌ",
+      "transliteration": "Wa lam ya kul lahu kufuwan ahad",
+      "translation_key": "surah.al_ikhlas.4",
+      "translation": "And there is none co-equal unto Him."
+    }
+  ]
+}

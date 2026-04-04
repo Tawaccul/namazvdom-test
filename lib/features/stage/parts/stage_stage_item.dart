@@ -1,15 +1,27 @@
-part of '../stage_step_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class _StageItem extends StatelessWidget {
-  const _StageItem({required this.title, required this.subtitle});
+import '../../../app/theme/app_colors.dart';
+import '../../../app/theme/app_radii.dart';
+import '../../../core/widgets/pressable.dart';
+
+class StageItem extends StatelessWidget {
+  const StageItem({
+    super.key,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+  });
 
   final String title;
   final String subtitle;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Pressable(
-      onTap: () => Navigator.of(context).maybePop(),
+      onTap: onTap,
       borderRadius: BorderRadius.circular(AppRadii.pill.r),
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
@@ -19,12 +31,12 @@ class _StageItem extends StatelessWidget {
               width: 42.r,
               height: 42.r,
               decoration: BoxDecoration(
-                color: AppColors.soft,
+                color: colors.soft,
                 borderRadius: BorderRadius.circular(12.r),
               ),
               child: Icon(
                 Icons.nightlight_round,
-                color: AppColors.primary,
+                color: colors.primary,
                 size: 20.r,
               ),
             ),
@@ -38,7 +50,7 @@ class _StageItem extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w800,
-                      color: AppColors.dark,
+                      color: colors.textPrimary,
                     ),
                   ),
                   SizedBox(height: 2.h),
@@ -47,13 +59,13 @@ class _StageItem extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 13.sp,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.textSecondary,
+                      color: colors.textSecondary,
                     ),
                   ),
                 ],
               ),
             ),
-            Icon(Icons.chevron_right, color: AppColors.textMuted, size: 22.r),
+            Icon(Icons.chevron_right, color: colors.textMuted, size: 22.r),
           ],
         ),
       ),

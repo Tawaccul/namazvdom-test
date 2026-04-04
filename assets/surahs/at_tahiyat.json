@@ -1,0 +1,29 @@
+{
+  "id": "at_tahiyat",
+  "ayahs": [
+    {
+      "arabic": "التَّحِيَّاتُ لِلَّهِ وَالصَّلَوَاتُ وَالطَّيِّبَاتُ",
+      "transliteration": "Attahiyyaatu lilaahi wassalawaatu wattayyibaatu",
+      "translation_key": "surah.at_tahiyat.1",
+      "translation": "All compliments, prayers and pure words are due to Allah"
+    },
+    {
+      "arabic": "السَّلَامُ عَلَيْكَ أَيُّهَا النَّبِيُّ وَرَحْمَةُ اللَّهِ وَبَرَكَاتُهُ",
+      "transliteration": "Assalaamu 'alayka ay-yuhan-nabiyyu wa rahmatullaahi wabarakaatuh",
+      "translation_key": "surah.at_tahiyat.2",
+      "translation": "Peace be upon you, Oh Prophet, and the mercy of Allah and His blessings"
+    },
+    {
+      "arabic": "السَّلَامُ عَلَيْنَا وَعَلَى عِبَادِ اللَّهِ الصَّالِحِينَ",
+      "transliteration": "Assalaamu'alaynaa wa'alaa'ibaadillaahissaliheen",
+      "translation_key": "surah.at_tahiyat.3",
+      "translation": "Peace be upon us and on the righteous slaves of Allah"
+    },
+    {
+      "arabic": "أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللَّهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ",
+      "transliteration": "Ash-hadu allaa ilaaha illallaah wa ash-hadu anna Muhammadan 'abduhu wa rasooluh",
+      "translation_key": "surah.at_tahiyat.4",
+      "translation": "I bear witness that there is no God or deity worthy of worship except Allah, and I bear witness that Muhammad is His slave and Messenger"
+    }
+  ]
+}
