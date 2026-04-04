@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../app/app_dependencies_scope.dart';
 import '../../app/l10n/app_localization.dart';
 import '../../app/theme/app_colors.dart';
-import '../../app/theme/app_radii.dart';
 import '../../app/ui_kit/app_button.dart';
 import '../prayer/domain/entities/prayer_request_context.dart';
 import '../prayer/domain/entities/prayer_rakaat.dart';
@@ -147,103 +146,87 @@ class _StageSplashScreenState extends State<StageSplashScreen> {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+    final brightness = Theme.of(context).brightness;
     final state = _controller?.state ?? const PrayerRakaatsInitial();
-
     final isLoading =
         state is PrayerRakaatsLoading || state is PrayerRakaatsInitial;
     final errorMessage = state is PrayerRakaatsError ? state.message : null;
     final shownError = _toDisplayError(context, errorMessage);
+    final logoAsset = brightness == Brightness.dark
+        ? 'assets/images/logo-white.png'
+        : 'assets/images/logo.png';
 
     return Scaffold(
       backgroundColor: colors.background,
       body: SafeArea(
-        child: Center(
-          child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 20.w),
-            padding: EdgeInsets.all(20.r),
-            decoration: BoxDecoration(
-              color: colors.card,
-              borderRadius: BorderRadius.circular(AppRadii.card.r),
+        child: Stack(
+          children: [
+            Center(
+              child: Image.asset(logoAsset, width: 164.w, fit: BoxFit.contain),
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(height: 4.h),
-                if (isLoading) ...[
-                  SizedBox(
-                    width: 26.r,
-                    height: 26.r,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 3.r,
-                      color: colors.primary,
-                    ),
-                  ),
-                  SizedBox(height: 14.h),
-                  AppButton(
-                    label: context.t('stage.splash.openDemo'),
-                    variant: AppButtonVariant.secondary,
-                    size: AppButtonSize.medium,
-                    onPressed: () => _goNext(_demoRakaats()),
-                  ),
-                ] else ...[
-                  Text(
-                    context.t('stage.splash.failedLoad'),
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w800,
-                      color: colors.textSecondary,
-                    ),
-                  ),
-                  SizedBox(height: 8.h),
-                  Text(
-                    shownError,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.redAccent,
-                    ),
-                  ),
-                  SizedBox(height: 12.h),
-                  FilledButton(
-                    onPressed: () {
-                      setState(() => _navigated = false);
-                      _contextAttemptIndex = 0;
-                      _contextFallbackChain = _buildContextFallbackChain();
-                      _controller?.load(
-                        baseContext: _contextFallbackChain.first,
-                      );
-                    },
-                    style: FilledButton.styleFrom(
-                      backgroundColor: colors.primary,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 16.w,
-                        vertical: 10.h,
+            if (!isLoading)
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 24.h),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        context.t('stage.splash.failedLoad'),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w800,
+                          color: colors.textSecondary,
+                        ),
                       ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(AppRadii.pill.r),
+                      SizedBox(height: 8.h),
+                      Text(
+                        shownError,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.redAccent,
+                        ),
                       ),
-                    ),
-                    child: Text(
-                      context.t('common.retry'),
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w800,
-                        color: colors.card,
+                      SizedBox(height: 16.h),
+                      FilledButton(
+                        onPressed: () {
+                          setState(() => _navigated = false);
+                          _contextAttemptIndex = 0;
+                          _contextFallbackChain = _buildContextFallbackChain();
+                          _controller?.load(
+                            baseContext: _contextFallbackChain.first,
+                          );
+                        },
+                        style: FilledButton.styleFrom(
+                          backgroundColor: colors.primary,
+                          padding: EdgeInsets.symmetric(vertical: 10.h),
+                        ),
+                        child: Text(
+                          context.t('common.retry'),
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w800,
+                            color: colors.card,
+                          ),
+                        ),
                       ),
-                    ),
+                      SizedBox(height: 12.h),
+                      AppButton(
+                        label: context.t('stage.splash.openDemo'),
+                        variant: AppButtonVariant.secondary,
+                        size: AppButtonSize.medium,
+                        onPressed: () => _goNext(_demoRakaats()),
+                      ),
+                    ],
                   ),
-                  SizedBox(height: 12.h),
-                  AppButton(
-                    label: context.t('stage.splash.openDemo'),
-                    variant: AppButtonVariant.secondary,
-                    size: AppButtonSize.medium,
-                    onPressed: () => _goNext(_demoRakaats()),
-                  ),
-                ],
-              ],
-            ),
-          ),
+                ),
+              ),
+          ],
         ),
       ),
     );
