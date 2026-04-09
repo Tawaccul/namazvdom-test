@@ -24,8 +24,8 @@ class _ThemeScreenState extends State<ThemeScreen> {
     final themeMode = AppScope.themeControllerOf(context).mode;
     final themeLabel = switch (themeMode) {
       ThemeMode.system => context.t('theme.mode.system'),
-      ThemeMode.light => context.t('theme.mode.off'),
-      ThemeMode.dark => context.t('theme.mode.on'),
+      ThemeMode.light => context.t('theme.mode.light'),
+      ThemeMode.dark => context.t('theme.mode.dark'),
     };
 
     final colors = context.colors;
@@ -51,7 +51,7 @@ class _ThemeScreenState extends State<ThemeScreen> {
                 child: Column(
                   children: [
                     _ThemeMenuRow(
-                      title: context.t('theme.darkTheme'),
+                      title: context.t('theme.title'),
                       trailing: themeLabel,
                       onTap: () async {
                         await Navigator.of(context).push(

@@ -125,8 +125,17 @@
     "title": "Theme",
     "darkTheme": "Dark theme",
     "textSize": "Text size",
+    "textSizeScreen": {
+      "takbir": "Takbir",
+      "description": "While standing, raise your hands to the level of your ears or shoulders and say:",
+      "previewTransliteration": "Allahu akbar",
+      "previewTranslation": "Allah is the Greatest",
+      "chooseOptimal": "Choose a comfortable text size"
+    },
     "mode": {
       "system": "System",
+      "light": "Light",
+      "dark": "Dark",
       "off": "Turn off",
       "on": "Turn on"
     },
@@ -143,6 +152,18 @@
     "paragraph1": "Prayer is the most important precept of religion.",
     "paragraph2": "This guide helps you learn step by step."
   },
+  "support": {
+    "thankYouTitle": "Thank you for your support",
+    "description": "Your subscription helps us improve the app and ship new updates.",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "subscribe": "Subscribe",
+    "disclaimer": "Subscription renews automatically unless cancelled in advance.",
+    "months": {
+      "one": "month",
+      "other": "months"
+    }
+  },
 
   "stage": {
     "selectStage": "Select a stage",
@@ -156,6 +177,22 @@
     "prayerCompleted": "Prayer completed",
     "prayerDefaultTitle": "Prayer",
     "prayerTitleWithRakaats": "{title} - {count} rakats",
+    "stepNames": {
+      "takbir": "Takbir",
+      "protectionFromDevil": "A prayer for protection from the devil",
+      "readingAlFatiha": "Reading Surah Al-Fatiha",
+      "ameen": "Ameen",
+      "readingAdditionalSurahs": "Reading additional Surahs",
+      "ruku": "Waist bow (hand)",
+      "straightening": "Straightening",
+      "standing": "Standing",
+      "sajda": "Prostration (sajda)",
+      "duaInProstration": "Dua in prostration",
+      "readingAttahiyat": "Reading at-tahiyat",
+      "endOfPrayer": "The end of prayer",
+      "turnRight": "Turn your head to the right",
+      "turnLeft": "Turn your head to the left"
+    },
     "onboarding": {
       "step1": "To quickly switch between stages, click here",
       "step2": "To go to the desired stage, click here",

@@ -4,6 +4,7 @@ import 'package:namazvdom/app/theme/app_radii.dart';
 
 import '../../../../app/l10n/app_localization.dart';
 import '../../../../app/theme/app_colors.dart';
+import '../../../../app/ui_kit/app_blurred_top_overlay.dart';
 import '../../../../app/ui_kit/app_card.dart';
 import '../../../../app/ui_kit/app_top_bar.dart';
 import '../../../../core/widgets/pressable.dart';
@@ -17,17 +18,36 @@ class TextSizeScreen extends StatefulWidget {
 }
 
 class _TextSizeScreenState extends State<TextSizeScreen> {
+  static const double _blurShowOffset = 100;
   late final double _initialNormalized;
   late double _currentNormalized;
+  final ScrollController _scrollController = ScrollController();
+  bool _showTopBlur = false;
 
   @override
   void initState() {
     super.initState();
     _initialNormalized = ThemeTextSizeStore.normalized;
     _currentNormalized = _initialNormalized;
+    _scrollController.addListener(_handleScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_handleScroll);
+    _scrollController.dispose();
+    super.dispose();
   }
 
   double get _textSize => ThemeTextSizeStore.textSizeFor(_currentNormalized);
+
+  void _handleScroll() {
+    final shouldShow =
+        _scrollController.hasClients &&
+        _scrollController.offset > _blurShowOffset;
+    if (shouldShow == _showTopBlur) return;
+    setState(() => _showTopBlur = shouldShow);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,37 +55,58 @@ class _TextSizeScreenState extends State<TextSizeScreen> {
     return Scaffold(
       backgroundColor: colors.background,
       body: SafeArea(
+        top: false,
         bottom: false,
-        child: Column(
+        child: Stack(
           children: [
-            Expanded(
-              child: ListView(
-                physics: const BouncingScrollPhysics(),
-                clipBehavior: Clip.none,
-                padding: EdgeInsets.fromLTRB(20.w, 18.h, 20.w, 30),
-                children: [
-                  AppTopBar(
-                    title: context.t('theme.textSize'),
-                    onBack: () => Navigator.of(context).maybePop(),
+            Column(
+              children: [
+                Expanded(
+                  child: ListView(
+                    controller: _scrollController,
+                    physics: const BouncingScrollPhysics(),
+                    clipBehavior: Clip.none,
+                    padding: EdgeInsets.fromLTRB(
+                      20.w,
+                      MediaQuery.paddingOf(context).top + 12.h,
+                      20.w,
+                      30,
+                    ),
+                    children: [
+                      AppTopBar(
+                        title: context.t('theme.textSize'),
+                        onBack: () => Navigator.of(context).maybePop(),
+                      ),
+                      SizedBox(height: 24.h),
+                      _DescriptionCard(textSize: _textSize),
+                      SizedBox(height: 12.h),
+                      _PreviewCard(textSize: _textSize),
+                    ],
                   ),
-                  SizedBox(height: 24.h),
-                  _DescriptionCard(textSize: _textSize),
-                  SizedBox(height: 12.h),
-                  _PreviewCard(textSize: _textSize),
-                ],
-              ),
+                ),
+                _BottomPanel(
+                  normalized: _currentNormalized,
+                  onChanged: (value) =>
+                      setState(() => _currentNormalized = value),
+                  onCancel: () {
+                    setState(() => _currentNormalized = _initialNormalized);
+                    Navigator.of(context).maybePop();
+                  },
+                  onSave: () {
+                    ThemeTextSizeStore.setNormalized(_currentNormalized);
+                    Navigator.of(context).maybePop();
+                  },
+                ),
+              ],
             ),
-            _BottomPanel(
-              normalized: _currentNormalized,
-              onChanged: (value) => setState(() => _currentNormalized = value),
-              onCancel: () {
-                setState(() => _currentNormalized = _initialNormalized);
-                Navigator.of(context).maybePop();
-              },
-              onSave: () {
-                ThemeTextSizeStore.setNormalized(_currentNormalized);
-                Navigator.of(context).maybePop();
-              },
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: AppBlurredTopOverlay(
+                horizontalPadding: 20,
+                visible: _showTopBlur,
+              ),
             ),
           ],
         ),
@@ -141,7 +182,7 @@ class _PreviewCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 24.sp,
                   height: 1.4,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w400,
                   color: colors.textSecondary,
                 ),
               ),

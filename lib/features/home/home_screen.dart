@@ -79,7 +79,7 @@ class HomeScreen extends StatelessWidget {
                 onTap: () => _openPrayer(
                   context,
                   code: 'fajr',
-                  title: context.t('home.prayers.fajr.title'),
+                  title: localizedPrayerLabel(context, 'fajr'),
                 ),
               ),
               SizedBox(height: 8.h),
@@ -90,7 +90,7 @@ class HomeScreen extends StatelessWidget {
                 onTap: () => _openPrayer(
                   context,
                   code: 'dhuhr',
-                  title: context.t('home.prayers.dhuhr.title'),
+                  title: localizedPrayerLabel(context, 'dhuhr'),
                 ),
               ),
               SizedBox(height: 8.h),
@@ -101,7 +101,7 @@ class HomeScreen extends StatelessWidget {
                 onTap: () => _openPrayer(
                   context,
                   code: 'asr',
-                  title: context.t('home.prayers.asr.title'),
+                  title: localizedPrayerLabel(context, 'asr'),
                 ),
               ),
               SizedBox(height: 8.h),
@@ -112,7 +112,7 @@ class HomeScreen extends StatelessWidget {
                 onTap: () => _openPrayer(
                   context,
                   code: 'maghrib',
-                  title: context.t('home.prayers.maghrib.title'),
+                  title: localizedPrayerLabel(context, 'maghrib'),
                 ),
               ),
               SizedBox(height: 8.h),
@@ -123,7 +123,7 @@ class HomeScreen extends StatelessWidget {
                 onTap: () => _openPrayer(
                   context,
                   code: 'isha',
-                  title: context.t('home.prayers.isha.title'),
+                  title: localizedPrayerLabel(context, 'isha'),
                 ),
               ),
               SizedBox(height: 32.h),

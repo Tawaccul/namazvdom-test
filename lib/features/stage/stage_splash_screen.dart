@@ -5,6 +5,7 @@ import '../../app/app_dependencies_scope.dart';
 import '../../app/l10n/app_localization.dart';
 import '../../app/theme/app_colors.dart';
 import '../../app/ui_kit/app_button.dart';
+import '../../core/text/transliteration_localizer.dart';
 import '../prayer/domain/entities/prayer_request_context.dart';
 import '../prayer/domain/entities/prayer_rakaat.dart';
 import '../prayer/domain/usecases/get_prayer_rakaats.dart';
@@ -127,12 +128,17 @@ class _StageSplashScreenState extends State<StageSplashScreen> {
   }
 
   void _goNext(List<RakaatData> rakaats) {
+    final prayerTitle = localizedPrayerLabel(
+      context,
+      widget.prayerCode,
+      fallbackTitle: widget.prayerTitle,
+    );
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             StageStepScreen(
               rakaats: rakaats,
-              prayerTitle: widget.prayerTitle,
+              prayerTitle: prayerTitle,
               prayerCode: widget.prayerCode,
             ),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -244,6 +250,9 @@ class _StageSplashScreenState extends State<StageSplashScreen> {
 }
 
 List<RakaatData> _mapPrayerToStageRakaats(List<PrayerRakaat> rakaats) {
+  final languageCode = LanguageRepositoryMemory.instance
+      .getSelectedLanguage()
+      .id;
   return rakaats.map((r) {
     final steps = [...r.steps]
       ..sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
@@ -259,7 +268,10 @@ List<RakaatData> _mapPrayerToStageRakaats(List<PrayerRakaat> rakaats) {
               title: _stageStepTitle(s.stepCode),
               movementDescription: s.content.movementDescription,
               arabic: s.content.recitationArabic,
-              transliteration: s.content.transliteration,
+              transliteration: localizedTransliteration(
+                s.content.transliteration,
+                languageCode,
+              ),
               translation: s.content.translation,
               stepCode: s.stepCode,
             ),

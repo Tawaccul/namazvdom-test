@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../app/app_dependencies_scope.dart';
+import '../../core/text/transliteration_localizer.dart';
 import '../prayer/domain/entities/prayer_rakaat.dart';
 import '../prayer/domain/entities/prayer_request_context.dart';
 import '../prayer/domain/entities/prayer_step.dart';
@@ -173,6 +174,7 @@ Future<List<RakaatData>> _mapPrayerToStageRakaats(
   required GetPrayerSurah getPrayerSurah,
   required String languageCode,
 }) async {
+  final normalizedLanguageCode = languageCode.trim().toLowerCase();
   final mapped = <RakaatData>[];
   for (final rakaat in rakaats) {
     final orderedSteps = [...rakaat.steps]
@@ -192,7 +194,10 @@ Future<List<RakaatData>> _mapPrayerToStageRakaats(
             title: _stageStepTitle(step.stepCode),
             movementDescription: step.content.movementDescription,
             arabic: step.content.recitationArabic,
-            transliteration: step.content.transliteration,
+            transliteration: localizedTransliteration(
+              step.content.transliteration,
+              normalizedLanguageCode,
+            ),
             translation: step.content.translation,
             stepCode: step.stepCode,
             audioUrl: stepAudioPath,
@@ -230,7 +235,10 @@ Future<List<RakaatData>> _mapPrayerToStageRakaats(
           title: _stageStepTitle(step.stepCode),
           movementDescription: step.content.movementDescription,
           arabic: step.content.recitationArabic,
-          transliteration: step.content.transliteration,
+          transliteration: localizedTransliteration(
+            step.content.transliteration,
+            normalizedLanguageCode,
+          ),
           translation: step.content.translation,
           stepCode: step.stepCode,
           audioUrl: stepAudioPath,
@@ -360,6 +368,7 @@ RakaatStep _copyStepWithOrderIndex(RakaatStep step, int orderIndex) {
     transliteration: step.transliteration,
     translation: step.translation,
     stepCode: step.stepCode,
+    imageAsset: step.imageAsset,
     audioUrl: step.audioUrl,
     surahCode: step.surahCode,
     additionalSurahOptionCode: step.additionalSurahOptionCode,
@@ -394,6 +403,7 @@ Future<List<RakaatStep>> _mapSurahToStageSteps({
   required String audioUrl,
   String additionalSurahOptionCode = '',
 }) async {
+  final normalizedLanguageCode = languageCode.trim().toLowerCase();
   final surah = await getPrayerSurah(
     surahCode: surahCode,
     languageCode: languageCode,
@@ -408,7 +418,10 @@ Future<List<RakaatStep>> _mapSurahToStageSteps({
           title: displayTitle,
           movementDescription: '',
           arabic: ayah.recitationArabic,
-          transliteration: ayah.transliteration,
+          transliteration: localizedTransliteration(
+            ayah.transliteration,
+            normalizedLanguageCode,
+          ),
           translation: ayah.translation,
           stepCode: stepCode,
           audioUrl: audioUrl,
@@ -552,18 +565,25 @@ Future<_LocalRakaatMappedData> _mapLocalStepsToRakaatData({
     final orderIndex = (stepMap['id'] as num?)?.toInt() ?? (index + 1);
     final type = (stepMap['type'] as String? ?? '').trim().toLowerCase();
     final imagePath = (stepMap['image'] as String? ?? '').trim();
+    final resolvedImageAsset = _resolveNamazStepImageAsset(imagePath);
     final explicitTitleKey = (stepMap['title_key'] as String? ?? '').trim();
     final explicitDescriptionKey = (stepMap['description_key'] as String? ?? '')
         .trim();
     final fallbackTitleKey = '$prayerCode.r$rakaatNumber.s$orderIndex.title';
     final fallbackDescriptionKey =
         '$prayerCode.r$rakaatNumber.s$orderIndex.description';
+    final commonTitleKey = _commonStageStepTitleKey(
+      (stepMap['title'] as String? ?? '').trim(),
+    );
     final title =
         _lookupTranslationValue(
           translations,
           explicitTitleKey.isEmpty ? fallbackTitleKey : explicitTitleKey,
         ) ??
         _lookupTranslationValue(translations, fallbackTitleKey) ??
+        (commonTitleKey == null
+            ? null
+            : _lookupTranslationValue(translations, commonTitleKey)) ??
         (stepMap['title'] as String? ?? '').trim();
     final movementDescription =
         _lookupTranslationValue(
@@ -601,6 +621,7 @@ Future<_LocalRakaatMappedData> _mapLocalStepsToRakaatData({
             transliteration: '',
             translation: '',
             stepCode: stepCode,
+            imageAsset: resolvedImageAsset,
             audioUrl: audioPath,
             surahCode: surahCode,
           ),
@@ -617,6 +638,7 @@ Future<_LocalRakaatMappedData> _mapLocalStepsToRakaatData({
             transliteration: ayah.transliteration,
             translation: ayah.translation,
             stepCode: stepCode,
+            imageAsset: resolvedImageAsset,
             audioUrl: audioPath,
             surahCode: surahCode,
           ),
@@ -642,6 +664,7 @@ Future<_LocalRakaatMappedData> _mapLocalStepsToRakaatData({
           transliteration: '',
           translation: '',
           stepCode: 'additional_surah',
+          imageAsset: resolvedImageAsset,
           audioUrl: audioPath,
         ),
       );
@@ -664,6 +687,7 @@ Future<_LocalRakaatMappedData> _mapLocalStepsToRakaatData({
               transliteration: ayah.transliteration,
               translation: ayah.translation,
               stepCode: 'additional_surah',
+              imageAsset: resolvedImageAsset,
               audioUrl: audioPath,
               surahCode: selected.code,
               additionalSurahOptionCode: selected.code,
@@ -676,8 +700,10 @@ Future<_LocalRakaatMappedData> _mapLocalStepsToRakaatData({
 
     final textMap = (stepMap['text'] as Map?)?.cast<String, dynamic>();
     final textArabic = (textMap?['arabic'] as String? ?? '').trim();
-    final textTransliteration = (textMap?['transliteration'] as String? ?? '')
-        .trim();
+    final textTransliteration = localizedTransliteration(
+      (textMap?['transliteration'] as String? ?? '').trim(),
+      LanguageRepositoryMemory.instance.getSelectedLanguage().id,
+    );
     final explicitTextTranslationKey =
         (textMap?['translation_key'] as String? ?? '').trim();
     final fallbackTextTranslationKey =
@@ -700,6 +726,7 @@ Future<_LocalRakaatMappedData> _mapLocalStepsToRakaatData({
         transliteration: textTransliteration,
         translation: textTranslation,
         stepCode: stepCode,
+        imageAsset: resolvedImageAsset,
         audioUrl: audioPath,
       ),
     );
@@ -709,6 +736,28 @@ Future<_LocalRakaatMappedData> _mapLocalStepsToRakaatData({
     steps: steps.toList(growable: false),
     additionalSurahOptions: additionalSurahOptions.toList(growable: false),
   );
+}
+
+String? _commonStageStepTitleKey(String title) {
+  final normalized = title.trim().toLowerCase();
+  return switch (normalized) {
+    'takbir' => 'stage.stepNames.takbir',
+    'a prayer for protection from the devil' =>
+      'stage.stepNames.protectionFromDevil',
+    'reading surah al-fatiha' => 'stage.stepNames.readingAlFatiha',
+    'ameen' => 'stage.stepNames.ameen',
+    'reading additional surahs' => 'stage.stepNames.readingAdditionalSurahs',
+    'waist bow (hand)' => 'stage.stepNames.ruku',
+    'straightening' => 'stage.stepNames.straightening',
+    'standing' => 'stage.stepNames.standing',
+    'prostration (sajda)' => 'stage.stepNames.sajda',
+    'dua in prostration' => 'stage.stepNames.duaInProstration',
+    'reading at-tahiyat' => 'stage.stepNames.readingAttahiyat',
+    'the end of prayer' => 'stage.stepNames.endOfPrayer',
+    'turn your head to the right' => 'stage.stepNames.turnRight',
+    'turn your head to the left' => 'stage.stepNames.turnLeft',
+    _ => null,
+  };
 }
 
 Future<List<RakaatSurahOption>> _normalizeLocalSurahOptions(
@@ -733,6 +782,9 @@ Future<List<_LocalSurahAyah>> _loadLocalSurahAyahs({
   required String surahCode,
   required Map<String, dynamic> translations,
 }) async {
+  final languageCode = LanguageRepositoryMemory.instance
+      .getSelectedLanguage()
+      .id;
   if (surahCode.isEmpty) return const [];
   final assetPath = 'assets/surahs/$surahCode.json';
   if (!await _assetExists(assetPath)) return const [];
@@ -754,7 +806,10 @@ Future<List<_LocalSurahAyah>> _loadLocalSurahAyahs({
                   ayah['recitationArabic'] as String? ??
                   '')
               .trim();
-      final transliteration = (ayah['transliteration'] as String? ?? '').trim();
+      final transliteration = localizedTransliteration(
+        (ayah['transliteration'] as String? ?? '').trim(),
+        languageCode,
+      );
       final translation = _translateKey(
         translations,
         ayah['translation_key'] as String?,
@@ -859,6 +914,27 @@ String _stepCodeFromLocalImage({
   if (normalized.contains('seat')) return 'jalsa';
   if (normalized.contains('stay')) return 'qiyam';
   return fallback;
+}
+
+String _resolveNamazStepImageAsset(String imagePath) {
+  final normalized = imagePath.trim();
+  if (normalized.isEmpty) return normalized;
+  if (!normalized.startsWith('assets/namaz/images/')) return normalized;
+
+  final fileName = normalized.split('/').last;
+  if (!fileName.toLowerCase().endsWith('.svg')) return normalized;
+
+  final baseName = fileName.substring(0, fileName.length - 4).replaceAll(
+    RegExp(r'_(male|female)$', caseSensitive: false),
+    '',
+  );
+  final genderCode = GenderRepositoryMemory.instance
+      .getSelectedGender()
+      .id
+      .trim()
+      .toLowerCase();
+  final normalizedGender = genderCode == 'female' ? 'female' : 'male';
+  return 'assets/namaz/images/${baseName}_$normalizedGender.svg';
 }
 
 class _LocalRakaatMappedData {

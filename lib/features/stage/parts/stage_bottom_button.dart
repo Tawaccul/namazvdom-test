@@ -16,7 +16,7 @@ class StageBottomButton extends StatelessWidget {
   final StageBottomButtonVariant variant;
   final String label;
   final String icon;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {

@@ -9,10 +9,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../../app/l10n/app_localization.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_radii.dart';
+import '../../../app/ui_kit/app_blurred_top_overlay.dart';
 import '../../../core/audio/ayah_audio.dart';
 import '../../../core/audio/ayah_audio_controller.dart';
+import '../../../core/text/transliteration_localizer.dart';
 import '../../../core/widgets/pressable.dart';
 import '../../settings/gender/data/gender_repository_memory.dart';
+import '../../settings/language/data/language_repository_memory.dart';
 import '../../settings/theme/presentation/theme_text_size_store.dart';
 import '../../stage/parts/stage_bottom_button.dart';
 import '../../stage/parts/stage_card.dart';
@@ -29,9 +32,11 @@ class AblutionScreen extends StatefulWidget {
 
 class _AblutionScreenState extends State<AblutionScreen>
     with SingleTickerProviderStateMixin {
+  static const double _blurShowOffset = 100;
+  static const double _horizontalSwipeVelocityThreshold = 220;
   late final AyahAudio _audio;
   final GlobalKey _stageButtonKey = GlobalKey();
-  final GlobalKey _transitionStageButtonKey = GlobalKey();
+  final ScrollController _scrollController = ScrollController();
   late final Future<_AblutionManifest> _manifestFuture;
   late final AnimationController _pageTransitionController;
   final Map<String, bool> _assetExistsMemo = {};
@@ -41,12 +46,14 @@ class _AblutionScreenState extends State<AblutionScreen>
   int _stepDirection = 1;
   int? _pendingStepIndex;
   bool _appliedPendingTransition = false;
+  bool _showTopBlur = false;
   String? _playingStepAudioKey;
 
   @override
   void initState() {
     super.initState();
     _audio = AyahAudioController()..addListener(_onAudioTick);
+    _scrollController.addListener(_handleScroll);
     _pageTransitionController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1000),
@@ -58,6 +65,8 @@ class _AblutionScreenState extends State<AblutionScreen>
   void dispose() {
     _audio.removeListener(_onAudioTick);
     unawaited(_audio.dispose());
+    _scrollController.removeListener(_handleScroll);
+    _scrollController.dispose();
     _pageTransitionController.dispose();
     super.dispose();
   }
@@ -65,6 +74,14 @@ class _AblutionScreenState extends State<AblutionScreen>
   void _onAudioTick() {
     if (!mounted) return;
     setState(() {});
+  }
+
+  void _handleScroll() {
+    final shouldShow =
+        _scrollController.hasClients &&
+        _scrollController.offset > _blurShowOffset;
+    if (shouldShow == _showTopBlur) return;
+    setState(() => _showTopBlur = shouldShow);
   }
 
   Future<_AblutionManifest> _loadManifest() async {
@@ -138,6 +155,9 @@ class _AblutionScreenState extends State<AblutionScreen>
     String audioUrl,
   ) {
     final text = step.text!;
+    final languageCode = LanguageRepositoryMemory.instance
+        .getSelectedLanguage()
+        .id;
     return QuranAyah(
       surahId: 0,
       ayahId: key.hashCode,
@@ -146,7 +166,7 @@ class _AblutionScreenState extends State<AblutionScreen>
       ayahCount: 1,
       ayahAr: text.arabic,
       ayahEn: text.translationKey,
-      ayahTr: text.transliteration,
+      ayahTr: localizedTransliteration(text.transliteration, languageCode),
       reciterId: 'ablution',
       reciterName: 'ablution',
       audioUrl: audioUrl,
@@ -200,6 +220,27 @@ class _AblutionScreenState extends State<AblutionScreen>
     }
     _stopAudioSilently();
     Navigator.of(context).maybePop();
+  }
+
+  void _handleHorizontalDragEnd(DragEndDetails details) {
+    if (_pageTransitionController.isAnimating) return;
+    final velocity = details.primaryVelocity ?? 0;
+    if (velocity <= -_horizontalSwipeVelocityThreshold) {
+      _nextStep();
+      return;
+    }
+    if (velocity >= _horizontalSwipeVelocityThreshold) {
+      _prevStep();
+    }
+  }
+
+  String _localizedStepTransliteration(_AblutionStepManifest step) {
+    final text = step.text;
+    if (text == null) return '';
+    return localizedTransliteration(
+      text.transliteration,
+      LanguageRepositoryMemory.instance.getSelectedLanguage().id,
+    );
   }
 
   void _applyPendingTransition(int stepIndex) {
@@ -355,9 +396,10 @@ class _AblutionScreenState extends State<AblutionScreen>
     required int stepNumber,
     required int totalSteps,
     required double progress,
+    required double cardTextSize,
     required String title,
     required double bottomInset,
-    required GlobalKey stageButtonKey,
+    ScrollController? scrollController,
     required VoidCallback onBack,
     required VoidCallback onStage,
     required VoidCallback onPrev,
@@ -365,13 +407,17 @@ class _AblutionScreenState extends State<AblutionScreen>
   }) {
     final colors = context.colors;
     return ListView(
+      controller: scrollController,
       physics: const BouncingScrollPhysics(),
-      padding: EdgeInsets.only(top: 72.h, bottom: 24.h + bottomInset),
+      padding: EdgeInsets.only(
+        top: MediaQuery.paddingOf(context).top + 12.h,
+        bottom: 24.h + bottomInset,
+      ),
       children: [
         StageTopBar(
           onBack: onBack,
           onStage: onStage,
-          stageButtonKey: stageButtonKey,
+          stageButtonKey: _stageButtonKey,
         ),
         SizedBox(height: 20.h),
         _AblutionProgressBlock(
@@ -408,7 +454,7 @@ class _AblutionScreenState extends State<AblutionScreen>
               Text(
                 context.t(step.titleKey),
                 style: TextStyle(
-                  fontSize: 16.sp,
+                  fontSize: cardTextSize.sp,
                   fontWeight: FontWeight.w500,
                   color: colors.textPrimary,
                 ),
@@ -417,7 +463,7 @@ class _AblutionScreenState extends State<AblutionScreen>
               Text(
                 context.t(step.descriptionKey),
                 style: TextStyle(
-                  fontSize: 16.sp,
+                  fontSize: cardTextSize.sp,
                   height: 1.48,
                   fontWeight: FontWeight.w500,
                   color: colors.textSecondary,
@@ -480,9 +526,9 @@ class _AblutionScreenState extends State<AblutionScreen>
                   ),
                   SizedBox(height: 20.h),
                   Text(
-                    step.text!.transliteration,
+                    _localizedStepTransliteration(step),
                     style: TextStyle(
-                      fontSize: 16.sp,
+                      fontSize: cardTextSize.sp,
                       fontStyle: FontStyle.italic,
                       fontWeight: FontWeight.w500,
                       color: colors.textPrimary,
@@ -492,7 +538,7 @@ class _AblutionScreenState extends State<AblutionScreen>
                   Text(
                     context.t(step.text!.translationKey),
                     style: TextStyle(
-                      fontSize: 16.sp,
+                      fontSize: cardTextSize.sp,
                       fontWeight: FontWeight.w500,
                       color: colors.textSecondary,
                     ),
@@ -532,17 +578,16 @@ class _AblutionScreenState extends State<AblutionScreen>
   Widget build(BuildContext context) {
     final colors = context.colors;
     final bottomInset = MediaQuery.paddingOf(context).bottom;
-    final textScale = ThemeTextSizeStore.scale;
+    final cardTextSize = ThemeTextSizeStore.textSize;
 
-    return MediaQuery(
-      data: MediaQuery.of(
-        context,
-      ).copyWith(textScaler: TextScaler.linear(textScale)),
-      child: Scaffold(
-        backgroundColor: colors.background,
-        body: SafeArea(
-          top: false,
-          bottom: false,
+    return Scaffold(
+      backgroundColor: colors.background,
+      body: SafeArea(
+        top: false,
+        bottom: false,
+        child: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onHorizontalDragEnd: _handleHorizontalDragEnd,
           child: FutureBuilder<_AblutionManifest>(
             future: _manifestFuture,
             builder: (context, snapshot) {
@@ -596,82 +641,94 @@ class _AblutionScreenState extends State<AblutionScreen>
               final progress = stepNumber / _totalSteps;
               final title = context.t(manifest.titleKey);
 
-              return Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                child: AnimatedBuilder(
-                  animation: _pageTransitionController,
-                  builder: (context, child) {
-                    final targetStepIndex = _pendingStepIndex;
-                    final isAnimating =
-                        _pageTransitionController.isAnimating &&
-                        targetStepIndex != null;
-                    final screenWidth = MediaQuery.sizeOf(context).width;
-                    final pageWidth = (screenWidth - 32.w).clamp(
-                      0.0,
-                      double.infinity,
-                    );
-                    final travelDistance = pageWidth + 32.w;
-                    final animationProgress = Curves.easeInOutBack.transform(
-                      _pageTransitionController.value.clamp(0.0, 1.0),
-                    );
-                    final currentPageDx = isAnimating
-                        ? -_stepDirection * travelDistance * animationProgress
-                        : 0.0;
-                    final pendingPageDx =
-                        currentPageDx + (_stepDirection * travelDistance);
+              return Stack(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    child: AnimatedBuilder(
+                      animation: _pageTransitionController,
+                      builder: (context, child) {
+                        final targetStepIndex = _pendingStepIndex;
+                        final isAnimating =
+                            _pageTransitionController.isAnimating &&
+                            targetStepIndex != null;
+                        final screenWidth = MediaQuery.sizeOf(context).width;
+                        final pageWidth = (screenWidth - 32.w).clamp(
+                          0.0,
+                          double.infinity,
+                        );
+                        final travelDistance = pageWidth + 32.w;
+                        final animationProgress = Curves.easeInOutBack.transform(
+                          _pageTransitionController.value.clamp(0.0, 1.0),
+                        );
+                        final currentPageDx = isAnimating
+                            ? -_stepDirection * travelDistance * animationProgress
+                            : 0.0;
+                        final pendingPageDx =
+                            currentPageDx + (_stepDirection * travelDistance);
 
-                    final nextIndex = targetStepIndex == null
-                        ? _clampedStepIndex
-                        : targetStepIndex.clamp(0, _totalSteps - 1);
-                    final pendingStep = manifest.steps[nextIndex];
-                    final pendingStepNumber = nextIndex + 1;
-                    final pendingProgress = pendingStepNumber / _totalSteps;
+                        final nextIndex = targetStepIndex == null
+                            ? _clampedStepIndex
+                            : targetStepIndex.clamp(0, _totalSteps - 1);
+                        final pendingStep = manifest.steps[nextIndex];
+                        final pendingStepNumber = nextIndex + 1;
+                        final pendingProgress = pendingStepNumber / _totalSteps;
 
-                    return IgnorePointer(
-                      ignoring: isAnimating,
-                      child: Stack(
-                        clipBehavior: Clip.none,
-                        children: [
-                          Transform.translate(
-                            offset: Offset(currentPageDx, 0),
-                            child: child,
-                          ),
-                          if (isAnimating)
-                            Transform.translate(
-                              offset: Offset(pendingPageDx, 0),
-                              child: _buildPageContent(
-                                step: pendingStep,
-                                stepNumber: pendingStepNumber,
-                                totalSteps: _totalSteps,
-                                progress: pendingProgress,
-                                title: title,
-                                bottomInset: bottomInset,
-                                stageButtonKey: _transitionStageButtonKey,
-                                onBack: () {},
-                                onStage: () {},
-                                onPrev: () {},
-                                onNext: () {},
+                        return IgnorePointer(
+                          ignoring: isAnimating,
+                          child: Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              Transform.translate(
+                                offset: Offset(currentPageDx, 0),
+                                child: child,
                               ),
-                            ),
-                        ],
+                              if (isAnimating)
+                                Transform.translate(
+                                  offset: Offset(pendingPageDx, 0),
+                                  child: _buildPageContent(
+                                    step: pendingStep,
+                                    stepNumber: pendingStepNumber,
+                                    totalSteps: _totalSteps,
+                                    progress: pendingProgress,
+                                    cardTextSize: cardTextSize,
+                                    title: title,
+                                    bottomInset: bottomInset,
+                                    scrollController: null,
+                                    onBack: () {},
+                                    onStage: () {},
+                                    onPrev: () {},
+                                    onNext: () {},
+                                  ),
+                                ),
+                            ],
+                          ),
+                        );
+                      },
+                      child: _buildPageContent(
+                        step: step,
+                        stepNumber: stepNumber,
+                        totalSteps: _totalSteps,
+                        progress: progress,
+                        cardTextSize: cardTextSize,
+                        title: title,
+                        bottomInset: bottomInset,
+                        scrollController: _scrollController,
+                        onBack: () => Navigator.of(context).maybePop(),
+                        onStage: _showStepSelector,
+                        onPrev: _prevStep,
+                        onNext: _nextStep,
                       ),
-                    );
-                  },
-                  child: _buildPageContent(
-                    step: step,
-                    stepNumber: stepNumber,
-                    totalSteps: _totalSteps,
-                    progress: progress,
-                    title: title,
-                    bottomInset: bottomInset,
-                    stageButtonKey: _stageButtonKey,
-                    onBack: () => Navigator.of(context).maybePop(),
-                    onStage: _showStepSelector,
-                    onPrev: _prevStep,
-                    onNext: _nextStep,
+                    ),
                   ),
-                ),
-              );
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    child: AppBlurredTopOverlay(visible: _showTopBlur),
+                  ),
+	                ],
+	              );
             },
           ),
         ),

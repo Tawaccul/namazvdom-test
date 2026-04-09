@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:namazvdom/app/theme/app_radii.dart';
 
 import '../../app/l10n/app_localization.dart';
 import '../../app/theme/app_colors.dart';
@@ -12,12 +14,16 @@ class StageOnboardingOverlay extends StatefulWidget {
     required this.stageButtonKey,
     required this.progressCardKey,
     required this.selectedAyahCardKey,
+    required this.scrollController,
+    required this.onStepChanged,
     required this.onFinish,
   });
 
   final GlobalKey stageButtonKey;
   final GlobalKey progressCardKey;
   final GlobalKey selectedAyahCardKey;
+  final ScrollController scrollController;
+  final ValueChanged<int> onStepChanged;
   final VoidCallback onFinish;
 
   @override
@@ -30,10 +36,12 @@ class _StageOnboardingOverlayState extends State<StageOnboardingOverlay> {
   Rect? _progressRect;
   Rect? _selectedAyahRect;
   bool _contentVisible = false;
+  bool _isAdvancingStep = false;
+  bool _measureScheduled = false;
 
   List<_Step> get _steps => const [
     _Step(
-      bubbleAlignment: Alignment(-0.82, -0.14),
+      bubbleAlignment: Alignment(-0.82, -0.08),
       notch: _BubbleNotch.topLeft,
       icon: _BubbleIcon.stage,
       highlightStageButton: false,
@@ -41,7 +49,7 @@ class _StageOnboardingOverlayState extends State<StageOnboardingOverlay> {
       highlightAyahCard: false,
     ),
     _Step(
-      bubbleAlignment: Alignment(0.7, -0.60),
+      bubbleAlignment: Alignment(0.8, -0.57),
       notch: _BubbleNotch.topRight,
       icon: _BubbleIcon.stage,
       highlightStageButton: true,
@@ -49,7 +57,7 @@ class _StageOnboardingOverlayState extends State<StageOnboardingOverlay> {
       highlightAyahCard: false,
     ),
     _Step(
-      bubbleAlignment: Alignment(-0.62, 0.16),
+      bubbleAlignment: Alignment(-0.8, -0.09),
       notch: _BubbleNotch.bottomLeft,
       icon: _BubbleIcon.audio,
       highlightStageButton: false,
@@ -61,9 +69,11 @@ class _StageOnboardingOverlayState extends State<StageOnboardingOverlay> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _measure());
+    widget.scrollController.addListener(_handleScroll);
+    _scheduleMeasure();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
+      HapticFeedback.mediumImpact();
       setState(() => _contentVisible = true);
     });
   }
@@ -71,7 +81,30 @@ class _StageOnboardingOverlayState extends State<StageOnboardingOverlay> {
   @override
   void didUpdateWidget(covariant StageOnboardingOverlay oldWidget) {
     super.didUpdateWidget(oldWidget);
-    WidgetsBinding.instance.addPostFrameCallback((_) => _measure());
+    if (oldWidget.scrollController != widget.scrollController) {
+      oldWidget.scrollController.removeListener(_handleScroll);
+      widget.scrollController.addListener(_handleScroll);
+    }
+    _scheduleMeasure();
+  }
+
+  @override
+  void dispose() {
+    widget.scrollController.removeListener(_handleScroll);
+    super.dispose();
+  }
+
+  void _handleScroll() {
+    _scheduleMeasure();
+  }
+
+  void _scheduleMeasure() {
+    if (_measureScheduled) return;
+    _measureScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _measureScheduled = false;
+      _measure();
+    });
   }
 
   void _measure() {
@@ -109,13 +142,23 @@ class _StageOnboardingOverlayState extends State<StageOnboardingOverlay> {
     return topLeft & renderObject.size;
   }
 
-  void _next() {
+  Future<void> _next() async {
+    if (_isAdvancingStep) return;
     if (_stepIndex >= _steps.length - 1) {
       widget.onFinish();
       return;
     }
-    setState(() => _stepIndex += 1);
-    WidgetsBinding.instance.addPostFrameCallback((_) => _measure());
+
+    _isAdvancingStep = true;
+    final nextStepIndex = _stepIndex + 1;
+    setState(() => _stepIndex = nextStepIndex);
+    widget.onStepChanged(nextStepIndex);
+    _scheduleMeasure();
+    HapticFeedback.mediumImpact();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      setState(() => _isAdvancingStep = false);
+    });
   }
 
   @override
@@ -185,7 +228,7 @@ class _StageOnboardingOverlayState extends State<StageOnboardingOverlay> {
                       notch: step.notch,
                       icon: step.icon,
                       message: localizedMessage,
-                      onNext: _next,
+                      onNext: _isAdvancingStep ? null : _next,
                     ),
                   ),
                 ),
@@ -231,7 +274,7 @@ class _BubbleCard extends StatelessWidget {
   final _BubbleNotch notch;
   final _BubbleIcon icon;
   final String message;
-  final VoidCallback onNext;
+  final VoidCallback? onNext;
 
   @override
   Widget build(BuildContext context) {
@@ -273,6 +316,7 @@ class _BubbleCard extends StatelessWidget {
               'assets/icons/bubbletail.svg',
               width: 22.r,
               height: 27.r,
+              color: colors.card,
               colorFilter: ColorFilter.mode(colors.card, BlendMode.srcIn),
             ),
           ),
@@ -362,7 +406,7 @@ class _HolePainter extends CustomPainter {
 
     final holes = Path();
     for (final rect in rects) {
-      final radiusValue = (rect.height / 2).clamp(22.r, 28.r);
+      final radiusValue = (rect.height / 2).clamp(AppRadii.card.r, AppRadii.card.r);
       holes.addRRect(
         RRect.fromRectAndRadius(rect, Radius.circular(radiusValue)),
       );

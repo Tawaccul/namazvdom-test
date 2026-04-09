@@ -5,6 +5,7 @@ import 'package:namazvdom/app/theme/app_radii.dart';
 
 import '../../../../app/l10n/app_localization.dart';
 import '../../../../app/theme/app_colors.dart';
+import '../../../../app/ui_kit/app_blurred_top_overlay.dart';
 import '../../../../app/ui_kit/app_card.dart';
 import '../../../../app/ui_kit/app_divider.dart';
 import '../../../../app/ui_kit/app_list_tile.dart';
@@ -24,7 +25,10 @@ class GenderScreen extends StatefulWidget {
 }
 
 class _GenderScreenState extends State<GenderScreen> {
+  static const double _blurShowOffset = 100;
   late final GenderController _controller;
+  final ScrollController _scrollController = ScrollController();
+  bool _showTopBlur = false;
 
   @override
   void initState() {
@@ -35,12 +39,23 @@ class _GenderScreenState extends State<GenderScreen> {
       getSelectedGender: GetSelectedGender(repository),
       setSelectedGender: SetSelectedGender(repository),
     );
+    _scrollController.addListener(_handleScroll);
   }
 
   @override
   void dispose() {
+    _scrollController.removeListener(_handleScroll);
+    _scrollController.dispose();
     _controller.dispose();
     super.dispose();
+  }
+
+  void _handleScroll() {
+    final shouldShow =
+        _scrollController.hasClients &&
+        _scrollController.offset > _blurShowOffset;
+    if (shouldShow == _showTopBlur) return;
+    setState(() => _showTopBlur = shouldShow);
   }
 
   @override
@@ -49,47 +64,68 @@ class _GenderScreenState extends State<GenderScreen> {
     return Scaffold(
       backgroundColor: colors.background,
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(20.w, 18.h, 20.w, 28.h),
-          child: ListView(
-            physics: const BouncingScrollPhysics(),
-            children: [
-              AppTopBar(
-                title: context.t('gender.title'),
-                onBack: () => Navigator.of(context).maybePop(),
+        top: false,
+        child: Stack(
+          children: [
+            Padding(
+              padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 28.h),
+              child: ListView(
+                controller: _scrollController,
+                physics: const BouncingScrollPhysics(),
+                padding: EdgeInsets.only(
+                  top: MediaQuery.paddingOf(context).top + 12.h,
+                ),
+                children: [
+                  AppTopBar(
+                    title: context.t('gender.title'),
+                    onBack: () => Navigator.of(context).maybePop(),
+                  ),
+                  SizedBox(height: 24.h),
+                  AnimatedBuilder(
+                    animation: _controller,
+                    builder: (context, _) {
+                      return AppCard(
+                        radius: AppRadii.pill,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            for (
+                              var i = 0;
+                              i < _controller.genders.length;
+                              i++
+                            ) ...[
+                              _GenderTile(
+                                gender: _controller.genders[i],
+                                selected:
+                                    _controller.genders[i].id ==
+                                    _controller.selected.id,
+                                onTap: () =>
+                                    _controller.select(_controller.genders[i]),
+                              ),
+                              if (i != _controller.genders.length - 1)
+                                const AppDivider(
+                                  insetLeft: 22,
+                                  insetRight: 22,
+                                ),
+                            ],
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
-              SizedBox(height: 22.h),
-              AnimatedBuilder(
-                animation: _controller,
-                builder: (context, _) {
-                  return AppCard(
-                    radius: AppRadii.pill,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        for (
-                          var i = 0;
-                          i < _controller.genders.length;
-                          i++
-                        ) ...[
-                          _GenderTile(
-                            gender: _controller.genders[i],
-                            selected:
-                                _controller.genders[i].id ==
-                                _controller.selected.id,
-                            onTap: () =>
-                                _controller.select(_controller.genders[i]),
-                          ),
-                          if (i != _controller.genders.length - 1)
-                            const AppDivider(insetLeft: 22, insetRight: 22),
-                        ],
-                      ],
-                    ),
-                  );
-                },
+            ),
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: AppBlurredTopOverlay(
+                horizontalPadding: 20,
+                visible: _showTopBlur,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

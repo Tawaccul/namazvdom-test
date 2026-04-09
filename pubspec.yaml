@@ -74,6 +74,7 @@ flutter:
   -  assets/icons/salat-1.png
   -  assets/audio/istiaza.mp3
   -  assets/audio/takbir.mp3
+  -  assets/audio/730cbdbfa3d664506abd7c2baf719491.mp3
   -  assets/icons/close-icon.svg
   -  assets/icons/arrow-bottom.svg
   -  assets/icons/check.svg
@@ -136,14 +137,22 @@ flutter:
   -  assets/ablution/images/male/w_ablution_male_8.svg
   -  assets/ablution/images/male/w_ablution_male_9.svg
   -  assets/namaz/images/
-  -  assets/namaz/images/at-tahiyat.svg
-  -  assets/namaz/images/ruku.svg
-  -  assets/namaz/images/seat.svg
-  -  assets/namaz/images/stay.svg
-  -  assets/namaz/images/sudjud.svg
-  -  assets/namaz/images/takbir.svg
-  -  assets/namaz/images/taslim-left.svg
-  -  assets/namaz/images/taslim-right.svg
+  -  assets/namaz/images/at-tahiyat_female.svg
+  -  assets/namaz/images/at-tahiyat_male.svg
+  -  assets/namaz/images/ruku_female.svg
+  -  assets/namaz/images/ruku_male.svg
+  -  assets/namaz/images/seat_female.svg
+  -  assets/namaz/images/seat_male.svg
+  -  assets/namaz/images/stay_female.svg
+  -  assets/namaz/images/stay_male.svg
+  -  assets/namaz/images/sudjud_female.svg
+  -  assets/namaz/images/sudjud_male.svg
+  -  assets/namaz/images/takbir_female.svg
+  -  assets/namaz/images/takbir_male.svg
+  -  assets/namaz/images/taslim-left_female.svg
+  -  assets/namaz/images/taslim-left_male.svg
+  -  assets/namaz/images/taslim-right_female.svg
+  -  assets/namaz/images/taslim-right_male.svg
   -  assets/fajr/
   -  assets/dhuhr/
   -  assets/asr/

@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,11 +11,14 @@ import '../../app/app_dependencies_scope.dart';
 import '../../app/l10n/app_localization.dart';
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_radii.dart';
+import '../../app/ui_kit/app_blurred_top_overlay.dart';
 import '../../core/audio/ayah_audio.dart';
 import '../../core/audio/ayah_audio_controller.dart';
+import '../../core/text/transliteration_localizer.dart';
 import '../../core/widgets/pressable.dart';
 import '../onboarding/data/onboarding_repository_memory.dart';
 import '../prayer/domain/usecases/get_prayer_surah.dart';
+import '../settings/gender/data/gender_repository_memory.dart';
 import '../settings/language/data/language_repository_memory.dart';
 import '../settings/theme/presentation/theme_text_size_store.dart';
 import 'parts/stage_ayah_card.dart';
@@ -49,33 +54,42 @@ class StageStepScreen extends StatefulWidget {
 class _StageStepScreenState extends State<StageStepScreen>
     with SingleTickerProviderStateMixin {
   static const bool _alwaysShowStageOnboarding = true;
+  static const double _topBlurShowOffset = 100;
+  static const double _horizontalSwipeVelocityThreshold = 220;
+  static const _randomStageAudioAssets = <String>[
+    'assets/audio/730cbdbfa3d664506abd7c2baf719491.mp3',
+    'assets/audio/istiaza.mp3',
+    'assets/audio/takbir.mp3',
+  ];
 
   late final AyahAudio _audio;
+  late final math.Random _randomAudio;
   final ScrollController _scrollController = ScrollController();
   late final AnimationController _pageTransitionController;
-  final GlobalKey _transitionStageButtonKey = GlobalKey();
   final Map<String, GlobalKey> _stepKeys = {};
+  final Map<String, String> _entryAudioUrls = {};
   final GlobalKey _progressKey = GlobalKey();
   final GlobalKey _stageButtonKey = GlobalKey();
   bool _showPinned = false;
   bool _showOnboarding = false;
+  bool _showTopBlur = false;
 
   String? _error;
   late List<RakaatData> _rakaats;
   int _rakaatIndex = 0;
   int _stepIndex = 0;
   bool _autoplayEnabled = false;
+  int _autoplaySessionId = 0;
   String? _playingStepKey;
-  String? _completedStepKey;
-  bool _handlingCompletion = false;
+  String? _startedPlaybackStepKey;
   bool _contentAppeared = false;
   int _rakaatDirection = -1;
-  bool _lastIsPlaying = false;
   int _selectedAyahIndex = 0;
   int? _pendingRakaatIndex;
   int? _pendingStepIndex;
   bool _pendingJumpTop = false;
   bool _appliedPendingTransition = false;
+  double _transitionStartScrollOffset = 0;
   String? _selectedAdditionalSurahCode;
   final Map<String, bool> _assetExistsMemo = {};
 
@@ -86,6 +100,11 @@ class _StageStepScreenState extends State<StageStepScreen>
       vsync: this,
       duration: const Duration(milliseconds: 1000),
     );
+    _pageTransitionController.addListener(
+      _maybeApplyPendingTransitionDuringAnimation,
+    );
+    _pageTransitionController.addStatusListener(_handlePageTransitionStatus);
+    _randomAudio = math.Random();
     _rakaats = widget.rakaats;
     _audio = widget.audio ?? AyahAudioController();
     _audio.addListener(_onAudioTick);
@@ -107,27 +126,9 @@ class _StageStepScreenState extends State<StageStepScreen>
   void _onAudioTick() {
     final stepKey = _stepKey;
     final isPlaying = _audio.isPlaying;
-    final progress = _audio.progress;
-    final reachedEnd = progress >= 0.98;
-    final completedByProgress = !isPlaying && _lastIsPlaying && reachedEnd;
-    final isCompleted = _audio.isCompleted || completedByProgress;
-    if (_currentStep != null &&
-        _autoplayEnabled &&
-        isCompleted &&
-        _playingStepKey == stepKey &&
-        _completedStepKey != stepKey &&
-        !_handlingCompletion) {
-      _completedStepKey = stepKey;
-      _handlingCompletion = true;
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        try {
-          await _advanceAndPlayNextStep();
-        } finally {
-          _handlingCompletion = false;
-        }
-      });
+    if (_playingStepKey == stepKey && isPlaying) {
+      _startedPlaybackStepKey = stepKey;
     }
-    _lastIsPlaying = isPlaying;
     if (mounted) setState(() {});
   }
 
@@ -233,7 +234,10 @@ class _StageStepScreenState extends State<StageStepScreen>
                 title: option.label,
                 movementDescription: '',
                 arabic: ayah.recitationArabic,
-                transliteration: ayah.transliteration,
+                transliteration: localizedTransliteration(
+                  ayah.transliteration,
+                  languageCode,
+                ),
                 translation: ayah.translation,
                 stepCode: 'additional_surah',
                 audioUrl: audioUrl,
@@ -312,6 +316,9 @@ class _StageStepScreenState extends State<StageStepScreen>
     required String audioUrl,
   }) async {
     final normalized = surahCode.trim().toLowerCase();
+    final languageCode = LanguageRepositoryMemory.instance
+        .getSelectedLanguage()
+        .id;
     if (normalized.isEmpty) return const [];
     final assetPath = 'assets/surahs/$normalized.json';
     if (!await _assetExists(assetPath)) return const [];
@@ -332,8 +339,10 @@ class _StageStepScreenState extends State<StageStepScreen>
                     map['recitationArabic'] as String? ??
                     '')
                 .trim();
-        final transliteration = (map['transliteration'] as String? ?? '')
-            .trim();
+        final transliteration = localizedTransliteration(
+          (map['transliteration'] as String? ?? '').trim(),
+          languageCode,
+        );
         final translation = _translateKey(
           map['translation_key'] as String?,
           fallback: (map['translation'] as String? ?? '').trim(),
@@ -380,6 +389,7 @@ class _StageStepScreenState extends State<StageStepScreen>
       _rakaatIndex = rakaatIndex;
       _stepIndex = clampedStep;
       _selectedAyahIndex = 0;
+      _showPinned = false;
     });
     _appliedPendingTransition = true;
     if (_selectedAyahStep?.hasAudio ?? false) {
@@ -388,6 +398,21 @@ class _StageStepScreenState extends State<StageStepScreen>
     if (_pendingJumpTop) {
       _jumpToTop();
     }
+    _transitionStartScrollOffset = 0;
+  }
+
+  void _maybeApplyPendingTransitionDuringAnimation() {
+    if (_appliedPendingTransition) return;
+    final rakaatIndex = _pendingRakaatIndex;
+    final stepIndex = _pendingStepIndex;
+    if (rakaatIndex == null || stepIndex == null) return;
+    if (_pageTransitionController.value < 0.92) return;
+    _applyPendingTransition(rakaatIndex, stepIndex);
+  }
+
+  void _handlePageTransitionStatus(AnimationStatus status) {
+    if (!mounted) return;
+    setState(() {});
   }
 
   void _jumpToTop() {
@@ -395,17 +420,83 @@ class _StageStepScreenState extends State<StageStepScreen>
     _scrollController.jumpTo(0);
   }
 
+  void _resetScrollChromeForTransition() {
+    _transitionStartScrollOffset = _scrollController.hasClients
+        ? _scrollController.offset
+        : 0.0;
+    if (_showPinned && mounted) {
+      setState(() => _showPinned = false);
+    }
+  }
+
+  Future<void> _animateToTop() async {
+    if (!_scrollController.hasClients) return;
+    await _scrollController.animateTo(
+      0,
+      duration: const Duration(milliseconds: 420),
+      curve: Curves.easeOutCubic,
+    );
+  }
+
+  void _scrollOnboardingStepIntoView() {
+    final ctx = _stepKeys[_entryKey(_clampedAyahIndex)]?.currentContext;
+    if (ctx == null) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      Scrollable.ensureVisible(
+        ctx,
+        duration: const Duration(milliseconds: 420),
+        curve: Curves.easeOutCubic,
+        alignment: 0.5,
+        alignmentPolicy: ScrollPositionAlignmentPolicy.explicit,
+      );
+    });
+  }
+
+  void _handleOnboardingStepChanged(int stepIndex) {
+    if (stepIndex != 2) return;
+    _scrollOnboardingStepIntoView();
+  }
+
+  void _triggerLightHaptic() {
+    HapticFeedback.lightImpact();
+  }
+
+  void _finishOnboarding() {
+    if (!_showOnboarding) return;
+    setState(() => _showOnboarding = false);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _animateToTop();
+    });
+  }
+
   @override
   void dispose() {
     _audio.removeListener(_onAudioTick);
     _audio.dispose();
+    _pageTransitionController.removeListener(
+      _maybeApplyPendingTransitionDuringAnimation,
+    );
+    _pageTransitionController.removeStatusListener(_handlePageTransitionStatus);
     _pageTransitionController.dispose();
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     super.dispose();
   }
 
-  void _onScroll() => _updatePinned();
+  void _onScroll() {
+    _updatePinned();
+    _updateTopBlur();
+  }
+
+  void _updateTopBlur() {
+    final shouldShow =
+        _scrollController.hasClients &&
+        _scrollController.offset > _topBlurShowOffset;
+    if (shouldShow == _showTopBlur) return;
+    setState(() => _showTopBlur = shouldShow);
+  }
 
   void _updatePinned() {
     final progressCtx = _progressKey.currentContext;
@@ -437,6 +528,20 @@ class _StageStepScreenState extends State<StageStepScreen>
       set.add(step.orderIndex);
     }
     return set.length;
+  }
+
+  bool get _hasNextStageStep {
+    if (_currentStepOrderIndexes.isEmpty) return false;
+    if (_clampedStepIndex < _currentStepOrderIndexes.length - 1) return true;
+    if (_rakaats.isEmpty) return false;
+    return _rakaatIndex < _rakaats.length - 1;
+  }
+
+  bool get _hasPrevStageStep {
+    if (_currentStepOrderIndexes.isEmpty) return false;
+    if (_clampedStepIndex > 0) return true;
+    if (_rakaats.isEmpty) return false;
+    return _rakaatIndex > 0;
   }
 
   List<int> get _currentStepOrderIndexes {
@@ -492,6 +597,94 @@ class _StageStepScreenState extends State<StageStepScreen>
 
   String get _stepKey => _entryKey(_clampedAyahIndex);
 
+  String _audioUrlForEntry(String entryKey) {
+    return _entryAudioUrls.putIfAbsent(
+      entryKey,
+      () =>
+          _randomStageAudioAssets[_randomAudio.nextInt(
+            _randomStageAudioAssets.length,
+          )],
+    );
+  }
+
+  void _cancelAutoplaySequence({bool disableAutoplay = false}) {
+    _autoplaySessionId++;
+    if (disableAutoplay) {
+      _autoplayEnabled = false;
+    }
+  }
+
+  bool _isAutoplaySessionActive(int sessionId) {
+    return mounted && _autoplayEnabled && sessionId == _autoplaySessionId;
+  }
+
+  Future<bool> _waitForPlaybackCompletion(int sessionId, String stepKey) {
+    final completer = Completer<bool>();
+    var lastWasPlaying = _audio.isPlaying;
+
+    void finish(bool value, VoidCallback listener) {
+      if (completer.isCompleted) return;
+      _audio.removeListener(listener);
+      completer.complete(value);
+    }
+
+    late final VoidCallback listener;
+    listener = () {
+      if (!_isAutoplaySessionActive(sessionId) || _playingStepKey != stepKey) {
+        finish(false, listener);
+        return;
+      }
+      final isPlaying = _audio.isPlaying;
+      if (_playingStepKey == stepKey && isPlaying) {
+        _startedPlaybackStepKey = stepKey;
+      }
+      final reachedEnd = _audio.progress >= 0.98;
+      final completedByProgress = !isPlaying && lastWasPlaying && reachedEnd;
+      final completed =
+          _startedPlaybackStepKey == stepKey &&
+          (_audio.isCompleted || completedByProgress);
+      lastWasPlaying = isPlaying;
+      if (completed) {
+        finish(true, listener);
+      }
+    };
+
+    _audio.addListener(listener);
+    listener();
+    return completer.future;
+  }
+
+  Future<void> _startPageAutoplayFrom(int ayahIndex) async {
+    if (_currentRecitationEntries.isEmpty) return;
+    _cancelAutoplaySequence();
+    _autoplayEnabled = true;
+    final sessionId = _autoplaySessionId;
+    final startIndex = ayahIndex.clamp(0, _currentRecitationEntries.length - 1);
+
+    try {
+      for (var i = startIndex; i < _currentRecitationEntries.length; i++) {
+        if (!_isAutoplaySessionActive(sessionId)) return;
+        await _selectAyahInCurrentStep(i, playIfAutoplay: false);
+        if (!_isAutoplaySessionActive(sessionId)) return;
+        final currentStepKey = _stepKey;
+        await _playCurrent();
+        final completed = await _waitForPlaybackCompletion(
+          sessionId,
+          currentStepKey,
+        );
+        if (!completed) return;
+        if (i < _currentRecitationEntries.length - 1) {
+          await Future<void>.delayed(const Duration(milliseconds: 40));
+        }
+      }
+      if (!_isAutoplaySessionActive(sessionId)) return;
+      await _dismissFloatingPlayer();
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _error = e.toString());
+    }
+  }
+
   QuranAyah _stepToAyah(RakaatStep step, String id) {
     return QuranAyah(
       surahId: 0,
@@ -504,7 +697,7 @@ class _StageStepScreenState extends State<StageStepScreen>
       ayahTr: step.transliteration,
       reciterId: 'custom',
       reciterName: 'custom',
-      audioUrl: step.audioUrl,
+      audioUrl: _audioUrlForEntry(id),
     );
   }
 
@@ -513,11 +706,24 @@ class _StageStepScreenState extends State<StageStepScreen>
     if (step == null || !step.hasAudio) return;
     try {
       if (_audio.isPlaying) {
-        _autoplayEnabled = false;
-        _playingStepKey = null;
         await _audio.pause();
+        if (mounted) {
+          setState(() {});
+        }
+        return;
+      }
+
+      if (_playingStepKey == _stepKey) {
+        await _audio.play();
+        if (mounted) {
+          setState(() {});
+        }
+        return;
+      }
+
+      if (_currentRecitationEntries.isNotEmpty) {
+        await _startPageAutoplayFrom(_clampedAyahIndex);
       } else {
-        _autoplayEnabled = true;
         await _audio.setAyah(_stepToAyah(step, _stepKey));
         await _playCurrent();
       }
@@ -530,21 +736,26 @@ class _StageStepScreenState extends State<StageStepScreen>
     final step = _selectedAyahStep;
     if (step == null || !step.hasAudio) return;
     _playingStepKey = _stepKey;
-    _completedStepKey = null;
+    _startedPlaybackStepKey = null;
+    if (mounted) {
+      setState(() {});
+    }
     await _audio.play();
+  }
+
+  Future<void> _dismissFloatingPlayer() async {
+    _cancelAutoplaySequence(disableAutoplay: true);
+    _playingStepKey = null;
+    _startedPlaybackStepKey = null;
+    if (mounted) {
+      setState(() {});
+    }
+    await _audio.pause();
   }
 
   Future<void> _playStepAt(int ayahIndex) async {
     if (_currentRecitationEntries.isEmpty) return;
-    try {
-      _autoplayEnabled = true;
-      await _selectAyahInCurrentStep(ayahIndex, playIfAutoplay: false);
-      if (_selectedAyahStep?.hasAudio ?? false) {
-        await _playCurrent();
-      }
-    } catch (e) {
-      setState(() => _error = e.toString());
-    }
+    await _startPageAutoplayFrom(ayahIndex);
   }
 
   Future<void> _selectAyahInCurrentStep(
@@ -560,7 +771,7 @@ class _StageStepScreenState extends State<StageStepScreen>
       await _audio.setAyah(_stepToAyah(step, _stepKey));
     }
     _playingStepKey = null;
-    _completedStepKey = null;
+    _startedPlaybackStepKey = null;
     _scrollToCurrentAyah();
     if (playIfAutoplay && _autoplayEnabled && step.hasAudio) {
       await _playCurrent();
@@ -580,7 +791,7 @@ class _StageStepScreenState extends State<StageStepScreen>
       await _audio.setAyah(_stepToAyah(step, _stepKey));
     }
     _playingStepKey = null;
-    _completedStepKey = null;
+    _startedPlaybackStepKey = null;
     _scrollToCurrentAyah();
     if (playIfAutoplay && _autoplayEnabled && step.hasAudio) {
       await _playCurrent();
@@ -684,31 +895,116 @@ class _StageStepScreenState extends State<StageStepScreen>
     );
   }
 
-  static const Map<String, String> _namazStepImageByCode = {
-    'takbir': 'assets/namaz/images/takbir.svg',
-    'ruku': 'assets/namaz/images/ruku.svg',
-    'qiyam': 'assets/namaz/images/stay.svg',
-    'standing': 'assets/namaz/images/stay.svg',
-    'straightening': 'assets/namaz/images/stay.svg',
-    'qawmah': 'assets/namaz/images/stay.svg',
-    'sujud': 'assets/namaz/images/sudjud.svg',
-    'sajda': 'assets/namaz/images/sudjud.svg',
-    'jalsa': 'assets/namaz/images/seat.svg',
-    'sitting': 'assets/namaz/images/seat.svg',
-    'qaada': 'assets/namaz/images/seat.svg',
-    'tashahhud': 'assets/namaz/images/at-tahiyat.svg',
-    'at_tahiyat': 'assets/namaz/images/at-tahiyat.svg',
-    'taslim_left': 'assets/namaz/images/taslim-left.svg',
-    'taslim_right': 'assets/namaz/images/taslim-right.svg',
+  static const Map<String, String> _namazStepImageBaseNameByCode = {
+    'takbir': 'takbir',
+    'allahu_akbar': 'takbir',
+    'ruku': 'ruku',
+    'qiyam': 'stay',
+    'standing': 'stay',
+    'straightening': 'stay',
+    'qawmah': 'stay',
+    'istiadha': 'stay',
+    'fatiha': 'stay',
+    'al_fatiha': 'stay',
+    'amin': 'stay',
+    'additional_surah': 'stay',
+    'sujud': 'sudjud',
+    'sajda': 'sudjud',
+    'jalsa': 'seat',
+    'sitting': 'seat',
+    'qaada': 'seat',
+    'tashahhud': 'at-tahiyat',
+    'at_tahiyat': 'at-tahiyat',
+    'at-tahiyat': 'at-tahiyat',
+    'taslim_left': 'taslim-left',
+    'taslim_right': 'taslim-right',
+    'taslim-left': 'taslim-left',
+    'taslim-right': 'taslim-right',
   };
 
+  String? _stepImageBaseNameFromText(String value) {
+    final normalized = value.trim().toLowerCase();
+    if (normalized.isEmpty) return null;
+    if (normalized.contains('taslim-right') ||
+        normalized.contains('taslim right') ||
+        normalized.contains('поверните голову направо')) {
+      return 'taslim-right';
+    }
+    if (normalized.contains('taslim-left') ||
+        normalized.contains('taslim left') ||
+        normalized.contains('поверните голову налево')) {
+      return 'taslim-left';
+    }
+    if (normalized.contains('at-tahiyat') ||
+        normalized.contains('attahiyat') ||
+        normalized.contains('tashahhud') ||
+        normalized.contains('тахият') ||
+        normalized.contains('ташаххуд')) {
+      return 'at-tahiyat';
+    }
+    if (normalized.contains('takbir') ||
+        normalized.contains('такбир') ||
+        normalized.contains('аллах велик')) {
+      return 'takbir';
+    }
+    if (normalized.contains('ruku') ||
+        normalized.contains('руку') ||
+        normalized.contains('поясной поклон')) {
+      return 'ruku';
+    }
+    if (normalized.contains('sujud') ||
+        normalized.contains('sudjud') ||
+        normalized.contains('sajda') ||
+        normalized.contains('суджуд') ||
+        normalized.contains('саджда') ||
+        normalized.contains('земной поклон')) {
+      return 'sudjud';
+    }
+    if (normalized.contains('sitting') ||
+        normalized.contains('jalsa') ||
+        normalized.contains('qaada') ||
+        normalized.contains('сидя') ||
+        normalized.contains('положение сидя')) {
+      return 'seat';
+    }
+    if (normalized.contains('standing') ||
+        normalized.contains('qiyam') ||
+        normalized.contains('straightening') ||
+        normalized.contains('qawmah') ||
+        normalized.contains('стоя') ||
+        normalized.contains('выпрямление') ||
+        normalized.contains('чтение') ||
+        normalized.contains('reading') ||
+        normalized.contains('мольба о защите')) {
+      return 'stay';
+    }
+    return null;
+  }
+
   String _stepImageAssetFor({
+    required String explicitImageAsset,
     required String stepCode,
+    required String title,
+    required String movementDescription,
     required String fallbackAsset,
   }) {
+    final normalizedExplicit = explicitImageAsset.trim();
+    if (normalizedExplicit.isNotEmpty) return normalizedExplicit;
     final normalized = stepCode.trim().toLowerCase();
-    if (normalized.isEmpty) return fallbackAsset;
-    return _namazStepImageByCode[normalized] ?? fallbackAsset;
+    final baseName =
+        _namazStepImageBaseNameByCode[normalized] ??
+        _stepImageBaseNameFromText(title) ??
+        _stepImageBaseNameFromText(movementDescription) ??
+        _stepImageBaseNameFromText(fallbackAsset) ??
+        'stay';
+    final genderCode = GenderRepositoryMemory.instance
+        .getSelectedGender()
+        .id
+        .trim()
+        .toLowerCase();
+    final normalizedGender = genderCode == 'female' ? 'female' : 'male';
+    return 'assets/namaz/images/$baseName'
+        '_$normalizedGender.svg';
   }
 
   Widget _buildStepImage({
@@ -716,7 +1012,13 @@ class _StageStepScreenState extends State<StageStepScreen>
     required String fallbackStepImageAsset,
   }) {
     if (stepImageAsset.toLowerCase().endsWith('.svg')) {
-      return SvgPicture.asset(stepImageAsset, height: 205.h);
+      return SvgPicture.asset(
+        stepImageAsset,
+        height: 205.h,
+        fit: BoxFit.contain,
+        theme: SvgTheme(currentColor: context.colors.textPrimary),
+        placeholderBuilder: (context) => SizedBox(height: 205.h),
+      );
     }
     return Image.asset(
       stepImageAsset,
@@ -732,6 +1034,7 @@ class _StageStepScreenState extends State<StageStepScreen>
     required String prayerTitle,
   }) {
     final colors = context.colors;
+    final cardTextSize = ThemeTextSizeStore.textSize;
     final totalRakaats = _rakaats.isEmpty ? 2 : _rakaats.length;
     final normalizedRakaatIndex = _rakaats.isEmpty
         ? 0
@@ -768,7 +1071,10 @@ class _StageStepScreenState extends State<StageStepScreen>
         : _rakaats[normalizedRakaatIndex].imageAsset;
     final currentStepCode = (previewStep?.stepCode ?? '');
     final currentStepImageAsset = _stepImageAssetFor(
+      explicitImageAsset: (previewStep?.imageAsset ?? ''),
       stepCode: currentStepCode,
+      title: stepTitle,
+      movementDescription: movementDescription,
       fallbackAsset: fallbackStepImageAsset,
     );
     final additionalSurahOptions = _rakaats.isEmpty
@@ -790,12 +1096,7 @@ class _StageStepScreenState extends State<StageStepScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SizedBox(height: 12.h),
-        StageTopBar(
-          onBack: () {},
-          onStage: () {},
-          stageButtonKey: _transitionStageButtonKey,
-        ),
+        StageTopBar(onBack: () {}, onStage: () {}),
         SizedBox(height: 20.h),
         StageProgressBlock(
           title: context.t(
@@ -833,7 +1134,7 @@ class _StageStepScreenState extends State<StageStepScreen>
                   Text(
                     stepTitle,
                     style: TextStyle(
-                      fontSize: 16.sp,
+                      fontSize: cardTextSize.sp,
                       height: 1,
                       fontWeight: FontWeight.w500,
                       color: colors.textPrimary,
@@ -844,7 +1145,7 @@ class _StageStepScreenState extends State<StageStepScreen>
                     Text(
                       movementDescription,
                       style: TextStyle(
-                        fontSize: 16.sp,
+                        fontSize: cardTextSize.sp,
                         height: 1.48,
                         fontWeight: FontWeight.w500,
                         color: colors.textSecondary,
@@ -874,7 +1175,8 @@ class _StageStepScreenState extends State<StageStepScreen>
                 child: StageAyahCard(
                   ayahIndex: i,
                   ayah: recitationEntries[i],
-                  selected: i == selectedPreviewAyahIndex,
+                  textSize: cardTextSize,
+                  selected: false,
                   isPlaying: false,
                   progress: 0,
                   onTap: () {},
@@ -926,29 +1228,9 @@ class _StageStepScreenState extends State<StageStepScreen>
     return child;
   }
 
-  Future<void> _advanceAndPlayNextStep() async {
-    if (_currentRecitationEntries.isEmpty) return;
-    if (_clampedAyahIndex < _currentRecitationEntries.length - 1) {
-      await _selectAyahInCurrentStep(
-        _clampedAyahIndex + 1,
-        playIfAutoplay: true,
-      );
-      return;
-    }
-    if (_clampedStepIndex < _currentStepOrderIndexes.length - 1) {
-      await _animateStepTransitionTo(
-        _clampedStepIndex + 1,
-        direction: 1,
-        playIfAutoplay: true,
-      );
-      return;
-    }
-    _autoplayEnabled = false;
-    _playingStepKey = null;
-  }
-
   Future<void> _nextStep() async {
     if (_currentStepOrderIndexes.isEmpty) return;
+    _triggerLightHaptic();
     if (_clampedStepIndex < _currentStepOrderIndexes.length - 1) {
       await _animateStepTransitionTo(
         _clampedStepIndex + 1,
@@ -982,14 +1264,16 @@ class _StageStepScreenState extends State<StageStepScreen>
     final nextStep = stepIndex.clamp(0, _currentStepOrderIndexes.length - 1);
     final resumeAutoplay = playIfAutoplay && _autoplayEnabled;
 
+    _cancelAutoplaySequence(disableAutoplay: true);
     _rakaatDirection = direction;
     _playingStepKey = null;
-    _completedStepKey = null;
+    _startedPlaybackStepKey = null;
     await _audio.pause();
+    _resetScrollChromeForTransition();
 
     _pendingRakaatIndex = _rakaatIndex;
     _pendingStepIndex = nextStep;
-    _pendingJumpTop = false;
+    _pendingJumpTop = true;
     _appliedPendingTransition = false;
 
     await _pageTransitionController.forward(from: 0);
@@ -1013,11 +1297,12 @@ class _StageStepScreenState extends State<StageStepScreen>
     required int stepIndex,
   }) async {
     if (_pageTransitionController.isAnimating) return;
-    _autoplayEnabled = false;
+    _cancelAutoplaySequence(disableAutoplay: true);
     _rakaatDirection = direction;
     _playingStepKey = null;
-    _completedStepKey = null;
+    _startedPlaybackStepKey = null;
     await _audio.pause();
+    _resetScrollChromeForTransition();
 
     _pendingRakaatIndex = index;
     _pendingStepIndex = stepIndex;
@@ -1037,6 +1322,7 @@ class _StageStepScreenState extends State<StageStepScreen>
 
   Future<void> _prevStep() async {
     if (_currentStepOrderIndexes.isEmpty) return;
+    _triggerLightHaptic();
     if (_clampedStepIndex > 0) {
       await _animateStepTransitionTo(
         _clampedStepIndex - 1,
@@ -1057,10 +1343,22 @@ class _StageStepScreenState extends State<StageStepScreen>
     );
   }
 
+  void _handleHorizontalDragEnd(DragEndDetails details) {
+    if (_pageTransitionController.isAnimating) return;
+    final velocity = details.primaryVelocity ?? 0;
+    if (velocity <= -_horizontalSwipeVelocityThreshold) {
+      unawaited(_nextStep());
+      return;
+    }
+    if (velocity >= _horizontalSwipeVelocityThreshold) {
+      unawaited(_prevStep());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final textScale = ThemeTextSizeStore.scale;
+    final cardTextSize = ThemeTextSizeStore.textSize;
     final totalRakaats = _rakaats.isEmpty ? 2 : _rakaats.length;
     final rakaatIndex = (_rakaats.isEmpty ? 0 : _rakaatIndex) + 1;
     final rawStepIndex = _currentStepOrderIndexes.isEmpty
@@ -1075,23 +1373,25 @@ class _StageStepScreenState extends State<StageStepScreen>
     final stepProgress = totalSteps == 0 ? 0.0 : (stepIndex / totalSteps);
     final audioProgress = _audio.progress;
     final currentStep = _currentStep;
-    final prayerTitle = widget.prayerTitle.trim().isEmpty
-        ? context.t('stage.prayerDefaultTitle')
-        : widget.prayerTitle;
+    final prayerTitle = localizedPrayerLabel(
+      context,
+      widget.prayerCode,
+      fallbackTitle: widget.prayerTitle.trim().isEmpty
+          ? context.t('stage.prayerDefaultTitle')
+          : widget.prayerTitle,
+    );
     final stepTitle = (currentStep?.title ?? '').trim().isEmpty
         ? context.t('stage.defaultStepTitle')
         : currentStep!.title;
     final movementDescription = (currentStep?.movementDescription ?? '').trim();
-    final floatingPlayerTitle = (_selectedAyahStep?.transliteration ?? '')
-        .trim();
-    final showFloatingPlayer =
-        (_selectedAyahStep?.hasAudio ?? false) &&
-        (_playingStepKey == _stepKey || _audio.isPlaying);
     final fallbackStepImageAsset =
         _currentRakaat?.imageAsset ?? 'assets/icons/salat.png';
     final currentStepCode = (currentStep?.stepCode ?? '');
     final currentStepImageAsset = _stepImageAssetFor(
+      explicitImageAsset: (currentStep?.imageAsset ?? ''),
       stepCode: currentStepCode,
+      title: stepTitle,
+      movementDescription: movementDescription,
       fallbackAsset: fallbackStepImageAsset,
     );
     final additionalSurahOptions = _additionalSurahOptions;
@@ -1101,22 +1401,32 @@ class _StageStepScreenState extends State<StageStepScreen>
     final selectedAdditionalSurahIndex = _selectedAdditionalSurahIndex(
       additionalSurahOptions,
     );
-    final bottomInset = MediaQuery.paddingOf(context).bottom;
     final currentStepEntries = _currentRecitationEntries;
     final selectedAyahCardKey = _stepKeys.putIfAbsent(
       _entryKey(_clampedAyahIndex),
       () => GlobalKey(),
     );
+    final isPageTransitionAnimating = _pageTransitionController.isAnimating;
+    final hasPrevStageStep = _hasPrevStageStep;
+    final hasNextStageStep = _hasNextStageStep;
+    final canGoBack = hasPrevStageStep && !isPageTransitionAnimating;
+    final canGoNext = hasNextStageStep && !isPageTransitionAnimating;
+    final topContentPadding = MediaQuery.paddingOf(context).top + 12.h;
+    final pinnedHideDuration = isPageTransitionAnimating
+        ? const Duration(milliseconds: 120)
+        : const Duration(milliseconds: 260);
+    final pinnedFadeDuration = isPageTransitionAnimating
+        ? const Duration(milliseconds: 100)
+        : const Duration(milliseconds: 220);
 
-    return MediaQuery(
-      data: MediaQuery.of(
-        context,
-      ).copyWith(textScaler: TextScaler.linear(textScale)),
-      child: Scaffold(
-        backgroundColor: colors.background,
-        body: SafeArea(
-          top: false,
-          bottom: false,
+    return Scaffold(
+      backgroundColor: colors.background,
+      body: SafeArea(
+        top: false,
+        bottom: false,
+        child: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onHorizontalDragEnd: _handleHorizontalDragEnd,
           child: Stack(
             clipBehavior: Clip.none,
             children: [
@@ -1127,12 +1437,12 @@ class _StageStepScreenState extends State<StageStepScreen>
                   physics: const BouncingScrollPhysics(),
                   clipBehavior: Clip.none,
                   padding: EdgeInsets.only(
-                    bottom: 24.h + bottomInset,
-                    top: 60.h,
+                    bottom: 34.h ,
+                    top: topContentPadding,
                   ),
-                  child: AnimatedBuilder(
-                    animation: _pageTransitionController,
-                    builder: (context, child) {
+                    child: AnimatedBuilder(
+                      animation: _pageTransitionController,
+                      builder: (context, child) {
                       final targetRakaatIndex = _pendingRakaatIndex;
                       final targetStepIndex = _pendingStepIndex;
                       final isAnimating =
@@ -1153,6 +1463,9 @@ class _StageStepScreenState extends State<StageStepScreen>
                           : 0.0;
                       final newPageDx =
                           oldPageDx + (_rakaatDirection * travelDistance);
+                      final previewDy = isAnimating
+                          ? _transitionStartScrollOffset
+                          : 0.0;
                       return IgnorePointer(
                         ignoring: isAnimating,
                         child: Stack(
@@ -1164,7 +1477,7 @@ class _StageStepScreenState extends State<StageStepScreen>
                             ),
                             if (isAnimating)
                               Transform.translate(
-                                offset: Offset(newPageDx, 0),
+                                offset: Offset(newPageDx, previewDy),
                                 child: _buildTransitionPreview(
                                   rakaatIndex: targetRakaatIndex,
                                   stepIndex: targetStepIndex,
@@ -1178,7 +1491,6 @@ class _StageStepScreenState extends State<StageStepScreen>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        SizedBox(height: 12.h),
                         StageTopBar(
                           onBack: () => Navigator.of(context).maybePop(),
                           onStage: _showStageSheet,
@@ -1235,7 +1547,7 @@ class _StageStepScreenState extends State<StageStepScreen>
                                       Text(
                                         stepTitle,
                                         style: TextStyle(
-                                          fontSize: 16.sp,
+                                          fontSize: cardTextSize.sp,
                                           height: 1,
                                           fontWeight: FontWeight.w500,
                                           color: colors.textPrimary,
@@ -1246,7 +1558,7 @@ class _StageStepScreenState extends State<StageStepScreen>
                                         Text(
                                           movementDescription,
                                           style: TextStyle(
-                                            fontSize: 16.sp,
+                                            fontSize: cardTextSize.sp,
                                             height: 1.48,
                                             fontWeight: FontWeight.w500,
                                             color: colors.textSecondary,
@@ -1254,10 +1566,10 @@ class _StageStepScreenState extends State<StageStepScreen>
                                         ),
                                     ],
                                   ),
-                                ],
-                              ),
-                            ),
-                          ),
+            ],
+          ),
+        ),
+      ),
                         ),
                         SizedBox(height: 12.h),
                         if (hasAdditionalSurahSelector) ...[
@@ -1286,32 +1598,41 @@ class _StageStepScreenState extends State<StageStepScreen>
                                   i < currentStepEntries.length;
                                   i++
                                 ) ...[
-                                  KeyedSubtree(
-                                    key: _stepKeys.putIfAbsent(
-                                      _entryKey(i),
-                                      () => GlobalKey(),
-                                    ),
-                                    child: StageAyahCard(
-                                      ayahIndex: i,
-                                      ayah: currentStepEntries[i],
-                                      selected: i == _clampedAyahIndex,
-                                      isPlaying:
-                                          (_playingStepKey == _entryKey(i)) &&
-                                          _audio.isPlaying,
-                                      progress:
-                                          (_playingStepKey == _entryKey(i))
-                                          ? audioProgress.clamp(0.0, 1.0)
-                                          : 0.0,
-                                      onTap: () => _playStepAt(i),
-                                      onPlayPause: () {
-                                        if (i == _clampedAyahIndex) {
-                                          _togglePlay();
-                                        } else {
+                                  () {
+                                    final entryKey = _entryKey(i);
+                                    final isSelected =
+                                        _playingStepKey == entryKey;
+                                    final isEntryPlaying =
+                                        isSelected && _audio.isPlaying;
+                                    return KeyedSubtree(
+                                      key: _stepKeys.putIfAbsent(
+                                        entryKey,
+                                        () => GlobalKey(),
+                                      ),
+                                      child: StageAyahCard(
+                                        ayahIndex: i,
+                                        ayah: currentStepEntries[i],
+                                        textSize: cardTextSize,
+                                        selected: isSelected,
+                                        isPlaying: isEntryPlaying,
+                                        progress: isSelected
+                                            ? audioProgress.clamp(0.0, 1.0)
+                                            : 0.0,
+                                        onTap: () {
+                                          _triggerLightHaptic();
                                           _playStepAt(i);
-                                        }
-                                      },
-                                    ),
-                                  ),
+                                        },
+                                        onPlayPause: () {
+                                          _triggerLightHaptic();
+                                          if (i == _clampedAyahIndex) {
+                                            _togglePlay();
+                                          } else {
+                                            _playStepAt(i);
+                                          }
+                                        },
+                                      ),
+                                    );
+                                  }(),
                                   if (i != currentStepEntries.length - 1)
                                     SizedBox(height: 16.h),
                                 ],
@@ -1337,21 +1658,31 @@ class _StageStepScreenState extends State<StageStepScreen>
                           children: [
                             Expanded(
                               flex: 4,
-                              child: StageBottomButton(
-                                variant: StageBottomButtonVariant.secondary,
-                                label: context.t('common.back'),
-                                icon: 'assets/icons/arrow-left.svg',
-                                onTap: _prevStep,
+                              child: AnimatedOpacity(
+                                duration: const Duration(milliseconds: 160),
+                                curve: Curves.easeOutCubic,
+                                opacity: hasPrevStageStep ? 1 : 0.5,
+                                child: StageBottomButton(
+                                  variant: StageBottomButtonVariant.secondary,
+                                  label: context.t('common.back'),
+                                  icon: 'assets/icons/arrow-left.svg',
+                                  onTap: canGoBack ? _prevStep : null,
+                                ),
                               ),
                             ),
                             SizedBox(width: 12.w),
                             Expanded(
                               flex: 4,
-                              child: StageBottomButton(
-                                variant: StageBottomButtonVariant.primary,
-                                label: context.t('common.next'),
-                                icon: 'assets/icons/arrow-right.svg',
-                                onTap: _nextStep,
+                              child: AnimatedOpacity(
+                                duration: const Duration(milliseconds: 160),
+                                curve: Curves.easeOutCubic,
+                                opacity: hasNextStageStep ? 1 : 0.5,
+                                child: StageBottomButton(
+                                  variant: StageBottomButtonVariant.primary,
+                                  label: context.t('common.next'),
+                                  icon: 'assets/icons/arrow-right.svg',
+                                  onTap: canGoNext ? _nextStep : null,
+                                ),
                               ),
                             ),
                           ],
@@ -1362,47 +1693,32 @@ class _StageStepScreenState extends State<StageStepScreen>
                 ),
               ),
               Positioned(
-                left: 16.w,
-                right: 16.w,
-                top: 64.h,
-                child: AnimatedOpacity(
-                  duration: const Duration(milliseconds: 160),
-                  opacity: _showPinned ? 1 : 0,
-                  child: IgnorePointer(
-                    ignoring: !_showPinned,
-                    child: StagePinnedProgressCard(
-                      rakaatIndex: rakaatIndex,
-                      totalRakaats: totalRakaats,
-                      stepIndex: stepIndex,
-                      totalSteps: totalSteps,
-                      progress: stepProgress.clamp(0.0, 1.0),
-                      animateProgress: false,
-                    ),
-                  ),
-                ),
+                top: 0,
+                left: 0,
+                right: 0,
+                child: AppBlurredTopOverlay(visible: _showTopBlur),
               ),
               Positioned(
                 left: 16.w,
                 right: 16.w,
-                bottom: 8.h + bottomInset,
+                top: MediaQuery.paddingOf(context).top + 12.h,
                 child: IgnorePointer(
-                  ignoring: !showFloatingPlayer,
+                  ignoring: !_showPinned,
                   child: AnimatedSlide(
-                    offset: showFloatingPlayer
-                        ? Offset.zero
-                        : const Offset(0, 1.2),
-                    duration: const Duration(milliseconds: 280),
+                    offset: _showPinned ? Offset.zero : const Offset(0, -0.35),
+                    duration: pinnedHideDuration,
                     curve: Curves.easeOutCubic,
                     child: AnimatedOpacity(
-                      opacity: showFloatingPlayer ? 1 : 0,
-                      duration: const Duration(milliseconds: 220),
-                      curve: Curves.easeOut,
-                      child: _FloatingPlayer(
-                        title: floatingPlayerTitle.isEmpty
-                            ? stepTitle
-                            : floatingPlayerTitle,
-                        isPlaying: _audio.isPlaying,
-                        onPlayPause: _togglePlay,
+                      duration: pinnedFadeDuration,
+                      curve: Curves.easeOutCubic,
+                      opacity: _showPinned ? 1 : 0,
+                      child: StagePinnedProgressCard(
+                        rakaatIndex: rakaatIndex,
+                        totalRakaats: totalRakaats,
+                        stepIndex: stepIndex,
+                        totalSteps: totalSteps,
+                        progress: stepProgress.clamp(0.0, 1.0),
+                        animateProgress: false,
                       ),
                     ),
                   ),
@@ -1410,11 +1726,16 @@ class _StageStepScreenState extends State<StageStepScreen>
               ),
               if (_showOnboarding)
                 Positioned.fill(
-                  child: StageOnboardingOverlay(
-                    stageButtonKey: _stageButtonKey,
-                    progressCardKey: _progressKey,
-                    selectedAyahCardKey: selectedAyahCardKey,
-                    onFinish: () => setState(() => _showOnboarding = false),
+                  child: IgnorePointer(
+                    ignoring: false,
+                    child: StageOnboardingOverlay(
+                      stageButtonKey: _stageButtonKey,
+                      progressCardKey: _progressKey,
+                      selectedAyahCardKey: selectedAyahCardKey,
+                      scrollController: _scrollController,
+                      onStepChanged: _handleOnboardingStepChanged,
+                      onFinish: _finishOnboarding,
+                    ),
                   ),
                 ),
             ],
@@ -1426,6 +1747,7 @@ class _StageStepScreenState extends State<StageStepScreen>
 
   Future<void> _showStageSheet() async {
     if (_rakaats.isEmpty) return;
+    _triggerLightHaptic();
     var selectedRakaat = _rakaatIndex.clamp(0, _rakaats.length - 1);
 
     final selected = await showModalBottomSheet<_StageSectionSelection>(
@@ -1496,8 +1818,10 @@ class _StageStepScreenState extends State<StageStepScreen>
                           for (var i = 0; i < _rakaats.length; i++)
                             Expanded(
                               child: Pressable(
-                                onTap: () =>
-                                    setModalState(() => selectedRakaat = i),
+                                onTap: () {
+                                  _triggerLightHaptic();
+                                  setModalState(() => selectedRakaat = i);
+                                },
                                 borderRadius: BorderRadius.circular(
                                   AppRadii.pill,
                                 ),
@@ -1543,9 +1867,12 @@ class _StageStepScreenState extends State<StageStepScreen>
                         itemBuilder: (context, index) {
                           final step = steps[index];
                           return Pressable(
-                            onTap: () => Navigator.of(context).pop(
-                              _StageSectionSelection(selectedRakaat, index),
-                            ),
+                            onTap: () {
+                              _triggerLightHaptic();
+                              Navigator.of(context).pop(
+                                _StageSectionSelection(selectedRakaat, index),
+                              );
+                            },
                             borderRadius: BorderRadius.circular(AppRadii.inner),
                             child: Padding(
                               padding: EdgeInsets.symmetric(
@@ -1608,23 +1935,23 @@ class _StageStepScreenState extends State<StageStepScreen>
     final steps = _groupedStepsForRakaat(nextRakaat);
     if (steps.isEmpty) return;
     final nextStep = stepIndex.clamp(0, steps.length - 1);
-
-    _autoplayEnabled = false;
-    _playingStepKey = null;
-    _completedStepKey = null;
-    await _audio.pause();
-
-    setState(() {
-      _rakaatDirection = nextRakaat >= _rakaatIndex ? 1 : -1;
-      _rakaatIndex = nextRakaat;
-      _stepIndex = nextStep;
-      _selectedAyahIndex = 0;
-    });
-
-    if (_selectedAyahStep?.hasAudio ?? false) {
-      await _audio.setAyah(_stepToAyah(_selectedAyahStep!, _stepKey));
+    final currentStepIndex = _clampedStepIndex;
+    if (nextRakaat == _rakaatIndex && nextStep == currentStepIndex) {
+      return;
     }
-    _scrollToCurrentAyah();
+    if (nextRakaat == _rakaatIndex) {
+      await _animateStepTransitionTo(
+        nextStep,
+        direction: nextStep >= currentStepIndex ? 1 : -1,
+        playIfAutoplay: false,
+      );
+      return;
+    }
+    await _animateRakaatTransitionTo(
+      nextRakaat,
+      direction: nextRakaat >= _rakaatIndex ? 1 : -1,
+      stepIndex: nextStep,
+    );
   }
 
   List<_StageStepGroup> _groupedStepsForRakaat(int rakaatIndex) {
@@ -1660,125 +1987,6 @@ class _DisplayedStepProgress {
 
   final int current;
   final int total;
-}
-
-class _FloatingPlayer extends StatelessWidget {
-  const _FloatingPlayer({
-    required this.title,
-    required this.isPlaying,
-    required this.onPlayPause,
-  });
-
-  final String title;
-  final bool isPlaying;
-  final VoidCallback onPlayPause;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    return Container(
-      padding: EdgeInsets.fromLTRB(14.w, 10.h, 14.w, 14.h),
-      decoration: BoxDecoration(
-        color: colors.card,
-        borderRadius: BorderRadius.circular(28.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(26),
-            blurRadius: 22,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 64.w,
-            height: 5.h,
-            decoration: BoxDecoration(
-              color: colors.divider,
-              borderRadius: BorderRadius.circular(AppRadii.pill.r),
-            ),
-          ),
-          SizedBox(height: 10.h),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(AppRadii.pill.r),
-            child: SizedBox(
-              height: 78.h,
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(color: colors.soft),
-                    ),
-                  ),
-                  Positioned(
-                    left: 0,
-                    top: 0,
-                    bottom: 0,
-                    width: 84.w,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: colors.primary.withAlpha(24),
-                      ),
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      SizedBox(width: 16.w),
-                      Expanded(
-                        child: Text(
-                          title,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 22.sp,
-                            fontWeight: FontWeight.w500,
-                            color: colors.textPrimary,
-                          ),
-                        ),
-                      ),
-                      Pressable(
-                        onTap: onPlayPause,
-                        borderRadius: BorderRadius.circular(AppRadii.circle),
-                        child: SizedBox(
-                          width: 52.r,
-                          height: 52.r,
-                          child: Center(
-                            child: AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 180),
-                              transitionBuilder: (child, animation) =>
-                                  ScaleTransition(
-                                    scale: animation,
-                                    child: child,
-                                  ),
-                              child: SvgPicture.asset(
-                                isPlaying
-                                    ? 'assets/icons/pause.svg'
-                                    : 'assets/icons/play.svg',
-                                key: ValueKey(isPlaying),
-                                width: 24.r,
-                                height: 24.r,
-                                colorFilter: ColorFilter.mode(
-                                  colors.textPrimary,
-                                  BlendMode.srcIn,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 12.w),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }
 
 extension<T> on List<T> {

@@ -10,8 +10,8 @@ import 'router/app_router.dart';
 import 'router/app_routes.dart';
 import 'theme/app_theme.dart';
 import 'theme/app_theme_mode_controller.dart';
+import '../features/onboarding/data/onboarding_repository_memory.dart';
 import '../features/prayer/domain/repositories/prayer_repository.dart';
-import '../features/settings/language/data/language_repository_memory.dart';
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -22,12 +22,14 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   late final AppThemeModeController _themeController;
+  late final Future<void> _themeControllerInitFuture;
   late Future<PrayerRepository> _prayerRepositoryFuture;
 
   @override
   void initState() {
     super.initState();
     _themeController = AppThemeModeController();
+    _themeControllerInitFuture = _themeController.init();
     _reloadDependencies();
   }
 
@@ -43,7 +45,6 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    LanguageRepositoryMemory.instance.syncWithLocale(context.locale);
     return AppScope(
       themeController: _themeController,
       child: ScreenUtilInit(
@@ -51,31 +52,13 @@ class _AppState extends State<App> {
         minTextAdapt: true,
         splitScreenMode: true,
         builder: (context, _) {
-          return AnimatedBuilder(
-            animation: _themeController,
-            builder: (context, child) {
-              return FutureBuilder(
-                future: _prayerRepositoryFuture,
-                builder: (context, snapshot) {
-                  final repo = snapshot.data;
-                  if (snapshot.hasError) {
-                    return MaterialApp(
-                      debugShowCheckedModeBanner: false,
-                      title: 'PRAYDAY',
-                      theme: AppTheme.light(),
-                      darkTheme: AppTheme.dark(),
-                      themeMode: _themeController.mode,
-                      locale: context.locale,
-                      supportedLocales: context.supportedLocales,
-                      localizationsDelegates: context.localizationDelegates,
-                      home: _BootstrapErrorScreen(
-                        error: snapshot.error,
-                        onRetry: () => setState(_reloadDependencies),
-                      ),
-                    );
-                  }
-
-                  if (!snapshot.hasData || repo == null) {
+          return FutureBuilder<void>(
+            future: _themeControllerInitFuture,
+            builder: (context, themeSnapshot) {
+              return AnimatedBuilder(
+                animation: _themeController,
+                builder: (context, child) {
+                  if (themeSnapshot.connectionState != ConnectionState.done) {
                     return MaterialApp(
                       debugShowCheckedModeBanner: false,
                       title: 'PRAYDAY',
@@ -89,20 +72,63 @@ class _AppState extends State<App> {
                     );
                   }
 
-                  return AppDependenciesScope(
-                    prayerRepository: repo,
-                    child: MaterialApp(
-                      debugShowCheckedModeBanner: false,
-                      title: 'PRAYDAY',
-                      theme: AppTheme.light(),
-                      darkTheme: AppTheme.dark(),
-                      themeMode: _themeController.mode,
-                      locale: context.locale,
-                      supportedLocales: context.supportedLocales,
-                      localizationsDelegates: context.localizationDelegates,
-                      onGenerateRoute: AppRouter.onGenerateRoute,
-                      initialRoute: AppRoutes.onboardingStart,
-                    ),
+                  return FutureBuilder(
+                    future: _prayerRepositoryFuture,
+                    builder: (context, snapshot) {
+                      final repo = snapshot.data;
+                      if (snapshot.hasError) {
+                        return MaterialApp(
+                          debugShowCheckedModeBanner: false,
+                          title: 'PRAYDAY',
+                          theme: AppTheme.light(),
+                          darkTheme: AppTheme.dark(),
+                          themeMode: _themeController.mode,
+                          locale: context.locale,
+                          supportedLocales: context.supportedLocales,
+                          localizationsDelegates: context.localizationDelegates,
+                          home: _BootstrapErrorScreen(
+                            error: snapshot.error,
+                            onRetry: () => setState(_reloadDependencies),
+                          ),
+                        );
+                      }
+
+                      if (!snapshot.hasData || repo == null) {
+                        return MaterialApp(
+                          debugShowCheckedModeBanner: false,
+                          title: 'PRAYDAY',
+                          theme: AppTheme.light(),
+                          darkTheme: AppTheme.dark(),
+                          themeMode: _themeController.mode,
+                          locale: context.locale,
+                          supportedLocales: context.supportedLocales,
+                          localizationsDelegates: context.localizationDelegates,
+                          home: const _BootstrapLoadingScreen(),
+                        );
+                      }
+
+                      return AppDependenciesScope(
+                        prayerRepository: repo,
+                        child: MaterialApp(
+                          debugShowCheckedModeBanner: false,
+                          title: 'PRAYDAY',
+                          theme: AppTheme.light(),
+                          darkTheme: AppTheme.dark(),
+                          themeMode: _themeController.mode,
+                          locale: context.locale,
+                          supportedLocales: context.supportedLocales,
+                          localizationsDelegates:
+                              context.localizationDelegates,
+                          onGenerateRoute: AppRouter.onGenerateRoute,
+                          initialRoute:
+                              OnboardingRepositoryMemory
+                                      .instance
+                                      .hasCompletedStart
+                                  ? AppRoutes.home
+                                  : AppRoutes.onboardingStart,
+                        ),
+                      );
+                    },
                   );
                 },
               );

@@ -13,6 +13,7 @@ class StageAyahCard extends StatelessWidget {
     super.key,
     required this.ayahIndex,
     required this.ayah,
+    required this.textSize,
     required this.selected,
     required this.isPlaying,
     required this.progress,
@@ -22,6 +23,7 @@ class StageAyahCard extends StatelessWidget {
 
   final int ayahIndex;
   final RakaatStep ayah;
+  final double textSize;
   final bool selected;
   final bool isPlaying;
   final double progress;
@@ -68,7 +70,7 @@ class StageAyahCard extends StatelessWidget {
             Text(
               ayah.transliteration,
               style: TextStyle(
-                fontSize: 16.sp,
+                fontSize: textSize.sp,
                 fontWeight: FontWeight.w500,
                 fontStyle: FontStyle.italic,
                 color: colors.textPrimary,
@@ -78,7 +80,7 @@ class StageAyahCard extends StatelessWidget {
             Text(
               ayah.translation,
               style: TextStyle(
-                fontSize: 16.sp,
+                fontSize: textSize.sp,
                 height: 1.48,
                 fontWeight: FontWeight.w400,
                 color: colors.textSecondary,
@@ -129,7 +131,7 @@ class _AyahPill extends StatelessWidget {
                     curve: Curves.easeOut,
                     width: filledWidth,
                     decoration: BoxDecoration(
-                      color: colors.primary.withAlpha(26),
+                      color: colors.backgroundLightBlue,
                     ),
                   ),
                 );

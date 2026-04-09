@@ -39,7 +39,7 @@ class AppColorPalette {
 class AppColors {
   static const light = AppColorPalette(
     background: Color(0xFFF0F4FF),
-    backgroundLightBlue: (Color(0xFFD7E7FF)),
+    backgroundLightBlue: (Color(0xFFE6ECFF)),
     card: Color(0xFFFFFFFF),
     soft: Color(0xFFF7F9FF),
     primary: Color(0xFF497FFF),
@@ -54,10 +54,10 @@ class AppColors {
   );
 
   static const dark = AppColorPalette(
-    background: Color(0xFF1E1F27),
-    backgroundLightBlue: (Color(0xFF2D3350)),
+    background: Color(0xFF1E1E25),
+    backgroundLightBlue: (Color(0xFF1E1E25)),
     card: Color(0xFF2A2B35),
-    soft: Color(0xFF323444),
+    soft: Color(0xFF25252F),
     primary: Color(0xFF497FFF),
     secondary: Color(0xFF2B4CFF),
     textPrimary: Color(0xFFF4F6FF),

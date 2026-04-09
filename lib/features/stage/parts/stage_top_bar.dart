@@ -12,12 +12,12 @@ class StageTopBar extends StatelessWidget {
     super.key,
     required this.onBack,
     required this.onStage,
-    required this.stageButtonKey,
+    this.stageButtonKey,
   });
 
   final VoidCallback onBack;
   final VoidCallback onStage;
-  final GlobalKey stageButtonKey;
+  final GlobalKey? stageButtonKey;
 
   @override
   Widget build(BuildContext context) {

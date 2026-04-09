@@ -7,6 +7,7 @@ class RakaatStep {
     required this.transliteration,
     required this.translation,
     required this.stepCode,
+    this.imageAsset = '',
     this.audioUrl = '',
     this.surahCode = '',
     this.additionalSurahOptionCode = '',
@@ -19,11 +20,13 @@ class RakaatStep {
   final String transliteration;
   final String translation;
   final String stepCode;
+  final String imageAsset;
   final String audioUrl;
   final String surahCode;
   final String additionalSurahOptionCode;
 
-  bool get hasAudio => audioUrl.isNotEmpty;
+  // Stage playback falls back to bundled demo assets, so every step is playable.
+  bool get hasAudio => true;
 }
 
 class RakaatSurahOption {

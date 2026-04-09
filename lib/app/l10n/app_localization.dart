@@ -36,3 +36,33 @@ String localizedMadhhabLabel(BuildContext context, String madhhabId) {
     _ => madhhabId,
   };
 }
+
+String localizedPrayerLabel(
+  BuildContext context,
+  String prayerCode, {
+  String? fallbackTitle,
+}) {
+  final normalized = switch (prayerCode.trim().toLowerCase()) {
+    'zuhr' => 'dhuhr',
+    'magrib' => 'maghrib',
+    final value => value,
+  };
+  final key = switch (normalized) {
+    'fajr' => 'home.prayers.fajr.title',
+    'dhuhr' => 'home.prayers.dhuhr.title',
+    'asr' => 'home.prayers.asr.title',
+    'maghrib' => 'home.prayers.maghrib.title',
+    'isha' => 'home.prayers.isha.title',
+    _ => null,
+  };
+  if (key == null) {
+    final fallback = (fallbackTitle ?? '').trim();
+    return fallback.isEmpty ? prayerCode : fallback;
+  }
+  final localized = context.t(key);
+  if (localized == key) {
+    final fallback = (fallbackTitle ?? '').trim();
+    return fallback.isEmpty ? prayerCode : fallback;
+  }
+  return localized;
+}

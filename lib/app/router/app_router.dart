@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../l10n/app_localization.dart';
 import '../../features/home/home_screen.dart';
 import '../../features/onboarding/data/onboarding_repository_memory.dart';
-import '../../features/onboarding/presentation/onboarding_madhhab_screen.dart';
 import '../../features/onboarding/presentation/onboarding_start_screen.dart';
 import '../../features/settings/language/presentation/language_screen.dart';
 import '../../features/stage/stage_splash_screen.dart';
@@ -19,20 +18,22 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (context) => OnboardingStartScreen(
             onNext: () {
-              Navigator.of(
-                context,
-              ).pushReplacementNamed(AppRoutes.onboardingMadhhab);
+              OnboardingRepositoryMemory.instance.completeStartOnboarding();
+              OnboardingRepositoryMemory.instance.triggerStageOnboarding();
+              Navigator.of(context).pushReplacementNamed(AppRoutes.home);
             },
           ),
         );
       case AppRoutes.onboardingMadhhab:
         return MaterialPageRoute(
-          builder: (context) => OnboardingMadhhabScreen(
-            onNext: () {
+          builder: (context) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (!context.mounted) return;
               OnboardingRepositoryMemory.instance.triggerStageOnboarding();
               Navigator.of(context).pushReplacementNamed(AppRoutes.home);
-            },
-          ),
+            });
+            return const Scaffold(body: SizedBox.shrink());
+          },
         );
       case AppRoutes.onboardingLanguage:
         return MaterialPageRoute(
@@ -46,14 +47,23 @@ class AppRouter {
         );
       case AppRoutes.stageSplash:
         final args = settings.arguments;
-        final stageArgs = args is StageSplashArgs
-            ? args
-            : const StageSplashArgs(prayerCode: 'fajr', prayerTitle: 'Fajr');
         return MaterialPageRoute(
-          builder: (_) => StageSplashScreen(
-            prayerCode: stageArgs.prayerCode,
-            prayerTitle: stageArgs.prayerTitle,
-          ),
+          builder: (context) {
+            final stageArgs = args is StageSplashArgs
+                ? args
+                : StageSplashArgs(
+                    prayerCode: 'fajr',
+                    prayerTitle: localizedPrayerLabel(context, 'fajr'),
+                  );
+            return StageSplashScreen(
+              prayerCode: stageArgs.prayerCode,
+              prayerTitle: localizedPrayerLabel(
+                context,
+                stageArgs.prayerCode,
+                fallbackTitle: stageArgs.prayerTitle,
+              ),
+            );
+          },
         );
       default:
         return MaterialPageRoute(

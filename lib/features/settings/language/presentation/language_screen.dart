@@ -10,6 +10,7 @@ import '../../../../app/ui_kit/app_card.dart';
 import '../../../../app/ui_kit/app_divider.dart';
 import '../../../../app/ui_kit/app_list_tile.dart';
 import '../../../../app/ui_kit/app_button.dart';
+import '../../../../app/ui_kit/app_blurred_top_overlay.dart';
 import '../../../../app/ui_kit/app_top_bar.dart';
 import '../data/language_repository_memory.dart';
 import '../domain/entities/app_language.dart';
@@ -35,7 +36,10 @@ class LanguageScreen extends StatefulWidget {
 }
 
 class _LanguageScreenState extends State<LanguageScreen> {
+  static const double _blurShowOffset = 100;
   late final LanguageController _controller;
+  final ScrollController _scrollController = ScrollController();
+  bool _showTopBlur = false;
 
   @override
   void initState() {
@@ -46,12 +50,23 @@ class _LanguageScreenState extends State<LanguageScreen> {
       getSelectedLanguage: GetSelectedLanguage(repository),
       setSelectedLanguage: SetSelectedLanguage(repository),
     );
+    _scrollController.addListener(_handleScroll);
   }
 
   @override
   void dispose() {
+    _scrollController.removeListener(_handleScroll);
+    _scrollController.dispose();
     _controller.dispose();
     super.dispose();
+  }
+
+  void _handleScroll() {
+    final shouldShow =
+        _scrollController.hasClients &&
+        _scrollController.offset > _blurShowOffset;
+    if (shouldShow == _showTopBlur) return;
+    setState(() => _showTopBlur = shouldShow);
   }
 
   @override
@@ -60,54 +75,75 @@ class _LanguageScreenState extends State<LanguageScreen> {
     return Scaffold(
       backgroundColor: colors.background,
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(20.w, 18.h, 20.w, 28.h),
-          child: ListView(
-            physics: const BouncingScrollPhysics(),
-            children: [
-              AppTopBar(
-                title: context.t('language.title'),
-                onBack: () => Navigator.of(context).maybePop(),
-              ),
-              SizedBox(height: 22.h),
-              AnimatedBuilder(
-                animation: _controller,
-                builder: (context, _) {
-                  return AppCard(
-                    radius: AppRadii.pill,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        for (
-                          var i = 0;
-                          i < _controller.languages.length;
-                          i++
-                        ) ...[
-                          _LanguageTile(
-                            language: _controller.languages[i],
-                            selected:
-                                _controller.languages[i].id ==
-                                _controller.selected.id,
-                            onTap: () => _onSelect(_controller.languages[i]),
-                          ),
-                          if (i != _controller.languages.length - 1)
-                            const AppDivider(insetLeft: 22, insetRight: 22),
-                        ],
-                      ],
-                    ),
-                  );
-                },
-              ),
-              if (widget.mode == LanguageScreenMode.onboarding) ...[
-                SizedBox(height: 18.h),
-                AppButton.iconRight(
-                  label: context.t('common.next'),
-                  iconAsset: 'assets/icons/arrow-right.svg',
-                  onPressed: widget.onCompleted,
+        top: false,
+        child: Stack(
+          children: [
+            Padding(
+              padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 28.h),
+              child: ListView(
+                controller: _scrollController,
+                physics: const BouncingScrollPhysics(),
+                padding: EdgeInsets.only(
+                  top: MediaQuery.paddingOf(context).top + 12.h,
                 ),
-              ],
-            ],
-          ),
+                children: [
+                  AppTopBar(
+                    title: context.t('language.title'),
+                    onBack: () => Navigator.of(context).maybePop(),
+                  ),
+                  SizedBox(height: 24.h),
+                  AnimatedBuilder(
+                    animation: _controller,
+                    builder: (context, _) {
+                      return AppCard(
+                        radius: AppRadii.pill,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            for (
+                              var i = 0;
+                              i < _controller.languages.length;
+                              i++
+                            ) ...[
+                              _LanguageTile(
+                                language: _controller.languages[i],
+                                selected:
+                                    _controller.languages[i].id ==
+                                    _controller.selected.id,
+                                onTap: () => _onSelect(_controller.languages[i]),
+                              ),
+                              if (i != _controller.languages.length - 1)
+                                const AppDivider(
+                                  insetLeft: 22,
+                                  insetRight: 22,
+                                ),
+                            ],
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                  if (widget.mode == LanguageScreenMode.onboarding) ...[
+                    SizedBox(height: 18.h),
+                    AppButton.iconRight(
+                      label: context.t('common.next'),
+                      iconAsset: 'assets/icons/arrow-right.svg',
+                      onPressed: widget.onCompleted,
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: AppBlurredTopOverlay(
+                horizontalPadding: 20,
+                visible: _showTopBlur,
+              ),
+            ),
+          ],
         ),
       ),
     );
