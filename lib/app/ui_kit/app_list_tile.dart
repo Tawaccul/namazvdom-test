@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:namazvdom/app/theme/app_radii.dart';
+import 'package:prayday/app/theme/app_radii.dart';
 
 import '../theme/app_colors.dart';
 import '../../core/widgets/pressable.dart';

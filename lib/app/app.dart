@@ -61,7 +61,7 @@ class _AppState extends State<App> {
                   if (themeSnapshot.connectionState != ConnectionState.done) {
                     return MaterialApp(
                       debugShowCheckedModeBanner: false,
-                      title: 'PRAYDAY',
+                      title: 'PrayDay',
                       theme: AppTheme.light(),
                       darkTheme: AppTheme.dark(),
                       themeMode: _themeController.mode,
@@ -79,7 +79,7 @@ class _AppState extends State<App> {
                       if (snapshot.hasError) {
                         return MaterialApp(
                           debugShowCheckedModeBanner: false,
-                          title: 'PRAYDAY',
+                      title: 'PrayDay',
                           theme: AppTheme.light(),
                           darkTheme: AppTheme.dark(),
                           themeMode: _themeController.mode,
@@ -96,7 +96,7 @@ class _AppState extends State<App> {
                       if (!snapshot.hasData || repo == null) {
                         return MaterialApp(
                           debugShowCheckedModeBanner: false,
-                          title: 'PRAYDAY',
+                      title: 'PrayDay',
                           theme: AppTheme.light(),
                           darkTheme: AppTheme.dark(),
                           themeMode: _themeController.mode,
@@ -111,7 +111,7 @@ class _AppState extends State<App> {
                         prayerRepository: repo,
                         child: MaterialApp(
                           debugShowCheckedModeBanner: false,
-                          title: 'PRAYDAY',
+                      title: 'PrayDay',
                           theme: AppTheme.light(),
                           darkTheme: AppTheme.dark(),
                           themeMode: _themeController.mode,

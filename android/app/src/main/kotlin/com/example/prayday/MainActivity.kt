@@ -1,4 +1,4 @@
-package com.example.namazvdom
+package com.example.prayday
 
 import io.flutter.embedding.android.FlutterActivity
 

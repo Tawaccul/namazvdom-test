@@ -3,7 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:namazvdom/app/theme/app_radii.dart';
+import 'package:prayday/app/theme/app_radii.dart';
 
 import '../../app/l10n/app_localization.dart';
 import '../../app/theme/app_colors.dart';
