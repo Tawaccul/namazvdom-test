@@ -15,6 +15,8 @@ class StageProgressBlock extends StatelessWidget {
     required this.totalSteps,
     required this.progress,
     this.animateProgress = true,
+    this.titleFontSize,
+    this.metaFontSize,
   });
 
   final String title;
@@ -24,10 +26,14 @@ class StageProgressBlock extends StatelessWidget {
   final int totalSteps;
   final double progress;
   final bool animateProgress;
+  final double? titleFontSize;
+  final double? metaFontSize;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+    final resolvedTitleFontSize = titleFontSize ?? 20;
+    final resolvedMetaFontSize = metaFontSize ?? 14;
     return StageCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -35,7 +41,7 @@ class StageProgressBlock extends StatelessWidget {
           Text(
             title,
             style: TextStyle(
-              fontSize: 20.sp,
+              fontSize: resolvedTitleFontSize.sp,
               fontWeight: FontWeight.w500,
               color: colors.textPrimary,
             ),
@@ -55,7 +61,7 @@ class StageProgressBlock extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    fontSize: 14.sp,
+                    fontSize: resolvedMetaFontSize.sp,
                     fontWeight: FontWeight.w500,
                     color: colors.secondary,
                   ),
@@ -75,7 +81,7 @@ class StageProgressBlock extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.right,
                   style: TextStyle(
-                    fontSize: 14.sp,
+                    fontSize: resolvedMetaFontSize.sp,
                     fontWeight: FontWeight.w500,
                     color: colors.secondary,
                   ),

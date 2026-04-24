@@ -41,6 +41,9 @@ dependencies:
   google_fonts: ^8.0.1
   shared_preferences: ^2.5.4
   easy_localization: ^3.0.8
+  soft_edge_blur: ^0.1.3
+  variable_blur: ^0.1.0
+  lottie: ^3.3.1
 
 dev_dependencies:
   flutter_test:
@@ -62,6 +65,7 @@ flutter:
   uses-material-design: true
 
   assets:
+  -  assets/lottie/anim_logo.json
   -  assets/translations/
   -  assets/icons/back.svg
   -  assets/icons/slider-horizontal.svg

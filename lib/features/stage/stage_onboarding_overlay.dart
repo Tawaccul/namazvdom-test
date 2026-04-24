@@ -15,29 +15,28 @@ class StageOnboardingOverlay extends StatefulWidget {
     required this.progressCardKey,
     required this.selectedAyahCardKey,
     required this.scrollController,
-    required this.onStepChanged,
-    required this.onFinish,
+    required this.stepIndex,
+    required this.onNext,
   });
 
   final GlobalKey stageButtonKey;
   final GlobalKey progressCardKey;
   final GlobalKey selectedAyahCardKey;
   final ScrollController scrollController;
-  final ValueChanged<int> onStepChanged;
-  final VoidCallback onFinish;
+  final int stepIndex;
+  final VoidCallback onNext;
 
   @override
   State<StageOnboardingOverlay> createState() => _StageOnboardingOverlayState();
 }
 
 class _StageOnboardingOverlayState extends State<StageOnboardingOverlay> {
-  int _stepIndex = 0;
   Rect? _targetRect;
   Rect? _progressRect;
   Rect? _selectedAyahRect;
   bool _contentVisible = false;
-  bool _isAdvancingStep = false;
   bool _measureScheduled = false;
+  int _measureRetryCount = 0;
 
   List<_Step> get _steps => const [
     _Step(
@@ -99,18 +98,34 @@ class _StageOnboardingOverlayState extends State<StageOnboardingOverlay> {
   }
 
   void _scheduleMeasure() {
+    if (!mounted) return;
     if (_measureScheduled) return;
     _measureScheduled = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _measureScheduled = false;
+      if (!mounted) return;
       _measure();
     });
   }
 
   void _measure() {
+    if (!mounted) return;
+    final step = _steps[widget.stepIndex];
     final stageRect = _measureRectFor(widget.stageButtonKey);
     final progressRect = _measureRectFor(widget.progressCardKey);
     final selectedAyahRect = _measureRectFor(widget.selectedAyahCardKey);
+
+    final hasMissingTarget =
+        (step.highlightStageButton && stageRect == null) ||
+        (step.highlightProgressCard && progressRect == null) ||
+        (step.highlightAyahCard && selectedAyahRect == null);
+    if (hasMissingTarget && _measureRetryCount < 14) {
+      _measureRetryCount++;
+      _scheduleMeasure();
+    } else {
+      _measureRetryCount = 0;
+    }
+
     if (!mounted) return;
     if (_targetRect == stageRect &&
         _progressRect == progressRect &&
@@ -125,6 +140,7 @@ class _StageOnboardingOverlayState extends State<StageOnboardingOverlay> {
   }
 
   Rect? _measureRectFor(GlobalKey key) {
+    if (!mounted) return null;
     final ctx = key.currentContext;
     final renderObject = ctx?.findRenderObject();
     final overlayRenderObject = context.findRenderObject();
@@ -142,29 +158,11 @@ class _StageOnboardingOverlayState extends State<StageOnboardingOverlay> {
     return topLeft & renderObject.size;
   }
 
-  Future<void> _next() async {
-    if (_isAdvancingStep) return;
-    if (_stepIndex >= _steps.length - 1) {
-      widget.onFinish();
-      return;
-    }
-
-    _isAdvancingStep = true;
-    final nextStepIndex = _stepIndex + 1;
-    setState(() => _stepIndex = nextStepIndex);
-    widget.onStepChanged(nextStepIndex);
-    _scheduleMeasure();
-    HapticFeedback.mediumImpact();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      setState(() => _isAdvancingStep = false);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    final step = _steps[_stepIndex];
-    final localizedMessage = switch (_stepIndex) {
+    final currentStepIndex = widget.stepIndex.clamp(0, _steps.length - 1);
+    final step = _steps[currentStepIndex];
+    final localizedMessage = switch (currentStepIndex) {
       0 => context.t('stage.onboarding.step1'),
       1 => context.t('stage.onboarding.step2'),
       _ => context.t('stage.onboarding.step3'),
@@ -180,8 +178,14 @@ class _StageOnboardingOverlayState extends State<StageOnboardingOverlay> {
       child: Stack(
         children: [
           CustomPaint(
-            painter: _HolePainter(rects: holeRects),
+            painter: _HolePainter(
+              rects: holeRects,
+              stepIndex: currentStepIndex,
+            ),
             child: const SizedBox.expand(),
+          ),
+          const Positioned.fill(
+            child: AbsorbPointer(absorbing: true, child: SizedBox.expand()),
           ),
           AnimatedOpacity(
             opacity: _contentVisible ? 1 : 0,
@@ -200,7 +204,8 @@ class _StageOnboardingOverlayState extends State<StageOnboardingOverlay> {
                     clipBehavior: Clip.none,
                     alignment: Alignment.center,
                     children: [
-                      ...previousChildren,
+                      for (final previousChild in previousChildren)
+                        IgnorePointer(ignoring: true, child: previousChild),
                       ...[currentChild].whereType<Widget>(),
                     ],
                   );
@@ -220,7 +225,7 @@ class _StageOnboardingOverlayState extends State<StageOnboardingOverlay> {
                   );
                 },
                 child: Align(
-                  key: ValueKey(_stepIndex),
+                  key: ValueKey(widget.stepIndex),
                   alignment: step.bubbleAlignment,
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20.w),
@@ -228,7 +233,7 @@ class _StageOnboardingOverlayState extends State<StageOnboardingOverlay> {
                       notch: step.notch,
                       icon: step.icon,
                       message: localizedMessage,
-                      onNext: _isAdvancingStep ? null : _next,
+                      onNext: widget.onNext,
                     ),
                   ),
                 ),
@@ -390,9 +395,10 @@ class _BubbleCard extends StatelessWidget {
 }
 
 class _HolePainter extends CustomPainter {
-  const _HolePainter({required this.rects});
+  const _HolePainter({required this.rects, required this.stepIndex});
 
   final List<Rect> rects;
+  final int stepIndex;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -405,8 +411,12 @@ class _HolePainter extends CustomPainter {
     }
 
     final holes = Path();
+    final targetRadius = stepIndex == 1 ? AppRadii.pill.r : AppRadii.card.r;
     for (final rect in rects) {
-      final radiusValue = (rect.height / 2).clamp(AppRadii.card.r, AppRadii.card.r);
+      final radiusValue = (rect.height / 2).clamp(
+        targetRadius,
+        targetRadius,
+      );
       holes.addRRect(
         RRect.fromRectAndRadius(rect, Radius.circular(radiusValue)),
       );
@@ -418,6 +428,7 @@ class _HolePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _HolePainter oldDelegate) {
+    if (oldDelegate.stepIndex != stepIndex) return true;
     if (oldDelegate.rects.length != rects.length) return true;
     for (var i = 0; i < rects.length; i++) {
       if (oldDelegate.rects[i] != rects[i]) return true;

@@ -7,14 +7,47 @@ import 'package:prayday/app/theme/app_radii.dart';
 
 import '../../app/l10n/app_localization.dart';
 import '../../app/theme/app_colors.dart';
+import '../../app/ui_kit/app_blurred_top_overlay.dart';
 import '../../core/widgets/pressable.dart';
 import '../ablution/presentation/ablution_screen.dart';
 import '../menu/menu_screen.dart';
 import '../stage/stage_prayer_loader.dart';
 import '../stage/stage_step_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  static const double _topBlurShowOffset = 60;
+  final ScrollController _scrollController = ScrollController(
+    keepScrollOffset: false,
+  );
+  bool _showTopBlur = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    final shouldShow =
+        _scrollController.hasClients &&
+        _scrollController.offset > _topBlurShowOffset;
+    if (shouldShow == _showTopBlur) return;
+    setState(() => _showTopBlur = shouldShow);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,27 +55,32 @@ class HomeScreen extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       backgroundColor: colors.background,
-      body: Container(
-        decoration: isDark
-            ? const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Color(0xFF24252E),
-                    Color(0xFF1E1F27),
-                    Color(0xFF1A1B22),
-                  ],
-                ),
-              )
-            : null,
-        child: SafeArea(
-          bottom: false,
-          top: false,
-          child: ListView(
-            physics: const BouncingScrollPhysics(),
-            padding: EdgeInsets.fromLTRB(16.w, 72.h, 16.w, 28.h),
-            children: [
+      body: AppBlurredTopOverlay(
+        visible: _showTopBlur,
+        height: 60,
+        maxBlurSigma: 60,
+        child: Container(
+          decoration: isDark
+              ? const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Color(0xFF24252E),
+                      Color(0xFF1E1F27),
+                      Color(0xFF1A1B22),
+                    ],
+                  ),
+                )
+              : null,
+          child: SafeArea(
+            bottom: false,
+            top: false,
+            child: ListView(
+              controller: _scrollController,
+              physics: const BouncingScrollPhysics(),
+              padding: EdgeInsets.fromLTRB(16.w, 72.h, 16.w, 28.h),
+              children: [
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -133,7 +171,8 @@ class HomeScreen extends StatelessWidget {
                 trailing: const _Badge.dome(),
                 onTap: () {},
               ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

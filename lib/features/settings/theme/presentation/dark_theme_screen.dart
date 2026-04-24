@@ -65,7 +65,7 @@ class _DarkThemeScreenState extends State<DarkThemeScreen> {
                 ),
                 children: [
                   AppTopBar(
-                    title: context.t('theme.title'),
+                    title: context.t('theme.theme'),
                     onBack: () => Navigator.of(context).maybePop(),
                   ),
                   SizedBox(height: 24.h),
@@ -100,15 +100,6 @@ class _DarkThemeScreenState extends State<DarkThemeScreen> {
                     },
                   ),
                 ],
-              ),
-            ),
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: AppBlurredTopOverlay(
-                horizontalPadding: 20,
-                visible: _showTopBlur,
               ),
             ),
           ],

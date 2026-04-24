@@ -10,7 +10,8 @@
     "next": "Далее",
     "retry": "Повторить",
     "cancel": "Отмена",
-    "save": "Сохранить"
+    "save": "Сохранить",
+    "exit": "Выйти"
   },
   "errors": {
     "prayerNotFound": "Нет данных для выбранного намаза",
@@ -109,7 +110,7 @@
   "menu": {
     "aboutProject": "О проекте",
     "helpProject": "Помочь проекту",
-    "theme": "Тема",
+    "theme": "Оформление",
     "language": "Язык",
     "yourGender": "Ваш пол",
     "contactUs": "Связаться с нами",
@@ -117,7 +118,8 @@
     "tellFriends": "Рассказать друзьям"
   },
   "theme": {
-    "title": "Тема",
+    "title": "Оформление",
+    "theme": "Тема",
     "darkTheme": "Тёмная тема",
     "textSize": "Размер текста",
     "textSizeScreen": {

@@ -5,6 +5,7 @@ import '../../features/home/home_screen.dart';
 import '../../features/onboarding/data/onboarding_repository_memory.dart';
 import '../../features/onboarding/presentation/onboarding_start_screen.dart';
 import '../../features/settings/language/presentation/language_screen.dart';
+import '../../features/splash/presentation/app_launch_splash_screen.dart';
 import '../../features/stage/stage_splash_screen.dart';
 import 'app_route_args.dart';
 import 'app_routes.dart';
@@ -12,6 +13,8 @@ import 'app_routes.dart';
 class AppRouter {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case AppRoutes.appSplash:
+        return MaterialPageRoute(builder: (_) => const AppLaunchSplashScreen());
       case AppRoutes.home:
         return MaterialPageRoute(builder: (_) => const HomeScreen());
       case AppRoutes.onboardingStart:

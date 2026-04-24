@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../app/app_scope.dart';
 import '../../app/l10n/app_localization.dart';
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_radii.dart';
+import '../../app/ui_kit/app_blurred_top_overlay.dart';
 import '../../core/widgets/pressable.dart';
 import '../settings/gender/data/gender_repository_memory.dart';
 import '../settings/gender/presentation/gender_screen.dart';
@@ -23,28 +23,54 @@ class MenuScreen extends StatefulWidget {
 }
 
 class _MenuScreenState extends State<MenuScreen> {
+  static const double _topBlurShowOffset = 100;
+  final ScrollController _scrollController = ScrollController(
+    keepScrollOffset: false,
+  );
+  bool _showTopBlur = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    final shouldShow =
+        _scrollController.hasClients &&
+        _scrollController.offset > _topBlurShowOffset;
+    if (shouldShow == _showTopBlur) return;
+    setState(() => _showTopBlur = shouldShow);
+  }
+
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final themeMode = AppScope.themeControllerOf(context).mode;
-    final themeLabel = switch (themeMode) {
-      ThemeMode.system => context.t('theme.mode.system'),
-      ThemeMode.light => context.t('theme.mode.off'),
-      ThemeMode.dark => context.t('theme.mode.on'),
-    };
     final selectedLanguage = LanguageRepositoryMemory.instance
         .getSelectedLanguage();
     final selectedGender = GenderRepositoryMemory.instance.getSelectedGender();
 
     return Scaffold(
       backgroundColor: colors.background,
-      body: SafeArea(
-        bottom: false,
-        top: false,
-        child: ListView(
-          physics: const BouncingScrollPhysics(),
-          padding: EdgeInsets.fromLTRB(16.w, 72.h, 16.w, 28.h),
-          children: [
+      body: AppBlurredTopOverlay(
+        visible: _showTopBlur,
+        height: 150,
+        maxBlurSigma: 60,
+        child: SafeArea(
+          bottom: false,
+          top: false,
+          child: ListView(
+            controller: _scrollController,
+            physics: const BouncingScrollPhysics(),
+            padding: EdgeInsets.fromLTRB(16.w, 72.h, 16.w, 28.h),
+            children: [
             SizedBox(height: 10.h),
             Row(
               children: [
@@ -96,7 +122,6 @@ class _MenuScreenState extends State<MenuScreen> {
                 _MenuRow(
                   icon: 'assets/icons/theme.svg',
                   title: context.t('menu.theme'),
-                  trailingValue: themeLabel,
                   onTap: () async {
                     await Navigator.of(context).push(
                       MaterialPageRoute(builder: (_) => const ThemeScreen()),
@@ -181,7 +206,8 @@ class _MenuScreenState extends State<MenuScreen> {
                 ),
               ],
             ),
-          ],
+            ],
+          ),
         ),
       ),
     );

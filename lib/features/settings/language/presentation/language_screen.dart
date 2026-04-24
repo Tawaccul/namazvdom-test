@@ -134,15 +134,6 @@ class _LanguageScreenState extends State<LanguageScreen> {
                 ],
               ),
             ),
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: AppBlurredTopOverlay(
-                horizontalPadding: 20,
-                visible: _showTopBlur,
-              ),
-            ),
           ],
         ),
       ),

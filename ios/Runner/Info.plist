@@ -10,6 +10,34 @@
 	<string>PrayDay</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIcons</key>
+	<dict>
+		<key>CFBundleAlternateIcons</key>
+		<dict>
+			<key>AppIconDark</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>AppIconDark</string>
+				</array>
+				<key>CFBundleIconName</key>
+				<string>AppIconDark</string>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
+		</dict>
+		<key>CFBundlePrimaryIcon</key>
+		<dict>
+			<key>CFBundleIconFiles</key>
+			<array>
+				<string>AppIcon</string>
+			</array>
+			<key>CFBundleIconName</key>
+			<string>AppIcon</string>
+			<key>UIPrerenderedIcon</key>
+			<false/>
+		</dict>
+	</dict>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -39,6 +67,8 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>We use the microphone to enable voice features in the app.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
@@ -79,7 +109,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-    <key>NSMicrophoneUsageDescription</key>
-    <string>We use the microphone to enable voice features in the app.</string>
 </dict>
 </plist>

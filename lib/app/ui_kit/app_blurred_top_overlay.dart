@@ -2,76 +2,87 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:soft_edge_blur/soft_edge_blur.dart';
 
 import '../theme/app_colors.dart';
 
 class AppBlurredTopOverlay extends StatelessWidget {
   const AppBlurredTopOverlay({
     super.key,
-    this.child,
+    required this.child,
     this.visible = true,
-    this.horizontalPadding = 16,
-    this.topSpacing = 12,
-    this.height = 20,
+    this.height = 150,
+    this.maxBlurSigma = 60,
   });
 
-  final Widget? child;
+  final Widget child;
   final bool visible;
-  final double horizontalPadding;
-  final double topSpacing;
   final double height;
+  final double maxBlurSigma;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final safeTop = MediaQuery.paddingOf(context).top;
-    final background = colors.background;
-
-    return SizedBox(
-      height: safeTop + height.h,
-      child: IgnorePointer(
-        ignoring: true,
-        child: AnimatedOpacity(
-          opacity: visible ? 1 : 0,
-          duration: const Duration(milliseconds: 180),
-          curve: Curves.easeOutCubic,
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              ClipRect(
-                child: BackdropFilter(
-                  filter: ui.ImageFilter.blur(sigmaX: 2, sigmaY: 2),
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          background.withValues(alpha: 0.62),
-                          background.withValues(alpha: 0.34),
-                          background.withValues(alpha: 0.10),
-                          background.withValues(alpha: 0),
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        child,
+        IgnorePointer(
+          ignoring: true,
+          child: TweenAnimationBuilder<double>(
+            duration: const Duration(milliseconds: 180),
+            curve: Curves.easeOutCubic,
+            tween: Tween<double>(begin: 0, end: visible ? 1 : 0),
+            builder: (context, opacity, _) {
+              if (opacity <= 0.001) return const SizedBox.shrink();
+              final sigma = maxBlurSigma * opacity;
+              return Align(
+                alignment: Alignment.topCenter,
+                child: SizedBox(
+                  height: height.h,
+                  width: double.infinity,
+                  child: SoftEdgeBlur(
+                    edges: [
+                      EdgeBlur(
+                        type: EdgeType.topEdge,
+                        size: height.h,
+                        tileMode: TileMode.mirror,
+                        tintColor: colors.background.withValues(
+                          alpha: 0.6 * opacity,
+                        ),
+                        sigma: sigma,
+                        controlPoints: [
+                          ControlPoint(
+                            position: 0,
+                            type: ControlPointType.visible,
+                          ),
+                          ControlPoint(
+                            position: 1,
+                            type: ControlPointType.transparent,
+                          ),
                         ],
-                        stops: const [0, 0.22, 0.58, 1],
+                      ),
+                    ],
+                    child: ClipRect(
+                      child: BackdropFilter(
+                        filter: ui.ImageFilter.blur(
+                          sigmaX: sigma,
+                          sigmaY: sigma,
+                        ),
+                        child: ColoredBox(
+                          color: colors.background.withValues(
+                            alpha: 0.08 * opacity,
+                          ),
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              if (child != null)
-                Padding(
-                  padding: EdgeInsets.fromLTRB(
-                    horizontalPadding.w,
-                    safeTop + topSpacing.h,
-                    horizontalPadding.w,
-                    0,
-                  ),
-                  child: child,
-                ),
-            ],
+              );
+            },
           ),
         ),
-      ),
+      ],
     );
   }
 }

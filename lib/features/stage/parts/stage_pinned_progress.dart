@@ -27,6 +27,7 @@ class StagePinnedProgressCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
       decoration: BoxDecoration(
@@ -34,9 +35,9 @@ class StagePinnedProgressCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadii.card.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(20),
-            blurRadius: 18,
-            offset: const Offset(0, 10),
+            color: Colors.black.withValues(alpha: isDark ? 0.34 : 0.14),
+            blurRadius: isDark ? 24 : 16,
+            offset: Offset(0, isDark ? 10 : 8),
           ),
         ],
       ),

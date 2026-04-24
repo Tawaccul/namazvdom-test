@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'app_dependencies_scope.dart';
+import 'platform/app_launcher_icon_controller.dart';
 import 'l10n/app_localization.dart';
 import 'app_scope.dart';
 import 'di/app_di.dart';
@@ -10,7 +14,6 @@ import 'router/app_router.dart';
 import 'router/app_routes.dart';
 import 'theme/app_theme.dart';
 import 'theme/app_theme_mode_controller.dart';
-import '../features/onboarding/data/onboarding_repository_memory.dart';
 import '../features/prayer/domain/repositories/prayer_repository.dart';
 
 class App extends StatefulWidget {
@@ -20,16 +23,31 @@ class App extends StatefulWidget {
   State<App> createState() => _AppState();
 }
 
-class _AppState extends State<App> {
+class _AppState extends State<App> with WidgetsBindingObserver {
   late final AppThemeModeController _themeController;
   late final Future<void> _themeControllerInitFuture;
   late Future<PrayerRepository> _prayerRepositoryFuture;
+  late final AppLauncherIconController _launcherIconController;
+  int _launcherIconSyncToken = 0;
+  bool _didBootstrapIconSync = false;
+
+  Widget _withFixedTextScale(BuildContext context, Widget? child) {
+    final mediaQuery = MediaQuery.of(context);
+    return MediaQuery(
+      data: mediaQuery.copyWith(textScaler: const TextScaler.linear(1)),
+      child: child ?? const SizedBox.shrink(),
+    );
+  }
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _themeController = AppThemeModeController();
     _themeControllerInitFuture = _themeController.init();
+    _launcherIconController = AppLauncherIconController();
+    _themeController.addListener(_handleThemeModeChanged);
+    _themeControllerInitFuture.then((_) => _syncLauncherIconWithRetry());
     _reloadDependencies();
   }
 
@@ -39,8 +57,57 @@ class _AppState extends State<App> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _themeController.removeListener(_handleThemeModeChanged);
     _themeController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangePlatformBrightness() {
+    if (_themeController.mode == ThemeMode.system) {
+      _syncLauncherIconWithRetry();
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _syncLauncherIconWithRetry();
+    }
+  }
+
+  void _handleThemeModeChanged() {
+    _syncLauncherIconWithRetry();
+  }
+
+  void _syncLauncherIconWithRetry() {
+    final token = ++_launcherIconSyncToken;
+    unawaited(_syncLauncherIcon());
+    Future<void>.delayed(const Duration(milliseconds: 280), () {
+      if (!mounted || token != _launcherIconSyncToken) return;
+      unawaited(_syncLauncherIcon());
+    });
+    Future<void>.delayed(const Duration(milliseconds: 900), () {
+      if (!mounted || token != _launcherIconSyncToken) return;
+      unawaited(_syncLauncherIcon());
+    });
+  }
+
+  Future<void> _syncLauncherIcon() async {
+    if (!mounted) return;
+    if (defaultTargetPlatform != TargetPlatform.android) {
+      await _launcherIconController.setDarkIconEnabled(false);
+      return;
+    }
+    final platformBrightness =
+        WidgetsBinding.instance.platformDispatcher.platformBrightness;
+    final isDark = switch (_themeController.mode) {
+      ThemeMode.dark => true,
+      ThemeMode.light => false,
+      ThemeMode.system => platformBrightness == Brightness.dark,
+    };
+    await _launcherIconController.setDarkIconEnabled(isDark);
   }
 
   @override
@@ -62,6 +129,7 @@ class _AppState extends State<App> {
                     return MaterialApp(
                       debugShowCheckedModeBanner: false,
                       title: 'PrayDay',
+                      builder: _withFixedTextScale,
                       theme: AppTheme.light(),
                       darkTheme: AppTheme.dark(),
                       themeMode: _themeController.mode,
@@ -79,7 +147,8 @@ class _AppState extends State<App> {
                       if (snapshot.hasError) {
                         return MaterialApp(
                           debugShowCheckedModeBanner: false,
-                      title: 'PrayDay',
+                          title: 'PrayDay',
+                          builder: _withFixedTextScale,
                           theme: AppTheme.light(),
                           darkTheme: AppTheme.dark(),
                           themeMode: _themeController.mode,
@@ -96,7 +165,8 @@ class _AppState extends State<App> {
                       if (!snapshot.hasData || repo == null) {
                         return MaterialApp(
                           debugShowCheckedModeBanner: false,
-                      title: 'PrayDay',
+                          title: 'PrayDay',
+                          builder: _withFixedTextScale,
                           theme: AppTheme.light(),
                           darkTheme: AppTheme.dark(),
                           themeMode: _themeController.mode,
@@ -107,25 +177,28 @@ class _AppState extends State<App> {
                         );
                       }
 
+                      if (!_didBootstrapIconSync) {
+                        _didBootstrapIconSync = true;
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          if (!mounted) return;
+                          _syncLauncherIconWithRetry();
+                        });
+                      }
+
                       return AppDependenciesScope(
                         prayerRepository: repo,
                         child: MaterialApp(
                           debugShowCheckedModeBanner: false,
-                      title: 'PrayDay',
+                          title: 'PrayDay',
+                          builder: _withFixedTextScale,
                           theme: AppTheme.light(),
                           darkTheme: AppTheme.dark(),
                           themeMode: _themeController.mode,
                           locale: context.locale,
                           supportedLocales: context.supportedLocales,
-                          localizationsDelegates:
-                              context.localizationDelegates,
+                          localizationsDelegates: context.localizationDelegates,
                           onGenerateRoute: AppRouter.onGenerateRoute,
-                          initialRoute:
-                              OnboardingRepositoryMemory
-                                      .instance
-                                      .hasCompletedStart
-                                  ? AppRoutes.home
-                                  : AppRoutes.onboardingStart,
+                          initialRoute: AppRoutes.appSplash,
                         ),
                       );
                     },

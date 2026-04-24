@@ -19,6 +19,7 @@ class StageAyahCard extends StatelessWidget {
     required this.progress,
     required this.onTap,
     required this.onPlayPause,
+    this.arabicFontSize,
   });
 
   final int ayahIndex;
@@ -29,6 +30,7 @@ class StageAyahCard extends StatelessWidget {
   final double progress;
   final VoidCallback onTap;
   final VoidCallback onPlayPause;
+  final double? arabicFontSize;
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +64,7 @@ class StageAyahCard extends StatelessWidget {
           children: [
             _AyahPill(
               arabic: ayah.arabic,
+              arabicFontSize: arabicFontSize,
               progress: progress,
               isPlaying: isPlaying,
               onPlayPause: onPlayPause,
@@ -96,12 +99,14 @@ class StageAyahCard extends StatelessWidget {
 class _AyahPill extends StatelessWidget {
   const _AyahPill({
     required this.arabic,
+    required this.arabicFontSize,
     required this.progress,
     required this.isPlaying,
     required this.onPlayPause,
   });
 
   final String arabic;
+  final double? arabicFontSize;
   final double progress;
   final bool isPlaying;
   final VoidCallback onPlayPause;
@@ -178,7 +183,7 @@ class _AyahPill extends StatelessWidget {
                     textDirection: TextDirection.rtl,
                     textScaler: TextScaler.noScaling,
                     style: GoogleFonts.notoNaskhArabic(
-                      fontSize: 24.sp,
+                      fontSize: (arabicFontSize ?? 24).sp,
                       height: 1.4,
                       fontWeight: FontWeight.w400,
                       color: colors.textSecondary,

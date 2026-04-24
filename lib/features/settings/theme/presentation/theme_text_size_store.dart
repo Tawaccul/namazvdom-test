@@ -2,7 +2,7 @@ class ThemeTextSizeStore {
   ThemeTextSizeStore._();
 
   static const List<double> _snapPoints = <double>[0.0, 0.5, 1.0];
-  static const List<double> _textSizes = <double>[16.0, 18.0, 20.0];
+  static const List<double> _textSizes = <double>[14.0, 16.0, 18.0];
 
   static double _normalized = 0.5;
 
