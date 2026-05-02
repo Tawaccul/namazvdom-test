@@ -81,96 +81,96 @@ class _HomeScreenState extends State<HomeScreen> {
               physics: const BouncingScrollPhysics(),
               padding: EdgeInsets.fromLTRB(16.w, 72.h, 16.w, 28.h),
               children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Image.asset(
-                    isDark
-                        ? 'assets/images/logo-white.png'
-                        : 'assets/images/logo.png',
-                    height: 20.h,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Image.asset(
+                      isDark
+                          ? 'assets/images/logo-white.png'
+                          : 'assets/images/logo.png',
+                      height: 20.h,
+                    ),
+                    SizedBox(width: 12.w),
+                    _CircleIconButton(
+                      icon: 'assets/icons/more-circle.svg',
+                      onTap: () => _openMenu(context),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 32.h),
+                _HomeMenuCard(
+                  title: context.t('home.ablution.title'),
+                  subtitle: context.t('home.ablution.subtitle'),
+                  trailing: SvgPicture.asset(
+                    'assets/icons/ablution.svg',
+                    width: 46.r,
+                    height: 46.r,
                   ),
-                  SizedBox(width: 12.w),
-                  _CircleIconButton(
-                    icon: 'assets/icons/more-circle.svg',
-                    onTap: () => _openMenu(context),
+                  onTap: () => _openAblution(context),
+                ),
+                SizedBox(height: 32.h),
+                _HomeMenuCard(
+                  title: context.t('home.prayers.fajr.title'),
+                  subtitle: context.t('home.prayers.fajr.subtitle'),
+                  trailing: const _Badge.star(count: 1),
+                  onTap: () => _openPrayer(
+                    context,
+                    code: 'fajr',
+                    title: localizedPrayerLabel(context, 'fajr'),
                   ),
-                ],
-              ),
-              SizedBox(height: 32.h),
-              _HomeMenuCard(
-                title: context.t('home.ablution.title'),
-                subtitle: context.t('home.ablution.subtitle'),
-                trailing: SvgPicture.asset(
-                  'assets/icons/ablution.svg',
-                  width: 46.r,
-                  height: 46.r,
                 ),
-                onTap: () => _openAblution(context),
-              ),
-              SizedBox(height: 32.h),
-              _HomeMenuCard(
-                title: context.t('home.prayers.fajr.title'),
-                subtitle: context.t('home.prayers.fajr.subtitle'),
-                trailing: const _Badge.star(count: 1),
-                onTap: () => _openPrayer(
-                  context,
-                  code: 'fajr',
-                  title: localizedPrayerLabel(context, 'fajr'),
+                SizedBox(height: 8.h),
+                _HomeMenuCard(
+                  title: context.t('home.prayers.dhuhr.title'),
+                  subtitle: context.t('home.prayers.dhuhr.subtitle'),
+                  trailing: const _Badge.star(count: 2),
+                  onTap: () => _openPrayer(
+                    context,
+                    code: 'dhuhr',
+                    title: localizedPrayerLabel(context, 'dhuhr'),
+                  ),
                 ),
-              ),
-              SizedBox(height: 8.h),
-              _HomeMenuCard(
-                title: context.t('home.prayers.dhuhr.title'),
-                subtitle: context.t('home.prayers.dhuhr.subtitle'),
-                trailing: const _Badge.star(count: 2),
-                onTap: () => _openPrayer(
-                  context,
-                  code: 'dhuhr',
-                  title: localizedPrayerLabel(context, 'dhuhr'),
+                SizedBox(height: 8.h),
+                _HomeMenuCard(
+                  title: context.t('home.prayers.asr.title'),
+                  subtitle: context.t('home.prayers.asr.subtitle'),
+                  trailing: const _Badge.star(count: 3),
+                  onTap: () => _openPrayer(
+                    context,
+                    code: 'asr',
+                    title: localizedPrayerLabel(context, 'asr'),
+                  ),
                 ),
-              ),
-              SizedBox(height: 8.h),
-              _HomeMenuCard(
-                title: context.t('home.prayers.asr.title'),
-                subtitle: context.t('home.prayers.asr.subtitle'),
-                trailing: const _Badge.star(count: 3),
-                onTap: () => _openPrayer(
-                  context,
-                  code: 'asr',
-                  title: localizedPrayerLabel(context, 'asr'),
+                SizedBox(height: 8.h),
+                _HomeMenuCard(
+                  title: context.t('home.prayers.maghrib.title'),
+                  subtitle: context.t('home.prayers.maghrib.subtitle'),
+                  trailing: const _Badge.star(count: 4),
+                  onTap: () => _openPrayer(
+                    context,
+                    code: 'maghrib',
+                    title: localizedPrayerLabel(context, 'maghrib'),
+                  ),
                 ),
-              ),
-              SizedBox(height: 8.h),
-              _HomeMenuCard(
-                title: context.t('home.prayers.maghrib.title'),
-                subtitle: context.t('home.prayers.maghrib.subtitle'),
-                trailing: const _Badge.star(count: 4),
-                onTap: () => _openPrayer(
-                  context,
-                  code: 'maghrib',
-                  title: localizedPrayerLabel(context, 'maghrib'),
+                SizedBox(height: 8.h),
+                _HomeMenuCard(
+                  title: context.t('home.prayers.isha.title'),
+                  subtitle: context.t('home.prayers.isha.subtitle'),
+                  trailing: const _Badge.star(count: 5),
+                  onTap: () => _openPrayer(
+                    context,
+                    code: 'isha',
+                    title: localizedPrayerLabel(context, 'isha'),
+                  ),
                 ),
-              ),
-              SizedBox(height: 8.h),
-              _HomeMenuCard(
-                title: context.t('home.prayers.isha.title'),
-                subtitle: context.t('home.prayers.isha.subtitle'),
-                trailing: const _Badge.star(count: 5),
-                onTap: () => _openPrayer(
-                  context,
-                  code: 'isha',
-                  title: localizedPrayerLabel(context, 'isha'),
+                SizedBox(height: 32.h),
+                _HomeMenuCard(
+                  title: context.t('home.additional.title'),
+                  subtitle: context.t('home.additional.subtitle'),
+                  trailing: const _Badge.dome(),
+                  onTap: () {},
                 ),
-              ),
-              SizedBox(height: 32.h),
-              _HomeMenuCard(
-                title: context.t('home.additional.title'),
-                subtitle: context.t('home.additional.subtitle'),
-                trailing: const _Badge.dome(),
-                onTap: () {},
-              ),
               ],
             ),
           ),

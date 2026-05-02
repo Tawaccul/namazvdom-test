@@ -33,9 +33,7 @@ class StageSurahSelector extends StatelessWidget {
               child: Pressable(
                 onTap: () => onSelect(index),
                 borderRadius: BorderRadius.circular(AppRadii.pill.r),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 180),
-                  curve: Curves.easeOutCubic,
+                child: Container(
                   padding: EdgeInsets.symmetric(vertical: 12.h),
                   decoration: BoxDecoration(
                     color: selectedIndex == index

@@ -1,7 +1,9 @@
 import 'package:dio/dio.dart';
 
+import '../../../core/network/api_config.dart';
+
 class SurahApi {
-  SurahApi(this._dio, {this.baseUrl = 'http://64.188.60.3'});
+  SurahApi(this._dio, {this.baseUrl = ApiConfig.baseUrl});
 
   final Dio _dio;
   final String baseUrl;

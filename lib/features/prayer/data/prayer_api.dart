@@ -1,9 +1,10 @@
 import 'package:dio/dio.dart';
 
+import '../../../core/network/api_config.dart';
 import '../domain/entities/prayer_request_context.dart';
 
 class PrayerApi {
-  PrayerApi(this._dio, {this.baseUrl = 'http://64.188.60.3'});
+  PrayerApi(this._dio, {this.baseUrl = ApiConfig.baseUrl});
 
   final Dio _dio;
   final String baseUrl;

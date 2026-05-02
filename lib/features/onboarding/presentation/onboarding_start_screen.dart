@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,6 +10,7 @@ import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_radii.dart';
 import '../../../app/ui_kit/app_button.dart';
 import '../../../core/widgets/pressable.dart';
+import '../../content/data/app_content_preloader.dart';
 import '../../settings/gender/data/gender_repository_memory.dart';
 import '../../settings/gender/domain/entities/app_gender.dart';
 import '../../settings/gender/domain/usecases/get_available_genders.dart';
@@ -34,6 +37,7 @@ class OnboardingStartScreen extends StatefulWidget {
 class _OnboardingStartScreenState extends State<OnboardingStartScreen> {
   late final GenderController _genderController;
   late final LanguageController _languageController;
+  bool _isCompleting = false;
 
   @override
   void initState() {
@@ -123,7 +127,10 @@ class _OnboardingStartScreenState extends State<OnboardingStartScreen> {
               const Spacer(flex: 8),
               AppButton(
                 label: context.t('common.next'),
-                onPressed: widget.onNext,
+                onPressed: _isCompleting
+                    ? null
+                    : () => unawaited(_completeOnboarding()),
+                isLoading: _isCompleting,
                 variant: AppButtonVariant.primary,
                 size: AppButtonSize.medium,
               ),
@@ -141,6 +148,18 @@ class _OnboardingStartScreenState extends State<OnboardingStartScreen> {
     await context.setLocale(Locale(selected.id));
     if (!mounted) return;
     setState(() {});
+  }
+
+  Future<void> _completeOnboarding() async {
+    if (_isCompleting) return;
+    setState(() => _isCompleting = true);
+    try {
+      await AppContentPreloader.preload(context);
+    } catch (_) {
+      // The home screen can still use bundled content if sync is unavailable.
+    }
+    if (!mounted) return;
+    widget.onNext();
   }
 }
 

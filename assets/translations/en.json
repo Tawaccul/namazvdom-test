@@ -119,7 +119,9 @@
     "yourGender": "Your gender",
     "contactUs": "Contact us",
     "rateApp": "Rate the app",
-    "tellFriends": "Tell your friends"
+    "tellFriends": "Tell your friends",
+    "shareText": "PrayDay - an app for learning prayer step by step.",
+    "actionUnavailable": "Action is currently unavailable"
   },
 
   "theme": {
@@ -162,8 +164,8 @@
     "subscribe": "Subscribe",
     "disclaimer": "Subscription renews automatically unless cancelled in advance.",
     "months": {
-      "one": "month",
-      "other": "months"
+      "one": "{} month",
+      "other": "{} months"
     }
   },
 

@@ -71,17 +71,7 @@ class StageTopBar extends StatelessWidget {
               child: Container(
                 key: stageButtonKey,
                 padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
-                decoration: BoxDecoration(
-                  color: colors.card,
-                  borderRadius: BorderRadius.circular(AppRadii.pill),
-                  boxShadow: [
-                    BoxShadow(
-                      color: shadowColor,
-                      blurRadius: 18,
-                      offset: const Offset(0, 10),
-                    ),
-                  ],
-                ),
+               
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [

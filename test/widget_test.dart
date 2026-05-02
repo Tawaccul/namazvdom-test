@@ -9,10 +9,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:namazvdom/core/audio/ayah_audio.dart';
-import 'package:namazvdom/features/quran/model/quran_ayah.dart';
-import 'package:namazvdom/features/stage/models/rakaat_models.dart';
-import 'package:namazvdom/features/stage/stage_step_screen.dart';
+import 'package:prayday/core/audio/ayah_audio.dart';
+import 'package:prayday/features/quran/model/quran_ayah.dart';
+import 'package:prayday/features/stage/models/rakaat_models.dart';
+import 'package:prayday/features/stage/stage_step_screen_state.dart';
 
 void main() {
   testWidgets('App starts on stage step screen', (WidgetTester tester) async {
@@ -48,7 +48,7 @@ List<RakaatData> _fakeRakaats() {
           arabic: 'الفاتحة',
           transliteration: 'Al-Fatiha',
           translation: 'The Opening',
-          audioUrl: 'https://example.com/audio.mp3',
+          audioUrl: 'https://example.com/audio.mp3', orderIndex: 2, stepCode: '',
         ),
       ],
     ),

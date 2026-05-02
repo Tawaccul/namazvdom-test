@@ -14,6 +14,7 @@ import '../settings/gender/data/gender_repository_memory.dart';
 import '../settings/language/data/language_repository_memory.dart';
 import '../settings/madhhab/data/madhhab_repository_memory.dart';
 import 'models/rakaat_models.dart';
+import 'stage_prayer_loader.dart';
 import 'stage_step_screen.dart';
 
 class StageSplashScreen extends StatefulWidget {
@@ -33,6 +34,8 @@ class StageSplashScreen extends StatefulWidget {
 class _StageSplashScreenState extends State<StageSplashScreen> {
   PrayerRakaatsController? _controller;
   bool _navigated = false;
+  bool _localOnlyLoadStarted = false;
+  String? _localOnlyErrorMessage;
   late List<PrayerRequestContext> _contextFallbackChain;
   int _contextAttemptIndex = 0;
 
@@ -44,6 +47,10 @@ class _StageSplashScreenState extends State<StageSplashScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    if (StagePrayerLoader.forceLocalOnly) {
+      _loadLocalOnly();
+      return;
+    }
     if (_controller != null) return;
 
     final repository = AppDependenciesScope.prayerRepositoryOf(context);
@@ -53,6 +60,27 @@ class _StageSplashScreenState extends State<StageSplashScreen> {
 
     _contextFallbackChain = _buildContextFallbackChain();
     _controller!.load(baseContext: _contextFallbackChain.first);
+  }
+
+  Future<void> _loadLocalOnly() async {
+    if (_localOnlyLoadStarted) return;
+    _localOnlyLoadStarted = true;
+    _localOnlyErrorMessage = null;
+    try {
+      final rakaats = await StagePrayerLoader.load(
+        context,
+        prayerCode: widget.prayerCode,
+      );
+      if (!mounted || _navigated) return;
+      _navigated = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        _goNext(rakaats);
+      });
+    } catch (error) {
+      if (!mounted) return;
+      setState(() => _localOnlyErrorMessage = error.toString());
+    }
   }
 
   @override
@@ -154,9 +182,15 @@ class _StageSplashScreenState extends State<StageSplashScreen> {
     final colors = context.colors;
     final brightness = Theme.of(context).brightness;
     final state = _controller?.state ?? const PrayerRakaatsInitial();
-    final isLoading =
-        state is PrayerRakaatsLoading || state is PrayerRakaatsInitial;
-    final errorMessage = state is PrayerRakaatsError ? state.message : null;
+    final isLocalOnly = StagePrayerLoader.forceLocalOnly;
+    final isLoading = isLocalOnly
+        ? _localOnlyErrorMessage == null
+        : state is PrayerRakaatsLoading || state is PrayerRakaatsInitial;
+    final errorMessage = isLocalOnly
+        ? _localOnlyErrorMessage
+        : state is PrayerRakaatsError
+        ? state.message
+        : null;
     final shownError = _toDisplayError(context, errorMessage);
     final logoAsset = brightness == Brightness.dark
         ? 'assets/images/logo-white.png'
@@ -202,6 +236,11 @@ class _StageSplashScreenState extends State<StageSplashScreen> {
                       FilledButton(
                         onPressed: () {
                           setState(() => _navigated = false);
+                          if (StagePrayerLoader.forceLocalOnly) {
+                            _localOnlyLoadStarted = false;
+                            _loadLocalOnly();
+                            return;
+                          }
                           _contextAttemptIndex = 0;
                           _contextFallbackChain = _buildContextFallbackChain();
                           _controller?.load(
@@ -256,27 +295,32 @@ List<RakaatData> _mapPrayerToStageRakaats(List<PrayerRakaat> rakaats) {
   return rakaats.map((r) {
     final steps = [...r.steps]
       ..sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
+    final mappedSteps = steps
+        .map(
+          (s) => RakaatStep(
+            orderIndex: s.orderIndex,
+            title: _stageStepTitle(s.stepCode),
+            movementDescription: s.content.movementDescription,
+            arabic: s.content.recitationArabic,
+            transliteration: localizedTransliteration(
+              s.content.transliteration,
+              languageCode,
+            ),
+            translation: s.content.translation,
+            stepCode: s.stepCode,
+          ),
+        )
+        .where(
+          (step) =>
+              r.context.rakah == 1 || !_isProtectionFromDevilStageStep(step),
+        )
+        .toList(growable: false);
     return RakaatData(
       number: r.context.rakah,
       imageAsset: r.context.rakah == 1
           ? 'assets/icons/salat-1.png'
           : 'assets/icons/salat.png',
-      steps: steps
-          .map(
-            (s) => RakaatStep(
-              orderIndex: s.orderIndex,
-              title: _stageStepTitle(s.stepCode),
-              movementDescription: s.content.movementDescription,
-              arabic: s.content.recitationArabic,
-              transliteration: localizedTransliteration(
-                s.content.transliteration,
-                languageCode,
-              ),
-              translation: s.content.translation,
-              stepCode: s.stepCode,
-            ),
-          )
-          .toList(),
+      steps: mappedSteps,
     );
   }).toList();
 }
@@ -299,6 +343,37 @@ String _stageStepTitle(String code) {
             : '${p[0].toUpperCase()}${p.substring(1)}',
       )
       .join(' ');
+}
+
+bool _isProtectionFromDevilStageStep(RakaatStep step) {
+  final normalizedCode = step.stepCode.trim().toLowerCase().replaceAll(
+    '-',
+    '_',
+  );
+  const protectionCodes = {
+    'istiadha',
+    'istiadhah',
+    'taawwudh',
+    'taawuz',
+    'protection_from_devil',
+  };
+  if (protectionCodes.contains(normalizedCode)) return true;
+
+  final normalizedText = [
+    step.title,
+    step.arabic,
+    step.transliteration,
+    step.translation,
+  ].join(' ').toLowerCase();
+  return normalizedText.contains('protection from the devil') ||
+      normalizedText.contains('защите от шайтана') ||
+      normalizedText.contains('от проклятого шайтана') ||
+      normalizedText.contains('minash-shaytan') ||
+      normalizedText.contains('minash shaytan') ||
+      normalizedText.contains("a'oothu billaahi") ||
+      normalizedText.contains("a'udhu billahi") ||
+      normalizedText.contains('أَعُوذُ') ||
+      normalizedText.contains('اعوذ');
 }
 
 extension on _StageSplashScreenState {
@@ -340,7 +415,11 @@ extension on _StageSplashScreenState {
         imageAsset: i == 0
             ? 'assets/icons/salat-1.png'
             : 'assets/icons/salat.png',
-        steps: localizedSteps,
+        steps: i == 0
+            ? localizedSteps
+            : localizedSteps
+                  .where((step) => !_isProtectionFromDevilStageStep(step))
+                  .toList(growable: false),
       ),
     );
   }

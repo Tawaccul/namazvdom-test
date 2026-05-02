@@ -1,0 +1,944 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api": {
+      "get": {
+        "operationId": "AppController_getHello",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "App"
+        ]
+      }
+    },
+    "/api/prayer/meta": {
+      "get": {
+        "operationId": "PrayerController_getPrayerMeta",
+        "parameters": [
+          {
+            "name": "prayerCode",
+            "required": false,
+            "in": "query",
+            "description": "Код намаза. Если не передан ни один параметр, возвращается глобальная версия контента.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "madhhabCode",
+            "required": false,
+            "in": "query",
+            "description": "Опциональный фильтр по мазхабу для точного prayer scope",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "genderCode",
+            "required": false,
+            "in": "query",
+            "description": "Опциональный фильтр по полу для точного prayer scope",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "languageCode",
+            "required": false,
+            "in": "query",
+            "description": "Опциональный фильтр по языку для точного prayer scope",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "rakah",
+            "required": false,
+            "in": "query",
+            "description": "Опциональный фильтр по номеру ракаата",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "script",
+            "required": false,
+            "in": "query",
+            "description": "Опциональный фильтр по скрипту транслитерации",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Метаданные контента намаза успешно получены",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetPrayerMetaResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Некорректные параметры запроса"
+          },
+          "404": {
+            "description": "Сущность для заданного контекста не найдена"
+          }
+        },
+        "summary": "Получение метаданных версии контента намаза для глобальной или контекстной синхронизации",
+        "tags": [
+          "Prayer"
+        ]
+      }
+    },
+    "/api/prayer": {
+      "get": {
+        "operationId": "PrayerController_getPrayer",
+        "parameters": [
+          {
+            "name": "prayerCode",
+            "required": true,
+            "in": "query",
+            "description": "Код намаза (fajr, dhuhr, asr)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "madhhabCode",
+            "required": true,
+            "in": "query",
+            "description": "Код мазхаба (hanafi, shafii)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "genderCode",
+            "required": true,
+            "in": "query",
+            "description": "Код пола (male, female)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "languageCode",
+            "required": true,
+            "in": "query",
+            "description": "Код языка (ru, en)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "rakah",
+            "required": true,
+            "in": "query",
+            "description": "Номер ракаата (начиная с 1)",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "script",
+            "required": false,
+            "in": "query",
+            "description": "Скрипт транслитерации (latin, cyrillic)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Структура намаза успешно получена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetPrayerResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Некорректные параметры запроса"
+          },
+          "404": {
+            "description": "Данные не найдены по переданному контексту"
+          }
+        },
+        "summary": "Получение структуры намаза по мазхабу, полу, языку и ракаату",
+        "tags": [
+          "Prayer"
+        ]
+      }
+    },
+    "/api/admin/steps": {
+      "post": {
+        "operationId": "StepController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateStepDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Step created"
+          },
+          "409": {
+            "description": "Step code already exists"
+          }
+        },
+        "summary": "Create step",
+        "tags": [
+          "Step"
+        ]
+      },
+      "get": {
+        "operationId": "StepController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of steps"
+          }
+        },
+        "summary": "Получить все шаги",
+        "tags": [
+          "Step"
+        ]
+      }
+    },
+    "/api/admin/steps/{id}": {
+      "get": {
+        "operationId": "StepController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Step found"
+          },
+          "404": {
+            "description": "Step not found"
+          }
+        },
+        "summary": "Получить шаг по id",
+        "tags": [
+          "Step"
+        ]
+      },
+      "patch": {
+        "operationId": "StepController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateStepDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Step updated"
+          },
+          "404": {
+            "description": "Step not found"
+          },
+          "409": {
+            "description": "Step code already exists"
+          }
+        },
+        "summary": "Получить шаг по id",
+        "tags": [
+          "Step"
+        ]
+      },
+      "delete": {
+        "operationId": "StepController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Step soft deleted"
+          },
+          "404": {
+            "description": "Step not found"
+          }
+        },
+        "summary": "Soft delete step by id",
+        "tags": [
+          "Step"
+        ]
+      }
+    },
+    "/api/admin/prayer-steps": {
+      "post": {
+        "operationId": "PrayerStepController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePrayerStepDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Prayer step created"
+          },
+          "404": {
+            "description": "Referenced entity not found"
+          }
+        },
+        "summary": "Create prayer step",
+        "tags": [
+          "PrayerStep"
+        ]
+      },
+      "get": {
+        "operationId": "PrayerStepController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Prayer steps list"
+          }
+        },
+        "summary": "Get prayer steps list",
+        "tags": [
+          "PrayerStep"
+        ]
+      }
+    },
+    "/api/admin/prayer-steps/{id}": {
+      "get": {
+        "operationId": "PrayerStepController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Prayer step found"
+          },
+          "404": {
+            "description": "Prayer step not found"
+          }
+        },
+        "summary": "Get prayer step by id",
+        "tags": [
+          "PrayerStep"
+        ]
+      },
+      "patch": {
+        "operationId": "PrayerStepController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePrayerStepDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Prayer step updated"
+          },
+          "404": {
+            "description": "Prayer step or referenced entity not found"
+          }
+        },
+        "summary": "Update prayer step",
+        "tags": [
+          "PrayerStep"
+        ]
+      },
+      "delete": {
+        "operationId": "PrayerStepController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Prayer step soft deleted"
+          },
+          "404": {
+            "description": "Prayer step not found"
+          }
+        },
+        "summary": "Soft delete prayer step",
+        "tags": [
+          "PrayerStep"
+        ]
+      }
+    },
+    "/api/admin/step-contents": {
+      "post": {
+        "operationId": "StepContentController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateStepContentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Step content created"
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "404": {
+            "description": "Referenced entity not found"
+          },
+          "409": {
+            "description": "Duplicate step content"
+          }
+        },
+        "summary": "Create step content",
+        "tags": [
+          "StepContent"
+        ]
+      },
+      "get": {
+        "operationId": "StepContentController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Step contents list"
+          }
+        },
+        "summary": "Get step contents",
+        "tags": [
+          "StepContent"
+        ]
+      }
+    },
+    "/api/admin/step-contents/{stepId}/content": {
+      "get": {
+        "description": "Returns the full StepContent list for the specified stepId, including related language data.",
+        "operationId": "StepContentController_findByStep",
+        "parameters": [
+          {
+            "name": "stepId",
+            "required": true,
+            "in": "path",
+            "description": "Step UUID",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Step not found"
+          }
+        },
+        "summary": "Get step content by step id",
+        "tags": [
+          "StepContent"
+        ]
+      }
+    },
+    "/api/admin/step-contents/{id}": {
+      "get": {
+        "operationId": "StepContentController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Step content found"
+          },
+          "404": {
+            "description": "Step content not found"
+          }
+        },
+        "summary": "Get step content by id",
+        "tags": [
+          "StepContent"
+        ]
+      },
+      "patch": {
+        "operationId": "StepContentController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateStepContentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Step content updated"
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "404": {
+            "description": "Step content not found"
+          },
+          "409": {
+            "description": "Duplicate step content"
+          }
+        },
+        "summary": "Update step content",
+        "tags": [
+          "StepContent"
+        ]
+      },
+      "delete": {
+        "operationId": "StepContentController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Step content soft deleted"
+          },
+          "404": {
+            "description": "Step content not found"
+          }
+        },
+        "summary": "Soft delete step content",
+        "tags": [
+          "StepContent"
+        ]
+      }
+    },
+    "/api/surah": {
+      "get": {
+        "operationId": "SurahController_getSurah",
+        "parameters": [
+          {
+            "name": "code",
+            "required": true,
+            "in": "query",
+            "description": "Код суры (например, al_ikhlas)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "language",
+            "required": true,
+            "in": "query",
+            "description": "Код языка перевода и транслитерации (например, ru, en)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Сура успешно получена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetSurahResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Некорректные параметры запроса"
+          },
+          "404": {
+            "description": "Сура не найдена"
+          }
+        },
+        "summary": "Получение суры с арабским текстом, переводом и транслитерацией",
+        "tags": [
+          "Surah"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "API Documentation",
+    "description": "Project API docs",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "PrayerMetaDto": {
+        "type": "object",
+        "properties": {
+          "lastModifiedAt": {
+            "type": "string",
+            "description": "Последнее изменение контента, влияющего на отображение намаза",
+            "example": "2026-03-12T10:00:00.000Z",
+            "nullable": true
+          },
+          "scope": {
+            "type": "string",
+            "description": "Область вычисления метаданных",
+            "example": "global"
+          }
+        },
+        "required": [
+          "lastModifiedAt"
+        ]
+      },
+      "GetPrayerMetaResponseDto": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "description": "Метаданные версии контента намаза",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PrayerMetaDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "meta"
+        ]
+      },
+      "PrayerContextDto": {
+        "type": "object",
+        "properties": {
+          "prayerCode": {
+            "type": "string",
+            "description": "Код намаза",
+            "example": "fajr"
+          },
+          "madhhabCode": {
+            "type": "string",
+            "description": "Код мазхаба",
+            "example": "hanafi"
+          },
+          "genderCode": {
+            "type": "string",
+            "description": "Код пола",
+            "example": "male"
+          },
+          "languageCode": {
+            "type": "string",
+            "description": "Код языка",
+            "example": "ru"
+          },
+          "rakah": {
+            "type": "number",
+            "description": "Номер ракаата",
+            "example": 1
+          },
+          "script": {
+            "type": "string",
+            "description": "Выбранный скрипт для транслитерации",
+            "nullable": true,
+            "example": "cyrillic"
+          },
+          "totalRakahCount": {
+            "type": "number",
+            "description": "Общее количество ракаатов в выбранном намазе",
+            "example": 2
+          }
+        },
+        "required": [
+          "prayerCode",
+          "madhhabCode",
+          "genderCode",
+          "languageCode",
+          "rakah",
+          "script",
+          "totalRakahCount"
+        ]
+      },
+      "PrayerStepContentDto": {
+        "type": "object",
+        "properties": {
+          "movementDescription": {
+            "type": "string",
+            "description": "Описание движения (на выбранном языке)",
+            "nullable": true,
+            "example": "Поднимите руки до уровня плеч"
+          },
+          "recitationArabic": {
+            "type": "string",
+            "description": "Текст чтения на арабском языке",
+            "nullable": true,
+            "example": "الله أكبر"
+          },
+          "translation": {
+            "type": "string",
+            "description": "Перевод текста на выбранный язык",
+            "nullable": true,
+            "example": "Аллах Велик"
+          },
+          "transliteration": {
+            "type": "string",
+            "description": "Транслитерация (с учетом выбранного скрипта)",
+            "nullable": true,
+            "example": "Allahu Akbar"
+          }
+        },
+        "required": [
+          "movementDescription",
+          "recitationArabic",
+          "translation",
+          "transliteration"
+        ]
+      },
+      "PrayerStepDto": {
+        "type": "object",
+        "properties": {
+          "orderIndex": {
+            "type": "number",
+            "description": "Порядковый номер шага внутри ракаата",
+            "example": 1
+          },
+          "stepCode": {
+            "type": "string",
+            "description": "Код шага намаза",
+            "example": "takbir"
+          },
+          "recitationMode": {
+            "type": "string",
+            "description": "Режим чтения для шага",
+            "example": "silent"
+          },
+          "hasRecitation": {
+            "type": "boolean",
+            "description": "Признак наличия чтения в данном шаге",
+            "example": true
+          },
+          "content": {
+            "description": "Контент шага (описание, арабский текст, перевод, транслитерация)",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PrayerStepContentDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "orderIndex",
+          "stepCode",
+          "recitationMode",
+          "hasRecitation",
+          "content"
+        ]
+      },
+      "PrayerDataDto": {
+        "type": "object",
+        "properties": {
+          "context": {
+            "description": "Контекст запроса, по которому была собрана структура намаза",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PrayerContextDto"
+              }
+            ]
+          },
+          "steps": {
+            "description": "Список шагов намаза для указанного ракаата",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PrayerStepDto"
+            }
+          }
+        },
+        "required": [
+          "context",
+          "steps"
+        ]
+      },
+      "GetPrayerResponseDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "description": "Данные намаза для указанного контекста",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PrayerDataDto"
+              }
+            ]
+          },
+          "meta": {
+            "description": "Метаданные версии контента для текущего ответа",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PrayerMetaDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "CreateStepDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdateStepDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreatePrayerStepDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdatePrayerStepDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateStepContentDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdateStepContentDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "GetSurahResponseDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Код суры",
+            "example": "al_ikhlas"
+          },
+          "recitationArabic": {
+            "type": "string",
+            "description": "Текст чтения на арабском языке",
+            "nullable": true,
+            "example": "قُلْ هُوَ اللَّهُ أَحَدٌ"
+          },
+          "translation": {
+            "type": "string",
+            "description": "Перевод на выбранный язык",
+            "nullable": true,
+            "example": "Скажи: Он - Аллах Единый"
+          },
+          "transliteration": {
+            "type": "string",
+            "description": "Транслитерация на выбранном языке",
+            "nullable": true,
+            "example": "Qul huwallahu ahad"
+          }
+        },
+        "required": [
+          "code",
+          "recitationArabic",
+          "translation",
+          "transliteration"
+        ]
+      }
+    }
+  }
+}

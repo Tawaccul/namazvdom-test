@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../app/l10n/app_localization.dart';
 import '../../app/theme/app_colors.dart';
@@ -24,6 +27,9 @@ class MenuScreen extends StatefulWidget {
 
 class _MenuScreenState extends State<MenuScreen> {
   static const double _topBlurShowOffset = 100;
+  static const String _supportEmail = 'support@prayday.app';
+  static const String _androidPackageId = 'com.example.prayday';
+  static const String _iosAppId = '0000000000';
   final ScrollController _scrollController = ScrollController(
     keepScrollOffset: false,
   );
@@ -50,6 +56,45 @@ class _MenuScreenState extends State<MenuScreen> {
     setState(() => _showTopBlur = shouldShow);
   }
 
+  Future<void> _contactUs() async {
+    final subject = Uri.encodeComponent('PrayDay support');
+    final body = Uri.encodeComponent('');
+    final uri = Uri.parse('mailto:$_supportEmail?subject=$subject&body=$body');
+    if (await launchUrl(uri, mode: LaunchMode.externalApplication)) return;
+    _showActionUnavailable();
+  }
+
+  Future<void> _rateApp() async {
+    final uri = switch (defaultTargetPlatform) {
+      TargetPlatform.iOS || TargetPlatform.macOS => Uri.parse(
+        'https://apps.apple.com/app/id$_iosAppId',
+      ),
+      _ => Uri.parse(
+        'https://play.google.com/store/apps/details?id=$_androidPackageId',
+      ),
+    };
+    if (await launchUrl(uri, mode: LaunchMode.externalApplication)) return;
+    _showActionUnavailable();
+  }
+
+  Future<void> _tellFriends() async {
+    final text = context.t('menu.shareText') == 'menu.shareText'
+        ? 'PrayDay'
+        : context.t('menu.shareText');
+    await SharePlus.instance.share(ShareParams(text: text));
+  }
+
+  void _showActionUnavailable() {
+    if (!mounted) return;
+    final message =
+        context.t('menu.actionUnavailable') == 'menu.actionUnavailable'
+        ? 'Action unavailable'
+        : context.t('menu.actionUnavailable');
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
+  }
+
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
@@ -71,141 +116,143 @@ class _MenuScreenState extends State<MenuScreen> {
             physics: const BouncingScrollPhysics(),
             padding: EdgeInsets.fromLTRB(16.w, 72.h, 16.w, 28.h),
             children: [
-            SizedBox(height: 10.h),
-            Row(
-              children: [
-                _CircleBackButton(
-                  onTap: () => Navigator.of(context).maybePop(),
-                ),
-                SizedBox(width: 12.w),
-                Text(
-                  context.t('common.back'),
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w500,
-                    color: colors.textPrimary,
+              SizedBox(height: 10.h),
+              Row(
+                children: [
+                  _CircleBackButton(
+                    onTap: () => Navigator.of(context).maybePop(),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: 24.h),
-            _MenuCard(
-              children: [
-                _MenuRow(
-                  icon: 'assets/icons/info.svg',
-                  title: context.t('menu.aboutProject'),
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => const AboutProjectScreen(),
-                      ),
-                    );
-                  },
-                ),
-                _Divider(),
-                _MenuRow(
-                  icon: 'assets/icons/heart.svg',
-                  title: context.t('menu.helpProject'),
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => const HelpProjectScreen(),
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
-            SizedBox(height: 18.h),
-            _MenuCard(
-              children: [
-                _MenuRow(
-                  icon: 'assets/icons/theme.svg',
-                  title: context.t('menu.theme'),
-                  onTap: () async {
-                    await Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => const ThemeScreen()),
-                    );
-                    if (!context.mounted) return;
-                    setState(() {});
-                  },
-                ),
-              ],
-            ),
-            SizedBox(height: 18.h),
-            _MenuCard(
-              children: [
-                _MenuRow(
-                  icon: 'assets/icons/planet.svg',
-                  title: context.t('menu.language'),
-                  trailingValue: localizedLanguageLabel(
-                    context,
-                    selectedLanguage.id,
+                  SizedBox(width: 12.w),
+                  Text(
+                    context.t('common.back'),
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w500,
+                      color: colors.textPrimary,
+                    ),
                   ),
-                  onTap: () async {
-                    await Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => const LanguageScreen()),
-                    );
-                    if (!context.mounted) return;
-                    setState(() {});
-                  },
-                ),
-                _Divider(),
-                _MenuRow(
-                  icon: 'assets/icons/user.svg',
-                  title: context.t('menu.yourGender'),
-                  trailingValue: localizedGenderLabel(
-                    context,
-                    selectedGender.id,
+                ],
+              ),
+              SizedBox(height: 24.h),
+              _MenuCard(
+                children: [
+                  _MenuRow(
+                    icon: 'assets/icons/info.svg',
+                    title: context.t('menu.aboutProject'),
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const AboutProjectScreen(),
+                        ),
+                      );
+                    },
                   ),
-                  onTap: () async {
-                    await Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => const GenderScreen()),
-                    );
-                    if (!context.mounted) return;
-                    setState(() {});
-                  },
-                ),
-              ],
-            ),
-            SizedBox(height: 18.h),
-            _MenuCard(
-              children: [
-                _MenuRow(
-                  icon: 'assets/icons/mail.svg',
-                  title: context.t('menu.contactUs'),
-                  onTap: () {},
-                ),
-                _Divider(),
-                _MenuRow(
-                  icon: 'assets/icons/heart.svg',
-                  title: context.t('menu.rateApp'),
-                  onTap: () {},
-                ),
-                _Divider(),
-                _MenuRow(
-                  icon: 'assets/icons/share.svg',
-                  title: context.t('menu.tellFriends'),
-                  onTap: () {},
-                ),
-              ],
-            ),
-            SizedBox(height: 18.h),
-            _MenuCard(
-              children: [
-                _MenuRow(
-                  leading: const _ExternalPlaceholder(),
-                  title: 'Quranapp.com',
-                  onTap: () {},
-                ),
-                _Divider(),
-                _MenuRow(
-                  leading: const _ExternalPlaceholder(),
-                  title: 'Azkar.ru',
-                  onTap: () {},
-                ),
-              ],
-            ),
+                  _Divider(),
+                  _MenuRow(
+                    icon: 'assets/icons/heart.svg',
+                    title: context.t('menu.helpProject'),
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const HelpProjectScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+              SizedBox(height: 18.h),
+              _MenuCard(
+                children: [
+                  _MenuRow(
+                    icon: 'assets/icons/theme.svg',
+                    title: context.t('menu.theme'),
+                    onTap: () async {
+                      await Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => const ThemeScreen()),
+                      );
+                      if (!context.mounted) return;
+                      setState(() {});
+                    },
+                  ),
+                ],
+              ),
+              SizedBox(height: 18.h),
+              _MenuCard(
+                children: [
+                  _MenuRow(
+                    icon: 'assets/icons/planet.svg',
+                    title: context.t('menu.language'),
+                    trailingValue: localizedLanguageLabel(
+                      context,
+                      selectedLanguage.id,
+                    ),
+                    onTap: () async {
+                      await Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const LanguageScreen(),
+                        ),
+                      );
+                      if (!context.mounted) return;
+                      setState(() {});
+                    },
+                  ),
+                  _Divider(),
+                  _MenuRow(
+                    icon: 'assets/icons/user.svg',
+                    title: context.t('menu.yourGender'),
+                    trailingValue: localizedGenderLabel(
+                      context,
+                      selectedGender.id,
+                    ),
+                    onTap: () async {
+                      await Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => const GenderScreen()),
+                      );
+                      if (!context.mounted) return;
+                      setState(() {});
+                    },
+                  ),
+                ],
+              ),
+              SizedBox(height: 18.h),
+              _MenuCard(
+                children: [
+                  _MenuRow(
+                    icon: 'assets/icons/mail.svg',
+                    title: context.t('menu.contactUs'),
+                    onTap: () => _contactUs(),
+                  ),
+                  _Divider(),
+                  _MenuRow(
+                    icon: 'assets/icons/heart.svg',
+                    title: context.t('menu.rateApp'),
+                    onTap: () => _rateApp(),
+                  ),
+                  _Divider(),
+                  _MenuRow(
+                    icon: 'assets/icons/share.svg',
+                    title: context.t('menu.tellFriends'),
+                    onTap: () => _tellFriends(),
+                  ),
+                ],
+              ),
+              SizedBox(height: 18.h),
+              _MenuCard(
+                children: [
+                  _MenuRow(
+                    leading: const _ExternalPlaceholder(),
+                    title: 'Quranapp.com',
+                    onTap: () {},
+                  ),
+                  _Divider(),
+                  _MenuRow(
+                    leading: const _ExternalPlaceholder(),
+                    title: 'Azkar.ru',
+                    onTap: () {},
+                  ),
+                ],
+              ),
             ],
           ),
         ),

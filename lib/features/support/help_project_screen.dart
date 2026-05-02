@@ -1,13 +1,18 @@
+import 'dart:async';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 
 import '../../app/l10n/app_localization.dart';
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_radii.dart';
 import '../../core/widgets/pressable.dart';
+import 'data/support_billing_service.dart';
+import 'domain/entities/support_plan.dart';
 
 class HelpProjectScreen extends StatefulWidget {
   const HelpProjectScreen({super.key});
@@ -18,15 +23,122 @@ class HelpProjectScreen extends StatefulWidget {
 
 class _HelpProjectScreenState extends State<HelpProjectScreen> {
   int _selectedIndex = 0;
+  final SupportBillingService _billing = SupportBillingService();
+  late final StreamSubscription<List<PurchaseDetails>> _purchaseSubscription;
+  Map<String, SupportProduct> _productsById = {};
+  bool _purchasePending = false;
 
-  final List<_Plan> _plans = const [
-    _Plan(months: 12, discountLabel: '-24%', priceLabel: '1 750 ₽'),
-    _Plan(months: 3, discountLabel: '-18%', priceLabel: '490 ₽'),
-    _Plan(months: 1, discountLabel: null, priceLabel: '199 ₽'),
+  final List<SupportPlan> _plans = const [
+    SupportPlan(
+      months: 12,
+      discountLabel: '-24%',
+      priceLabel: '1 750 ₽',
+      productId: 'support_12_months',
+    ),
+    SupportPlan(
+      months: 3,
+      discountLabel: '-18%',
+      priceLabel: '490 ₽',
+      productId: 'support_3_months',
+    ),
+    SupportPlan(
+      months: 1,
+      discountLabel: null,
+      priceLabel: '199 ₽',
+      productId: 'support_1_month',
+    ),
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _purchaseSubscription = _billing.purchaseStream.listen(
+      _handlePurchaseUpdates,
+      onDone: () => _purchaseSubscription.cancel(),
+      onError: (_) {
+        if (!mounted) return;
+        setState(() => _purchasePending = false);
+        _showMessage(_purchaseUnavailableMessage);
+      },
+    );
+    unawaited(_loadProducts());
+  }
+
+  @override
+  void dispose() {
+    _purchaseSubscription.cancel();
+    super.dispose();
+  }
+
+  Future<void> _loadProducts() async {
+    final products = await _billing.loadProducts(_plans);
+    if (!mounted) return;
+    setState(() => _productsById = products);
+  }
+
+  Future<void> _buySelectedPlan() async {
+    if (_purchasePending) return;
+    final selected = _plans[_selectedIndex];
+    final product = _productsById[selected.productId];
+    if (product == null) {
+      _showMessage(_purchaseUnavailableMessage);
+      return;
+    }
+
+    setState(() => _purchasePending = true);
+    try {
+      final started = await _billing.buy(product);
+      if (!started) {
+        if (!mounted) return;
+        setState(() => _purchasePending = false);
+        _showMessage(_purchaseUnavailableMessage);
+      }
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _purchasePending = false);
+      _showMessage(_purchaseUnavailableMessage);
+    }
+  }
+
+  Future<void> _handlePurchaseUpdates(List<PurchaseDetails> purchases) async {
+    for (final purchase in purchases) {
+      if (purchase.status == PurchaseStatus.pending) {
+        if (mounted) setState(() => _purchasePending = true);
+        continue;
+      }
+
+      if (purchase.pendingCompletePurchase) {
+        await _billing.completePurchase(purchase);
+      }
+
+      if (!mounted) continue;
+      setState(() => _purchasePending = false);
+      if (purchase.status == PurchaseStatus.purchased ||
+          purchase.status == PurchaseStatus.restored) {
+        _showMessage(_purchaseSuccessMessage);
+      } else if (purchase.status == PurchaseStatus.error) {
+        _showMessage(_purchaseUnavailableMessage);
+      }
+    }
+  }
+
+  void _showMessage(String message) {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  String get _purchaseUnavailableMessage => context.locale.languageCode == 'ru'
+      ? 'Покупка пока недоступна'
+      : 'Purchase is currently unavailable';
+
+  String get _purchaseSuccessMessage => context.locale.languageCode == 'ru'
+      ? 'Спасибо за поддержку'
+      : 'Thank you for your support';
+
+  @override
   Widget build(BuildContext context) {
+    final isRussian = context.locale.languageCode == 'ru';
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
@@ -76,27 +188,27 @@ class _HelpProjectScreenState extends State<HelpProjectScreen> {
                         for (var i = 0; i < _plans.length; i++) ...[
                           _PlanTile(
                             plan: _plans[i],
+                            product: _productsById[_plans[i].productId],
                             selected: i == _selectedIndex,
                             onTap: () => setState(() => _selectedIndex = i),
                           ),
                           if (i != _plans.length - 1) SizedBox(height: 14.h),
                         ],
                         SizedBox(height: 33.h),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            _LinkText(
-                              label: context.t('support.privacyPolicy'),
-                              onTap: () {},
-                            ),
-                            _LinkText(
-                              label: context.t('support.termsOfService'),
-                              onTap: () {},
-                            ),
-                          ],
+                        _SupportLinks(
+                          isColumn: isRussian,
+                          privacyLabel: context.t('support.privacyPolicy'),
+                          termsLabel: context.t('support.termsOfService'),
+                          onPrivacyTap: () {},
+                          onTermsTap: () {},
                         ),
-                        SizedBox(height: 12.h),
-                        _SubscribeButton(onTap: () {}),
+                        SizedBox(height: isRussian ? 16.h : 12.h),
+                        _SubscribeButton(
+                          onTap: _purchasePending
+                              ? null
+                              : () => unawaited(_buySelectedPlan()),
+                          loading: _purchasePending,
+                        ),
                         SizedBox(height: 12.h),
                         Text(
                           context.t('support.disclaimer'),
@@ -122,26 +234,16 @@ class _HelpProjectScreenState extends State<HelpProjectScreen> {
   }
 }
 
-class _Plan {
-  const _Plan({
-    required this.months,
-    required this.discountLabel,
-    required this.priceLabel,
-  });
-
-  final int months;
-  final String? discountLabel;
-  final String priceLabel;
-}
-
 class _PlanTile extends StatelessWidget {
   const _PlanTile({
     required this.plan,
+    required this.product,
     required this.selected,
     required this.onTap,
   });
 
-  final _Plan plan;
+  final SupportPlan plan;
+  final SupportProduct? product;
   final bool selected;
   final VoidCallback onTap;
 
@@ -171,7 +273,7 @@ class _PlanTile extends StatelessWidget {
               child: Row(
                 children: [
                   Text(
-                    '${plan.months} ${'support.months'.plural(plan.months)}',
+                    _monthPlanLabel(context, plan.months),
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w500,
@@ -188,7 +290,7 @@ class _PlanTile extends StatelessWidget {
               ),
             ),
             Text(
-              plan.priceLabel,
+              product?.price ?? plan.priceLabel,
               style: TextStyle(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w600,
@@ -202,6 +304,21 @@ class _PlanTile extends StatelessWidget {
       ),
     );
   }
+}
+
+String _monthPlanLabel(BuildContext context, int months) {
+  if (context.locale.languageCode != 'ru') {
+    return months == 1 ? '$months month' : '$months months';
+  }
+
+  final mod10 = months % 10;
+  final mod100 = months % 100;
+  final suffix = mod10 == 1 && mod100 != 11
+      ? 'месяц'
+      : mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)
+      ? 'месяца'
+      : 'месяцев';
+  return '$months $suffix';
 }
 
 class _DiscountBadge extends StatelessWidget {
@@ -260,31 +377,80 @@ class _CheckBox extends StatelessWidget {
 }
 
 class _LinkText extends StatelessWidget {
-  const _LinkText({required this.label, required this.onTap});
+  const _LinkText({
+    required this.label,
+    required this.onTap,
+    required this.textAlign,
+  });
 
   final String label;
+  final TextAlign textAlign;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
+    final isRussian = context.locale.languageCode == 'ru';
     return Pressable(
       onTap: onTap,
       child: Text(
         label,
+        textAlign: textAlign,
         style: TextStyle(
-          fontSize: 14.sp,
+          fontSize: isRussian ? 10.sp : 14.sp,
           fontWeight: FontWeight.w400,
           color: Colors.white,
+          height: 1,
         ),
       ),
     );
   }
 }
 
-class _SubscribeButton extends StatelessWidget {
-  const _SubscribeButton({required this.onTap});
+class _SupportLinks extends StatelessWidget {
+  const _SupportLinks({
+    required this.isColumn,
+    required this.privacyLabel,
+    required this.termsLabel,
+    required this.onPrivacyTap,
+    required this.onTermsTap,
+  });
 
-  final VoidCallback onTap;
+  final bool isColumn;
+  final String privacyLabel;
+  final String termsLabel;
+  final VoidCallback onPrivacyTap;
+  final VoidCallback onTermsTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final links = [
+      _LinkText(
+        label: privacyLabel,
+        onTap: onPrivacyTap,
+        textAlign: TextAlign.start,
+      ),
+      _LinkText(label: termsLabel, onTap: onTermsTap, textAlign: TextAlign.end),
+    ];
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Flexible(
+          child: Align(alignment: Alignment.centerLeft, child: links[0]),
+        ),
+        SizedBox(width: 16.w),
+        Flexible(
+          child: Align(alignment: Alignment.centerRight, child: links[1]),
+        ),
+      ],
+    );
+  }
+}
+
+class _SubscribeButton extends StatelessWidget {
+  const _SubscribeButton({required this.onTap, required this.loading});
+
+  final VoidCallback? onTap;
+  final bool loading;
 
   @override
   Widget build(BuildContext context) {
@@ -298,15 +464,24 @@ class _SubscribeButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppRadii.inner.r),
         ),
         child: Center(
-          child: Text(
-            context.t('support.subscribe'),
-            style: TextStyle(
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w500,
-              color: Color(0xFF24398B),
-              height: 1.2,
-            ),
-          ),
+          child: loading
+              ? SizedBox(
+                  width: 18.r,
+                  height: 18.r,
+                  child: const CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Color(0xFF24398B),
+                  ),
+                )
+              : Text(
+                  context.t('support.subscribe'),
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xFF24398B),
+                    height: 1.2,
+                  ),
+                ),
         ),
       ),
     );

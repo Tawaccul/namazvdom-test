@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../../app/router/app_routes.dart';
+import '../../content/data/app_content_preloader.dart';
 import '../../onboarding/data/onboarding_repository_memory.dart';
 
 class AppLaunchSplashScreen extends StatefulWidget {
@@ -17,12 +18,23 @@ class _AppLaunchSplashScreenState extends State<AppLaunchSplashScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _animationController;
   bool _navigated = false;
+  bool _animationCompleted = false;
+  bool _contentPreloadCompleted = false;
+  bool _contentPreloadStarted = false;
 
   @override
   void initState() {
     super.initState();
     _animationController = AnimationController(vsync: this)
       ..addStatusListener(_handleStatusChanged);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_contentPreloadStarted) return;
+    _contentPreloadStarted = true;
+    unawaited(_preloadContent());
   }
 
   @override
@@ -34,7 +46,26 @@ class _AppLaunchSplashScreenState extends State<AppLaunchSplashScreen>
   }
 
   void _handleStatusChanged(AnimationStatus status) {
-    if (status != AnimationStatus.completed || _navigated) return;
+    if (status != AnimationStatus.completed) return;
+    _animationCompleted = true;
+    _navigateWhenReady();
+  }
+
+  Future<void> _preloadContent() async {
+    try {
+      await AppContentPreloader.preload(context);
+    } catch (_) {
+      // Local assets are the fallback if startup sync cannot complete.
+    }
+    if (!mounted) return;
+    _contentPreloadCompleted = true;
+    _navigateWhenReady();
+  }
+
+  void _navigateWhenReady() {
+    if (!_animationCompleted || !_contentPreloadCompleted || _navigated) {
+      return;
+    }
     _navigated = true;
     Future<void>.delayed(const Duration(milliseconds: 200), () {
       if (!mounted) return;

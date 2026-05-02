@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../app/l10n/app_localization.dart';
 import '../../../../app/theme/app_colors.dart';
+import '../../../../app/theme/theme_asset_paths.dart';
 import '../../../../app/ui_kit/app_divider.dart';
 import '../../../../app/theme/app_radii.dart';
 import '../../../../core/widgets/pressable.dart';
@@ -184,7 +185,7 @@ class _LanguageSheetHeaderDelegate extends SliverPersistentHeaderDelegate {
                     borderRadius: BorderRadius.circular(AppRadii.circle.r),
                   ),
                   child: SvgPicture.asset(
-                    'assets/icons/close-icon.svg',
+                    closeIconAssetFor(context),
                     width: 24.r,
                   ),
                 ),

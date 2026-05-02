@@ -19,6 +19,8 @@ import 'models/rakaat_models.dart';
 class StagePrayerLoader {
   const StagePrayerLoader._();
 
+  // Temporary local-content mode: keep prayer and additional surah content
+  // limited to bundled assets until backend content is enabled again.
   static bool forceLocalOnly = true;
 
   static Future<List<RakaatData>> load(
@@ -59,12 +61,15 @@ class StagePrayerLoader {
       final requestContext = fallbackChain[index];
       try {
         final rakaats = await getPrayerRakaats(baseContext: requestContext);
-        return _mapPrayerToStageRakaats(
+        final mapped = await _mapPrayerToStageRakaats(
           rakaats,
           prayerCode: normalizedPrayerCode,
           getPrayerSurah: getPrayerSurah,
           languageCode: _resolveLanguageCode(rakaats, requestContext),
         );
+        if (mapped.isNotEmpty) return mapped;
+        lastError = StateError('empty_remote_prayer');
+        break;
       } catch (error) {
         if (_isPrayerNotFoundError(error)) {
           final localFallback = await _tryLoadPrayerFromLocalAssets(
@@ -246,13 +251,19 @@ Future<List<RakaatData>> _mapPrayerToStageRakaats(
       );
     }
 
+    final visibleSteps = rakaat.context.rakah == 1
+        ? stageSteps
+        : stageSteps
+              .where((step) => !_isProtectionFromDevilStageStep(step))
+              .toList(growable: false);
+
     mapped.add(
       RakaatData(
         number: rakaat.context.rakah,
         imageAsset: rakaat.context.rakah == 1
             ? 'assets/icons/salat-1.png'
             : 'assets/icons/salat.png',
-        steps: stageSteps,
+        steps: visibleSteps,
         additionalSurahOptions: additionalSurahOptions,
       ),
     );
@@ -377,6 +388,50 @@ RakaatStep _copyStepWithOrderIndex(RakaatStep step, int orderIndex) {
 
 bool _isAdditionalSurahStep(PrayerStep step) {
   return step.stepCode.trim().toLowerCase() == 'additional_surah';
+}
+
+bool _isProtectionFromDevilStageStep(RakaatStep step) {
+  return _isProtectionFromDevilContent(
+    stepCode: step.stepCode,
+    title: step.title,
+    arabic: step.arabic,
+    transliteration: step.transliteration,
+    translation: step.translation,
+  );
+}
+
+bool _isProtectionFromDevilContent({
+  required String stepCode,
+  required String title,
+  required String arabic,
+  required String transliteration,
+  required String translation,
+}) {
+  final normalizedCode = stepCode.trim().toLowerCase().replaceAll('-', '_');
+  const protectionCodes = {
+    'istiadha',
+    'istiadhah',
+    'taawwudh',
+    'taawuz',
+    'protection_from_devil',
+  };
+  if (protectionCodes.contains(normalizedCode)) return true;
+
+  final normalizedText = [
+    title,
+    arabic,
+    transliteration,
+    translation,
+  ].join(' ').toLowerCase();
+  return normalizedText.contains('protection from the devil') ||
+      normalizedText.contains('защите от шайтана') ||
+      normalizedText.contains('от проклятого шайтана') ||
+      normalizedText.contains('minash-shaytan') ||
+      normalizedText.contains('minash shaytan') ||
+      normalizedText.contains("a'oothu billaahi") ||
+      normalizedText.contains("a'udhu billahi") ||
+      normalizedText.contains('أَعُوذُ') ||
+      normalizedText.contains('اعوذ');
 }
 
 List<PrayerStepSurahOption> _normalizeSurahOptions(
@@ -530,13 +585,18 @@ Future<List<RakaatData>?> _tryLoadPrayerFromLocalAssets({
         rawSteps: rawSteps,
         translations: translations,
       );
+      final visibleSteps = rakaatNumber == 1
+          ? mapped.steps
+          : mapped.steps
+                .where((step) => !_isProtectionFromDevilStageStep(step))
+                .toList(growable: false);
       rakaats.add(
         RakaatData(
           number: rakaatNumber,
           imageAsset: rakaatNumber == 1
               ? 'assets/icons/salat-1.png'
               : 'assets/icons/salat.png',
-          steps: mapped.steps,
+          steps: visibleSteps,
           additionalSurahOptions: mapped.additionalSurahOptions,
         ),
       );
@@ -924,10 +984,9 @@ String _resolveNamazStepImageAsset(String imagePath) {
   final fileName = normalized.split('/').last;
   if (!fileName.toLowerCase().endsWith('.svg')) return normalized;
 
-  final baseName = fileName.substring(0, fileName.length - 4).replaceAll(
-    RegExp(r'_(male|female)$', caseSensitive: false),
-    '',
-  );
+  final baseName = fileName
+      .substring(0, fileName.length - 4)
+      .replaceAll(RegExp(r'_(male|female)$', caseSensitive: false), '');
   final genderCode = GenderRepositoryMemory.instance
       .getSelectedGender()
       .id

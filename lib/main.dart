@@ -5,8 +5,9 @@ import 'package:flutter/services.dart';
 import 'app/app.dart';
 import 'app/l10n/app_localization.dart';
 import 'features/onboarding/data/onboarding_repository_memory.dart';
-import 'features/settings/language/data/language_repository_memory.dart';
 import 'features/settings/gender/data/gender_repository_memory.dart';
+import 'features/settings/language/data/language_repository_memory.dart';
+import 'features/settings/theme/presentation/theme_text_size_store.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,6 +18,7 @@ Future<void> main() async {
   await EasyLocalization.ensureInitialized();
   await LanguageRepositoryMemory.instance.init();
   await GenderRepositoryMemory.instance.init();
+  await ThemeTextSizeStore.init();
   await OnboardingRepositoryMemory.instance.init();
   runApp(
     EasyLocalization(
