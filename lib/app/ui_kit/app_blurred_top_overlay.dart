@@ -1,18 +1,16 @@
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:soft_edge_blur/soft_edge_blur.dart';
+import 'package:progressive_blur/progressive_blur.dart';
 
-import '../theme/app_colors.dart';
-
+/// Прогрессивный блюр сверху экрана.
+/// Использует пакет progressive_blur (GPU-шейдер) для настоящего
+/// градиентного размытия как в iOS.
 class AppBlurredTopOverlay extends StatelessWidget {
   const AppBlurredTopOverlay({
     super.key,
     required this.child,
     this.visible = true,
-    this.height = 150,
-    this.maxBlurSigma = 60,
+    this.height = 140,
+    this.maxBlurSigma = 7,
   });
 
   final Widget child;
@@ -22,67 +20,68 @@ class AppBlurredTopOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.colors;
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        child,
-        IgnorePointer(
-          ignoring: true,
-          child: TweenAnimationBuilder<double>(
-            duration: const Duration(milliseconds: 180),
-            curve: Curves.easeOutCubic,
-            tween: Tween<double>(begin: 0, end: visible ? 1 : 0),
-            builder: (context, opacity, _) {
-              if (opacity <= 0.001) return const SizedBox.shrink();
-              final sigma = maxBlurSigma * opacity;
-              return Align(
-                alignment: Alignment.topCenter,
-                child: SizedBox(
-                  height: height.h,
-                  width: double.infinity,
-                  child: SoftEdgeBlur(
-                    edges: [
-                      EdgeBlur(
-                        type: EdgeType.topEdge,
-                        size: height.h,
-                        tileMode: TileMode.mirror,
-                        tintColor: colors.background.withValues(
-                          alpha: 0.6 * opacity,
-                        ),
-                        sigma: sigma,
-                        controlPoints: [
-                          ControlPoint(
-                            position: 0,
-                            type: ControlPointType.visible,
-                          ),
-                          ControlPoint(
-                            position: 1,
-                            type: ControlPointType.transparent,
-                          ),
-                        ],
-                      ),
-                    ],
-                    child: ClipRect(
-                      child: BackdropFilter(
-                        filter: ui.ImageFilter.blur(
-                          sigmaX: sigma,
-                          sigmaY: sigma,
-                        ),
-                        child: ColoredBox(
-                          color: colors.background.withValues(
-                            alpha: 0.08 * opacity,
-                          ),
+    return TweenAnimationBuilder<double>(
+      duration: const Duration(milliseconds: 220),
+      curve: Curves.easeOutCubic,
+      tween: Tween<double>(begin: 0, end: visible ? 1 : 0),
+      builder: (context, t, _) {
+        // Определяем где заканчивается зона блюра.
+        // Она пропорциональна height относительно полной высоты child.
+        // Для простоты считаем, что height задан в логических пикселях
+        // и оборачиваем child в Stack, где блюр идёт от верха до height.
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            final blurHeight = height;
+            final fullHeight = constraints.maxHeight.isFinite
+                ? constraints.maxHeight
+                : MediaQuery.sizeOf(context).height;
+            // Доля высоты экрана, которую занимает зона блюра
+            final blurEnd = (blurHeight / fullHeight).clamp(0.0, 1.0);
+            // Полный блюр в верхних 60% зоны, плавное затухание до конца
+            final solidEnd = blurEnd * 0.6;
+
+            final isDark = Theme.of(context).brightness == Brightness.dark;
+            final tintBase = isDark ? Colors.black : Colors.white;
+
+            return Stack(
+              children: [
+                ProgressiveBlurWidget(
+                  sigma: maxBlurSigma * t,
+                  linearGradientBlur: LinearGradientBlur(
+                    values: const [1, 0],
+                    stops: [solidEnd, blurEnd],
+                    start: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                  child: child,
+                ),
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: blurHeight,
+                  child: IgnorePointer(
+                    ignoring: true,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            tintBase.withValues(alpha: 0.01 * t),
+                            tintBase.withValues(alpha: 0.0),
+                          ],
+                          stops: [solidEnd / blurEnd, 1.0],
                         ),
                       ),
                     ),
                   ),
                 ),
-              );
-            },
-          ),
-        ),
-      ],
+              ],
+            );
+          },
+        );
+      },
     );
   }
 }

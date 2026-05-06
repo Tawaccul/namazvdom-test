@@ -6,6 +6,9 @@ import '../../../app/l10n/app_localization.dart';
 import '../../../app/theme/app_radii.dart';
 import '../../../app/ui_kit/app_button.dart';
 import '../../../core/widgets/pressable.dart';
+import '../animations/stage_drag_carousel.dart';
+import '../animations/stage_ghost_step_card.dart';
+import '../animations/stage_neighbor_step_bundle.dart';
 import '../models/rakaat_models.dart';
 import '../models/stage_step_screen_models.dart';
 import 'stage_progress_bar.dart';
@@ -92,6 +95,9 @@ Widget buildStageStepScreenBody({
   required GlobalKey selectedAyahCardKey,
   required double topControlInset,
   required VoidCallback onOverviewExit,
+  StageNeighborStepBundle? prevGhost,
+  StageNeighborStepBundle? nextGhost,
+  VoidCallback? onCarouselDragStarted,
 }) {
   final progressCard = animateAppear(
     Pressable(
@@ -115,42 +121,75 @@ Widget buildStageStepScreenBody({
     ),
   );
 
-  final stepContentSection = StageStepContentSection(
-    animateStepTransition: animateStepTransition,
-    animateRakaat: animateRakaat,
-    animateAppear: animateAppear,
-    stepTitle: stepTitle,
-    movementDescription: movementDescription,
-    cardTextSize: cardTextSize,
-    softColor: softColor,
-    textPrimaryColor: textPrimaryColor,
-    textSecondaryColor: textSecondaryColor,
-    stepImage: StageStepImage(
-      stepImageAsset: currentStepImageAsset,
-      fallbackStepImageAsset: fallbackStepImageAsset,
-    ),
-    hasAdditionalSurahSelector: hasAdditionalSurahSelector,
-    additionalSurahOptions: additionalSurahOptions,
-    selectedAdditionalSurahIndex: selectedAdditionalSurahIndex,
-    onSelectAdditionalSurah: onSelectAdditionalSurah,
-    currentStepEntries: currentStepEntries,
-    additionalSurahAnimationToken: additionalSurahAnimationToken,
-    entryKeyFor: entryKeyFor,
-    keyForEntry: keyForEntry,
-    playingStepKey: playingStepKey,
-    isAudioPlaying: isAudioPlaying,
-    audioProgress: audioProgress,
-    onAyahTap: onAyahTap,
-    errorText: errorText,
-    navButtonsVisible: navButtonsVisible,
-    hasPrevStageStep: hasPrevStageStep,
-    hasNextStageStep: hasNextStageStep,
-    canGoBack: canGoBack,
-    canGoNext: canGoNext,
-    backButtonLabel: context.t('common.back'),
-    nextButtonLabel: context.t('common.next'),
-    onPrevStep: canGoBack ? () => unawaited(onPrevStep()) : null,
-    onNextStep: canGoNext ? () => unawaited(onNextStep()) : null,
+  // Билдер активного контента шага. Получает [dragProgress] (0..1) для
+  // плавного скрытия кнопок навигации при свайпе.
+  Widget buildStepContent(BuildContext context, double dragProgress) {
+    final navOpacity = (1 - dragProgress * 2).clamp(0.0, 1.0);
+    return StageStepContentSection(
+      animateStepTransition: animateStepTransition,
+      animateRakaat: animateRakaat,
+      animateAppear: animateAppear,
+      stepTitle: stepTitle,
+      movementDescription: movementDescription,
+      cardTextSize: cardTextSize,
+      softColor: softColor,
+      textPrimaryColor: textPrimaryColor,
+      textSecondaryColor: textSecondaryColor,
+      stepImage: StageStepImage(
+        stepImageAsset: currentStepImageAsset,
+        fallbackStepImageAsset: fallbackStepImageAsset,
+      ),
+      hasAdditionalSurahSelector: hasAdditionalSurahSelector,
+      additionalSurahOptions: additionalSurahOptions,
+      selectedAdditionalSurahIndex: selectedAdditionalSurahIndex,
+      onSelectAdditionalSurah: onSelectAdditionalSurah,
+      currentStepEntries: currentStepEntries,
+      additionalSurahAnimationToken: additionalSurahAnimationToken,
+      entryKeyFor: entryKeyFor,
+      keyForEntry: keyForEntry,
+      playingStepKey: playingStepKey,
+      isAudioPlaying: isAudioPlaying,
+      audioProgress: audioProgress,
+      onAyahTap: onAyahTap,
+      errorText: errorText,
+      navButtonsVisible: navButtonsVisible,
+      hasPrevStageStep: hasPrevStageStep,
+      hasNextStageStep: hasNextStageStep,
+      canGoBack: canGoBack,
+      canGoNext: canGoNext,
+      backButtonLabel: context.t('common.back'),
+      nextButtonLabel: context.t('common.next'),
+      onPrevStep: canGoBack ? () => unawaited(onPrevStep()) : null,
+      onNextStep: canGoNext ? () => unawaited(onNextStep()) : null,
+      navButtonsOpacity: navOpacity,
+    );
+  }
+
+  Widget? buildGhost(StageNeighborStepBundle? bundle) {
+    if (bundle == null) return null;
+    return StageGhostStepCard(
+      stepTitle: bundle.stepTitle,
+      movementDescription: bundle.movementDescription,
+      cardTextSize: cardTextSize,
+      softColor: softColor,
+      textPrimaryColor: textPrimaryColor,
+      textSecondaryColor: textSecondaryColor,
+      stepImageAsset: bundle.stepImageAsset,
+      fallbackStepImageAsset: bundle.fallbackStepImageAsset,
+      entries: bundle.entries,
+    );
+  }
+
+  final stepContentSection = StageDragCarousel(
+    canGoNext: hasNextStageStep,
+    canGoPrev: hasPrevStageStep,
+    onNext: onNextStep,
+    onPrev: onPrevStep,
+    onDragStarted: onCarouselDragStarted,
+    childBuilder: (context, dragProgress) =>
+        buildStepContent(context, dragProgress),
+    prevGhost: buildGhost(prevGhost),
+    nextGhost: buildGhost(nextGhost),
   );
 
   final overviewExitVariant = Theme.of(context).brightness == Brightness.light

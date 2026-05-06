@@ -22,22 +22,22 @@ class StageItem extends StatelessWidget {
     final colors = context.colors;
     return Pressable(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(AppRadii.pill.r),
+      borderRadius: BorderRadius.circular(AppRadii.pill),
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
+        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10.w),
         child: Row(
           children: [
             Container(
-              width: 42.r,
-              height: 42.r,
+              width: 42,
+              height: 42,
               decoration: BoxDecoration(
                 color: colors.soft,
-                borderRadius: BorderRadius.circular(12.r),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
                 Icons.nightlight_round,
                 color: colors.primary,
-                size: 20.r,
+                size: 20,
               ),
             ),
             SizedBox(width: 12.w),
@@ -48,16 +48,16 @@ class StageItem extends StatelessWidget {
                   Text(
                     title,
                     style: TextStyle(
-                      fontSize: 16.sp,
+                      fontSize: 16,
                       fontWeight: FontWeight.w800,
                       color: colors.textPrimary,
                     ),
                   ),
-                  SizedBox(height: 2.h),
+                  SizedBox(height: 2),
                   Text(
                     subtitle,
                     style: TextStyle(
-                      fontSize: 13.sp,
+                      fontSize: 13,
                       fontWeight: FontWeight.w600,
                       color: colors.textSecondary,
                     ),
@@ -65,7 +65,7 @@ class StageItem extends StatelessWidget {
                 ],
               ),
             ),
-            Icon(Icons.chevron_right, color: colors.textMuted, size: 22.r),
+            Icon(Icons.chevron_right, color: colors.textMuted, size: 22),
           ],
         ),
       ),

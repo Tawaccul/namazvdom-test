@@ -604,7 +604,8 @@ Future<List<RakaatData>?> _tryLoadPrayerFromLocalAssets({
 
     if (rakaats.isEmpty) return null;
     return _normalizeFajrStepCounts(rakaats, prayerCode: normalizedPrayerCode);
-  } catch (_) {
+  } catch (e) {
+    debugPrint('[StagePrayerLoader] _tryLoadPrayerFromLocalAssets failed: $e');
     return null;
   }
 }
@@ -886,7 +887,8 @@ Future<List<_LocalSurahAyah>> _loadLocalSurahAyahs({
       );
     }
     return deduped.values.toList(growable: false);
-  } catch (_) {
+  } catch (e) {
+    debugPrint('[StagePrayerLoader] _loadLocalSurahAyahs parse failed: $e');
     return const [];
   }
 }
@@ -940,7 +942,10 @@ Future<Map<String, dynamic>> _loadTranslationsForLanguage(
       final json = jsonDecode(raw);
       if (json is Map<String, dynamic>) return json;
       if (json is Map) return json.cast<String, dynamic>();
-    } catch (_) {
+    } catch (e) {
+      debugPrint(
+        '[StagePrayerLoader] _loadTranslationsForLanguage parse failed for $path: $e',
+      );
       continue;
     }
   }

@@ -29,10 +29,10 @@ class StagePinnedProgressCard extends StatelessWidget {
     final colors = context.colors;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14),
       decoration: BoxDecoration(
         color: colors.card,
-        borderRadius: BorderRadius.circular(AppRadii.card.r),
+        borderRadius: BorderRadius.circular(AppRadii.card),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: isDark ? 0.34 : 0.14),
@@ -56,7 +56,7 @@ class StagePinnedProgressCard extends StatelessWidget {
                     },
                   ),
                   style: TextStyle(
-                    fontSize: 14.sp,
+                    fontSize: 14,
                     fontWeight: FontWeight.w500,
                     color: colors.secondary,
                   ),
@@ -73,7 +73,7 @@ class StagePinnedProgressCard extends StatelessWidget {
                   ),
                   textAlign: TextAlign.right,
                   style: TextStyle(
-                    fontSize: 14.sp,
+                    fontSize: 14,
                     fontWeight: FontWeight.w500,
                     color: colors.secondary,
                   ),
@@ -81,7 +81,7 @@ class StagePinnedProgressCard extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 10.h),
+          SizedBox(height: 10),
           StageProgressBar(value: progress, animate: animateProgress),
         ],
       ),

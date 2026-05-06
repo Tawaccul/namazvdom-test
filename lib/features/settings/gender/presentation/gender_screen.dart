@@ -68,19 +68,19 @@ class _GenderScreenState extends State<GenderScreen> {
         child: Stack(
           children: [
             Padding(
-              padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 28.h),
+              padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 28),
               child: ListView(
                 controller: _scrollController,
                 physics: const BouncingScrollPhysics(),
                 padding: EdgeInsets.only(
-                  top: MediaQuery.paddingOf(context).top + 12.h,
+                  top: MediaQuery.paddingOf(context).top + 12,
                 ),
                 children: [
                   AppTopBar(
                     title: context.t('gender.title'),
                     onBack: () => Navigator.of(context).maybePop(),
                   ),
-                  SizedBox(height: 24.h),
+                  SizedBox(height: 24),
                   AnimatedBuilder(
                     animation: _controller,
                     builder: (context, _) {
@@ -148,7 +148,7 @@ class _GenderTile extends StatelessWidget {
                 BlendMode.srcIn,
               ),
             )
-          : SizedBox(width: 16.r, height: 16.r),
+          : SizedBox(width: 16, height: 16),
     );
   }
 }

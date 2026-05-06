@@ -46,7 +46,7 @@ class StageProgressBlock extends StatelessWidget {
               color: colors.textPrimary,
             ),
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 16),
           Row(
             children: [
               Expanded(
@@ -89,7 +89,7 @@ class StageProgressBlock extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: 12),
           StageProgressBar(value: progress, animate: animateProgress),
         ],
       ),
@@ -109,7 +109,7 @@ class StageProgressBar extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(999),
       child: SizedBox(
-        height: 12.h,
+        height: 12,
         child: LayoutBuilder(
           builder: (context, constraints) {
             final width = constraints.maxWidth;
@@ -126,12 +126,12 @@ class StageProgressBar extends StatelessWidget {
                         duration: const Duration(milliseconds: 300),
                         curve: Curves.easeOut,
                         width: filled,
-                        height: 12.h,
+                        height: 12,
                         decoration: BoxDecoration(color: colors.secondary),
                       )
                     : Container(
                         width: filled,
-                        height: 12.h,
+                        height: 12,
                         decoration: BoxDecoration(color: colors.secondary),
                       ),
               ],

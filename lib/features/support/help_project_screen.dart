@@ -93,7 +93,8 @@ class _HelpProjectScreenState extends State<HelpProjectScreen> {
         setState(() => _purchasePending = false);
         _showMessage(_purchaseUnavailableMessage);
       }
-    } catch (_) {
+    } catch (e) {
+      debugPrint('[HelpProjectScreen] _onPurchaseTap failed: $e');
       if (!mounted) return;
       setState(() => _purchasePending = false);
       _showMessage(_purchaseUnavailableMessage);

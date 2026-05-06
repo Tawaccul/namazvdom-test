@@ -114,9 +114,9 @@ class _MenuScreenState extends State<MenuScreen> {
           child: ListView(
             controller: _scrollController,
             physics: const BouncingScrollPhysics(),
-            padding: EdgeInsets.fromLTRB(16.w, 72.h, 16.w, 28.h),
+            padding: EdgeInsets.fromLTRB(16.w, 72, 16.w, 28),
             children: [
-              SizedBox(height: 10.h),
+              SizedBox(height: 10),
               Row(
                 children: [
                   _CircleBackButton(
@@ -126,14 +126,14 @@ class _MenuScreenState extends State<MenuScreen> {
                   Text(
                     context.t('common.back'),
                     style: TextStyle(
-                      fontSize: 16.sp,
+                      fontSize: 16,
                       fontWeight: FontWeight.w500,
                       color: colors.textPrimary,
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 24.h),
+              SizedBox(height: 24),
               _MenuCard(
                 children: [
                   _MenuRow(
@@ -161,7 +161,7 @@ class _MenuScreenState extends State<MenuScreen> {
                   ),
                 ],
               ),
-              SizedBox(height: 18.h),
+              SizedBox(height: 18),
               _MenuCard(
                 children: [
                   _MenuRow(
@@ -177,7 +177,7 @@ class _MenuScreenState extends State<MenuScreen> {
                   ),
                 ],
               ),
-              SizedBox(height: 18.h),
+              SizedBox(height: 18),
               _MenuCard(
                 children: [
                   _MenuRow(
@@ -215,7 +215,7 @@ class _MenuScreenState extends State<MenuScreen> {
                   ),
                 ],
               ),
-              SizedBox(height: 18.h),
+              SizedBox(height: 18),
               _MenuCard(
                 children: [
                   _MenuRow(
@@ -237,7 +237,7 @@ class _MenuScreenState extends State<MenuScreen> {
                   ),
                 ],
               ),
-              SizedBox(height: 18.h),
+              SizedBox(height: 18),
               _MenuCard(
                 children: [
                   _MenuRow(
@@ -269,7 +269,7 @@ class _CircleBackButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final radius = 22.r;
+    final radius = 22.0;
     return Pressable(
       onTap: onTap,
       borderRadius: BorderRadius.circular(radius),
@@ -279,8 +279,8 @@ class _CircleBackButton extends StatelessWidget {
         decoration: BoxDecoration(color: colors.card, shape: BoxShape.circle),
         child: SvgPicture.asset(
           'assets/icons/back.svg',
-          width: 7.r,
-          height: 15.r,
+          width: 7,
+          height: 15,
           fit: BoxFit.none,
           colorFilter: ColorFilter.mode(colors.textPrimary, BlendMode.srcIn),
         ),
@@ -301,7 +301,7 @@ class _MenuCard extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 16.w),
       decoration: BoxDecoration(
         color: colors.card,
-        borderRadius: BorderRadius.circular(AppRadii.pill.r),
+        borderRadius: BorderRadius.circular(AppRadii.pill),
       ),
       child: Column(children: children),
     );
@@ -329,19 +329,19 @@ class _MenuRow extends StatelessWidget {
     final left = leading ?? _BlueIcon(icon: icon ?? 'assets/icons/planet.svg');
     return Pressable(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(AppRadii.pill.r),
+      borderRadius: BorderRadius.circular(AppRadii.pill),
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 16.h),
+        padding: EdgeInsets.symmetric(vertical: 16),
         child: Row(
           children: [
             SizedBox(width: 6.w),
-            SizedBox(width: 32.r, height: 32.r, child: left),
+            SizedBox(width: 32, height: 32, child: left),
             SizedBox(width: 16.w),
             Expanded(
               child: Text(
                 title,
                 style: TextStyle(
-                  fontSize: 16.sp,
+                  fontSize: 16,
                   fontWeight: FontWeight.w500,
                   color: colors.textPrimary,
                   height: 1.36,
@@ -353,7 +353,7 @@ class _MenuRow extends StatelessWidget {
               Text(
                 trailingValue!,
                 style: TextStyle(
-                  fontSize: 16.sp,
+                  fontSize: 16,
                   fontWeight: FontWeight.w500,
                   color: colors.textSecondary,
                 ),
@@ -362,8 +362,8 @@ class _MenuRow extends StatelessWidget {
             SizedBox(width: 10.w),
             SvgPicture.asset(
               'assets/icons/arrow-right-chevron.svg',
-              width: 7.r,
-              height: 15.h,
+              width: 7,
+              height: 15,
               fit: BoxFit.none,
             ),
             SizedBox(width: 10.w),
@@ -394,15 +394,15 @@ class _BlueIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     return Container(
-      height: 32.h,
+      height: 32,
       width: 32.w,
       decoration: BoxDecoration(
         color: colors.primary,
-        borderRadius: BorderRadius.circular(AppRadii.chip.r),
+        borderRadius: BorderRadius.circular(AppRadii.chip),
       ),
       child: SvgPicture.asset(
         icon,
-        height: 16.h,
+        height: 16,
         width: 16.w,
         fit: BoxFit.none,
       ),
@@ -418,7 +418,7 @@ class _ExternalPlaceholder extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: const Color(0xFFFFC5C5),
-        borderRadius: BorderRadius.circular(10.r),
+        borderRadius: BorderRadius.circular(10),
         border: Border.all(color: Colors.redAccent, width: 2),
       ),
     );

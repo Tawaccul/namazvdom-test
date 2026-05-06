@@ -40,14 +40,14 @@ class StageAyahCard extends StatelessWidget {
 
     return Pressable(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(AppRadii.card.r),
+      borderRadius: BorderRadius.circular(AppRadii.card),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 260),
         curve: Curves.easeOut,
-        padding: EdgeInsets.all(20.r),
+        padding: EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: colors.card,
-          borderRadius: BorderRadius.circular(AppRadii.card.r),
+          borderRadius: BorderRadius.circular(AppRadii.card),
           border: Border.all(color: borderColor, width: borderWidth),
           boxShadow: selected
               ? [
@@ -69,7 +69,7 @@ class StageAyahCard extends StatelessWidget {
               isPlaying: isPlaying,
               onPlayPause: onPlayPause,
             ),
-            SizedBox(height: 16.h),
+            SizedBox(height: 16),
             Text(
               ayah.transliteration,
               style: TextStyle(
@@ -79,7 +79,7 @@ class StageAyahCard extends StatelessWidget {
                 color: colors.textPrimary,
               ),
             ),
-            SizedBox(height: 8.h),
+            SizedBox(height: 8),
             Text(
               ayah.translation,
               style: TextStyle(
@@ -114,11 +114,11 @@ class _AyahPill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final height = 58.h;
+    final height = 58.0;
     final iconAreaWidth = 24.w;
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(AppRadii.inner.r),
+      borderRadius: BorderRadius.circular(AppRadii.inner),
       child: Stack(
         children: [
           Positioned.fill(
@@ -151,7 +151,7 @@ class _AyahPill extends StatelessWidget {
                 height: height,
                 child: Pressable(
                   onTap: onPlayPause,
-                  borderRadius: BorderRadius.circular(AppRadii.inner.r),
+                  borderRadius: BorderRadius.circular(AppRadii.inner),
                   child: Center(
                     child: AnimatedSwitcher(
                       duration: const Duration(milliseconds: 180),
@@ -175,7 +175,7 @@ class _AyahPill extends StatelessWidget {
                 child: Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: 16.w,
-                    vertical: 12.h,
+                    vertical: 12,
                   ),
                   child: Text(
                     arabic,

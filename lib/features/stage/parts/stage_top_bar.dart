@@ -22,44 +22,40 @@ class StageTopBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final shadowColor = Colors.black.withAlpha(13);
     return Row(
       children: [
         Pressable(
           onTap: onBack,
-          borderRadius: BorderRadius.circular(AppRadii.circle),
-          child: Container(
-            width: 44.r,
-            height: 44.r,
-            decoration: BoxDecoration(
-              color: colors.card,
-              borderRadius: BorderRadius.circular(AppRadii.circle),
-              boxShadow: [
-                BoxShadow(
-                  color: shadowColor,
-                  blurRadius: 18,
-                  offset: const Offset(0, 10),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: colors.card,
+                  borderRadius: BorderRadius.circular(AppRadii.circle),
                 ),
-              ],
-            ),
-            child: SvgPicture.asset(
-              'assets/icons/back.svg',
-              colorFilter: ColorFilter.mode(
-                colors.textPrimary,
-                BlendMode.srcIn,
+                child: SvgPicture.asset(
+                  'assets/icons/back.svg',
+                  colorFilter: ColorFilter.mode(
+                    colors.textPrimary,
+                    BlendMode.srcIn,
+                  ),
+                  fit: BoxFit.none,
+                  width: 7.w,
+                ),
               ),
-              fit: BoxFit.none,
-              width: 7.w,
-            ),
-          ),
-        ),
-        SizedBox(width: 10.w),
-        Text(
-          context.t('common.back'),
-          style: TextStyle(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w500,
-            color: colors.textPrimary,
+              SizedBox(width: 10.w),
+              Text(
+                context.t('common.back'),
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: colors.textPrimary,
+                ),
+              ),
+            ],
           ),
         ),
         Flexible(
@@ -70,7 +66,7 @@ class StageTopBar extends StatelessWidget {
               borderRadius: BorderRadius.circular(AppRadii.pill),
               child: Container(
                 key: stageButtonKey,
-                padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
+                padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10),
                
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -90,7 +86,7 @@ class StageTopBar extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          fontSize: 16.sp,
+                          fontSize: 16,
                           fontWeight: FontWeight.w500,
                           color: colors.textPrimary,
                         ),

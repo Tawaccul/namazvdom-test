@@ -46,6 +46,8 @@ class AppThemeModeController extends ChangeNotifier {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(_themeModeKey, _themeModeId(_mode));
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('[AppThemeModeController] _persistMode failed: $e');
+    }
   }
 }

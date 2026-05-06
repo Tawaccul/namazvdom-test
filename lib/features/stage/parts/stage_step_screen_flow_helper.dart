@@ -31,7 +31,7 @@ class StageStepScreenFlowHelper {
     return TweenAnimationBuilder<double>(
       key: ValueKey<int>(token),
       tween: Tween<double>(begin: 0, end: 1),
-      duration: const Duration(milliseconds: 360),
+      duration: const Duration(milliseconds: 510),
       curve: Curves.easeOutCubic,
       builder: (context, value, animatedChild) {
         return Transform.translate(

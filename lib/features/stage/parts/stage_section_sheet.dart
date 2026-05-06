@@ -69,11 +69,11 @@ class _StageSectionSheetState extends State<_StageSectionSheet> {
       top: false,
       bottom: false,
       child: Container(
-        padding: EdgeInsets.fromLTRB(16.w, 32.h, 16.w, 10.h),
+        padding: EdgeInsets.fromLTRB(16.w, 32, 16.w, 10),
         height: MediaQuery.sizeOf(context).height * 0.9,
         decoration: BoxDecoration(
           color: colors.card,
-          borderRadius: BorderRadius.circular(28.r),
+          borderRadius: BorderRadius.circular(28),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -84,7 +84,7 @@ class _StageSectionSheetState extends State<_StageSectionSheet> {
                   child: Text(
                     context.t('stage.selectSection'),
                     style: TextStyle(
-                      fontSize: 20.sp,
+                      fontSize: 20,
                       fontWeight: FontWeight.w800,
                       color: colors.textPrimary,
                     ),
@@ -95,27 +95,27 @@ class _StageSectionSheetState extends State<_StageSectionSheet> {
                   onTap: () => Navigator.of(context).maybePop(),
                   borderRadius: BorderRadius.circular(AppRadii.circle),
                   child: Container(
-                    width: 24.r,
-                    height: 24.r,
+                    width: 24,
+                    height: 24,
                     decoration: BoxDecoration(
                       color: colors.soft,
                       borderRadius: BorderRadius.circular(AppRadii.circle),
                     ),
                     child: SvgPicture.asset(
                       closeIconAssetFor(context),
-                      width: 24.r,
-                      height: 24.r,
+                      width: 24,
+                      height: 24,
                     ),
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 32.h),
+            SizedBox(height: 32),
             Container(
-              padding: EdgeInsets.all(6.r),
+              padding: EdgeInsets.all(6),
               decoration: BoxDecoration(
                 color: colors.soft,
-                borderRadius: BorderRadius.circular(AppRadii.pill.r),
+                borderRadius: BorderRadius.circular(AppRadii.pill),
               ),
               child: Row(
                 children: [
@@ -130,7 +130,7 @@ class _StageSectionSheetState extends State<_StageSectionSheet> {
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 160),
                           curve: Curves.easeOut,
-                          padding: EdgeInsets.symmetric(vertical: 12.h),
+                          padding: EdgeInsets.symmetric(vertical: 12),
                           decoration: BoxDecoration(
                             color: i == _selectedRakaat
                                 ? colors.primary
@@ -144,7 +144,7 @@ class _StageSectionSheetState extends State<_StageSectionSheet> {
                             ),
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                              fontSize: 14.sp,
+                              fontSize: 14,
                               fontWeight: FontWeight.w500,
                               color: i == _selectedRakaat
                                   ? Colors.white
@@ -157,7 +157,7 @@ class _StageSectionSheetState extends State<_StageSectionSheet> {
                 ],
               ),
             ),
-            SizedBox(height: 14.h),
+            SizedBox(height: 14),
             Expanded(
               child: ListView.separated(
                 physics: const BouncingScrollPhysics(),
@@ -176,7 +176,7 @@ class _StageSectionSheetState extends State<_StageSectionSheet> {
                     borderRadius: BorderRadius.circular(AppRadii.inner),
                     child: Padding(
                       padding: EdgeInsets.symmetric(
-                        vertical: 20.h,
+                        vertical: 20,
                         horizontal: 2.w,
                       ),
                       child: Row(
@@ -185,7 +185,7 @@ class _StageSectionSheetState extends State<_StageSectionSheet> {
                             child: Text(
                               step.title,
                               style: TextStyle(
-                                fontSize: 16.sp,
+                                fontSize: 16,
                                 height: 1.36,
                                 fontWeight: FontWeight.w500,
                                 color: colors.textPrimary,
@@ -195,7 +195,7 @@ class _StageSectionSheetState extends State<_StageSectionSheet> {
                           SizedBox(width: 12.w),
                           SvgPicture.asset(
                             'assets/icons/arrow-right-chevron.svg',
-                            width: 10.r,
+                            width: 10,
                             colorFilter: ColorFilter.mode(
                               colors.textMuted,
                               BlendMode.srcIn,

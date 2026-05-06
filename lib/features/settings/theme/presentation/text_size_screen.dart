@@ -68,7 +68,7 @@ class _TextSizeScreenState extends State<TextSizeScreen> {
                     clipBehavior: Clip.none,
                     padding: EdgeInsets.fromLTRB(
                       20.w,
-                      MediaQuery.paddingOf(context).top + 12.h,
+                      MediaQuery.paddingOf(context).top + 12,
                       20.w,
                       30,
                     ),
@@ -77,9 +77,9 @@ class _TextSizeScreenState extends State<TextSizeScreen> {
                         title: context.t('theme.textSize'),
                         onBack: () => Navigator.of(context).maybePop(),
                       ),
-                      SizedBox(height: 24.h),
+                      SizedBox(height: 24),
                       _DescriptionCard(textSize: _textSize),
-                      SizedBox(height: 12.h),
+                      SizedBox(height: 12),
                       _PreviewCard(textSize: _textSize),
                     ],
                   ),
@@ -129,7 +129,7 @@ class _DescriptionCard extends StatelessWidget {
               color: colors.textPrimary,
             ),
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: 12),
           Text(
             context.t('theme.textSizeScreen.description'),
             style: TextStyle(
@@ -160,10 +160,10 @@ class _PreviewCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12),
             decoration: BoxDecoration(
               color: colors.soft,
-              borderRadius: BorderRadius.circular(AppRadii.inner.r),
+              borderRadius: BorderRadius.circular(AppRadii.inner),
             ),
             child: Align(
               alignment: Alignment.centerRight,
@@ -172,7 +172,7 @@ class _PreviewCard extends StatelessWidget {
                 textAlign: TextAlign.right,
                 textScaler: TextScaler.noScaling,
                 style: TextStyle(
-                  fontSize: 24.sp,
+                  fontSize: 24,
                   height: 1.4,
                   fontWeight: FontWeight.w400,
                   color: colors.textSecondary,
@@ -180,7 +180,7 @@ class _PreviewCard extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 20.h),
+          SizedBox(height: 20),
           Text(
             context.t('theme.textSizeScreen.previewTransliteration'),
             style: TextStyle(
@@ -223,19 +223,19 @@ class _BottomPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     return Container(
-      padding: EdgeInsets.fromLTRB(16.w, 22.h, 16.w, 18.h),
+      padding: EdgeInsets.fromLTRB(16.w, 22, 16.w, 18),
       decoration: BoxDecoration(
         color: colors.card,
         boxShadow: [
           BoxShadow(
             color: const Color(0xFFB9B9B9).withValues(alpha: 0.25),
-            blurRadius: 24.r,
-            offset: Offset(0, -4.h),
+            blurRadius: 24,
+            offset: Offset(0, -4),
           ),
         ],
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(AppRadii.pill.r),
-          topRight: Radius.circular(AppRadii.pill.r),
+          topLeft: Radius.circular(AppRadii.pill),
+          topRight: Radius.circular(AppRadii.pill),
         ),
       ),
       child: Column(
@@ -244,20 +244,20 @@ class _BottomPanel extends StatelessWidget {
           Text(
             context.t('theme.textSizeScreen.chooseOptimal'),
             style: TextStyle(
-              fontSize: 14.sp,
+              fontSize: 14,
               fontWeight: FontWeight.w400,
               height: 1.6,
               color: colors.textSecondary,
             ),
           ),
-          SizedBox(height: 18.h),
+          SizedBox(height: 18),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
                 'A',
                 style: TextStyle(
-                  fontSize: 18.sp,
+                  fontSize: 18,
                   fontWeight: FontWeight.w600,
                   color: colors.textPrimary,
                 ),
@@ -265,32 +265,32 @@ class _BottomPanel extends StatelessWidget {
               SizedBox(width: 12.w),
               Expanded(
                 child: SizedBox(
-                  height: 56.h,
+                  height: 56,
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
                       IgnorePointer(
                         child: _ScaleTrackDecor(
                           color: colors.divider,
-                          horizontalInset: 6.r,
+                          horizontalInset: 6,
                         ),
                       ),
                       IgnorePointer(
                         child: _ScaleMarkersDecor(
                           color: colors.divider,
-                          horizontalInset: 6.r,
+                          horizontalInset: 6,
                         ),
                       ),
                       SliderTheme(
                         data: SliderTheme.of(context).copyWith(
-                          trackHeight: 8.h,
+                          trackHeight: 8,
                           activeTrackColor: Colors.transparent,
                           inactiveTrackColor: Colors.transparent,
                           thumbColor: colors.primary,
                           tickMarkShape: SliderTickMarkShape.noTickMark,
                           overlayShape: SliderComponentShape.noOverlay,
                           thumbShape: RoundSliderThumbShape(
-                            enabledThumbRadius: 12.r,
+                            enabledThumbRadius: 12,
                             elevation: 0,
                             pressedElevation: 0,
                           ),
@@ -313,14 +313,14 @@ class _BottomPanel extends StatelessWidget {
               Text(
                 'A',
                 style: TextStyle(
-                  fontSize: 24.sp,
+                  fontSize: 24,
                   fontWeight: FontWeight.w600,
                   color: colors.textPrimary,
                 ),
               ),
             ],
           ),
-          SizedBox(height: 14.h),
+          SizedBox(height: 14),
           Row(
             children: [
               Expanded(
@@ -342,7 +342,7 @@ class _BottomPanel extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 24.h),
+          SizedBox(height: 24),
         ],
       ),
     );
@@ -366,18 +366,18 @@ class _ActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Pressable(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(AppRadii.inner.r),
+      borderRadius: BorderRadius.circular(AppRadii.inner),
       child: Container(
-        height: 50.h,
+        height: 50,
         decoration: BoxDecoration(
           color: background,
-          borderRadius: BorderRadius.circular(AppRadii.inner.r),
+          borderRadius: BorderRadius.circular(AppRadii.inner),
         ),
         child: Center(
           child: Text(
             label,
             style: TextStyle(
-              fontSize: 16.sp,
+              fontSize: 16,
               fontWeight: FontWeight.w500,
               color: textColor,
             ),
@@ -401,10 +401,10 @@ class _ScaleTrackDecor extends StatelessWidget {
       child: LayoutBuilder(
         builder: (context, constraints) {
           return Container(
-            height: 8.h,
+            height: 8,
             decoration: BoxDecoration(
               color: color,
-              borderRadius: BorderRadius.circular(AppRadii.pill.r),
+              borderRadius: BorderRadius.circular(AppRadii.pill),
             ),
           );
         },
@@ -429,7 +429,7 @@ class _ScaleMarkersDecor extends StatelessWidget {
       child: LayoutBuilder(
         builder: (context, constraints) {
           final markerWidth = 6.w;
-          final markerHeight = 24.h;
+          final markerHeight = 24.0;
           final centerLeft = (constraints.maxWidth / 2) - (markerWidth / 2);
           return Stack(
             alignment: Alignment.center,

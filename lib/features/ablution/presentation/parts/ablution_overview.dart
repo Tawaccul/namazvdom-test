@@ -116,8 +116,8 @@ Widget buildAblutionOverviewPage({
               controller: pageScrollController,
               physics: const NeverScrollableScrollPhysics(),
               padding: EdgeInsets.only(
-                top: MediaQuery.paddingOf(context).top + 21.h,
-                bottom: 20.h,
+                top: MediaQuery.paddingOf(context).top + 21,
+                bottom: 20,
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -129,14 +129,14 @@ Widget buildAblutionOverviewPage({
                     totalSteps: manifest.steps.length,
                     progress: progress,
                   ),
-                  SizedBox(height: 12.h),
+                  SizedBox(height: 12),
                   _AblutionOverviewStepCard(
                     step: step,
                     cardTextSize: cardTextSize,
                     imageAsset: stepImageAsset(step),
                   ),
                   if (step.text != null) ...[
-                    SizedBox(height: 12.h),
+                    SizedBox(height: 12),
                     _AblutionOverviewTextCard(
                       step: step,
                       cardTextSize: cardTextSize,
@@ -206,22 +206,22 @@ class _AblutionOverviewStepCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Container(
-            height: 260.h,
+            height: 260,
             decoration: BoxDecoration(
               color: colors.soft,
-              borderRadius: BorderRadius.circular(AppRadii.inner.r),
+              borderRadius: BorderRadius.circular(AppRadii.inner),
             ),
             child: Center(
               child: SvgPicture.asset(
                 imageAsset,
-                width: 250.h,
+                width: 250,
                 fit: BoxFit.contain,
                 placeholderBuilder: (_) =>
-                    SizedBox(width: 250.h, height: 250.h),
+                    SizedBox(width: 250, height: 250),
               ),
             ),
           ),
-          SizedBox(height: 24.h),
+          SizedBox(height: 24),
           Text(
             context.t(step.titleKey),
             style: TextStyle(
@@ -230,7 +230,7 @@ class _AblutionOverviewStepCard extends StatelessWidget {
               color: colors.textPrimary,
             ),
           ),
-          SizedBox(height: 10.h),
+          SizedBox(height: 10),
           Text(
             context.t(step.descriptionKey),
             style: TextStyle(
@@ -266,10 +266,10 @@ class _AblutionOverviewTextCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12),
             decoration: BoxDecoration(
               color: colors.soft,
-              borderRadius: BorderRadius.circular(AppRadii.inner.r),
+              borderRadius: BorderRadius.circular(AppRadii.inner),
             ),
             child: Row(
               children: [
@@ -294,7 +294,7 @@ class _AblutionOverviewTextCard extends StatelessWidget {
                     textDirection: TextDirection.rtl,
                     textScaler: TextScaler.noScaling,
                     style: TextStyle(
-                      fontSize: 24.sp,
+                      fontSize: 24,
                       fontWeight: FontWeight.w500,
                       color: colors.textSecondary,
                     ),
@@ -303,7 +303,7 @@ class _AblutionOverviewTextCard extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(height: 20.h),
+          SizedBox(height: 20),
           Text(
             transliteration,
             style: TextStyle(
@@ -313,7 +313,7 @@ class _AblutionOverviewTextCard extends StatelessWidget {
               color: colors.textPrimary,
             ),
           ),
-          SizedBox(height: 8.h),
+          SizedBox(height: 8),
           Text(
             context.t(text.translationKey),
             style: TextStyle(

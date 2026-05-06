@@ -140,7 +140,8 @@ class StageStepScreenScaffold extends StatelessWidget {
           bottom: false,
           child: GestureDetector(
             behavior: HitTestBehavior.translucent,
-            onHorizontalDragEnd: showOverviewLayer ? null : onHorizontalDragEnd,
+            // Горизонтальный свайп шагов теперь обрабатывает StageDragCarousel
+            // внутри stepContentSection — там палец «тянет» контент.
             onDoubleTap: showOverviewLayer ? null : onDoubleTap,
             onScaleStart: showOverviewLayer ? null : onScaleStart,
             onScaleUpdate: showOverviewLayer ? null : onScaleUpdate,
@@ -153,43 +154,48 @@ class StageStepScreenScaffold extends StatelessWidget {
                   children: [
                     IgnorePointer(
                       ignoring: showOverviewLayer,
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16.w),
-                        child: SingleChildScrollView(
-                          controller: mainScrollController,
-                          physics: const BouncingScrollPhysics(),
-                          clipBehavior: Clip.none,
-                          padding: EdgeInsets.only(
-                            bottom: 34.h,
-                            top: topContentPadding,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              IgnorePointer(
-                                ignoring: !showTopControls,
-                                child: AnimatedScale(
-                                  duration: const Duration(milliseconds: 180),
-                                  curve: Curves.easeOutCubic,
-                                  scale: showTopControls ? 1 : 0.9,
-                                  alignment: Alignment.center,
-                                  child: AnimatedOpacity(
-                                    duration: const Duration(milliseconds: 300),
+                      child: AppBlurredTopOverlay(
+                        visible: showTopBlur && !isOverviewMode,
+                        height: MediaQuery.paddingOf(context).top + 40,
+                        maxBlurSigma: 6,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16.w),
+                          child: SingleChildScrollView(
+                            controller: mainScrollController,
+                            physics: const BouncingScrollPhysics(),
+                            clipBehavior: Clip.none,
+                            padding: EdgeInsets.only(
+                              bottom: 34,
+                              top: topContentPadding,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                IgnorePointer(
+                                  ignoring: !showTopControls,
+                                  child: AnimatedScale(
+                                    duration: const Duration(milliseconds: 180),
                                     curve: Curves.easeOutCubic,
-                                    opacity: showTopControls ? 1 : 0,
-                                    child: StageTopBar(
-                                      onBack: onBack,
-                                      onStage: onStage,
-                                      stageButtonKey: stageButtonKey,
+                                    scale: showTopControls ? 1 : 0.9,
+                                    alignment: Alignment.center,
+                                    child: AnimatedOpacity(
+                                      duration: const Duration(milliseconds: 300),
+                                      curve: Curves.easeOutCubic,
+                                      opacity: showTopControls ? 1 : 0,
+                                      child: StageTopBar(
+                                        onBack: onBack,
+                                        onStage: onStage,
+                                        stageButtonKey: stageButtonKey,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(height: 20.h),
-                              progressCard,
-                              SizedBox(height: 12.h),
-                              stepContentSection,
-                            ],
+                                SizedBox(height: 20),
+                                progressCard,
+                                SizedBox(height: 12),
+                                stepContentSection,
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -219,29 +225,11 @@ class StageStepScreenScaffold extends StatelessWidget {
                       ),
                   ],
                 ),
-                if (!showOverviewLayer && showTopBlur && !isOverviewMode)
-                  Positioned(
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    child: IgnorePointer(
-                      ignoring: true,
-                      child: SizedBox(
-                        height: MediaQuery.paddingOf(context).top + 110.h,
-                        child: const AppBlurredTopOverlay(
-                          visible: true,
-                          height: 120,
-                          maxBlurSigma: 52,
-                          child: SizedBox.expand(),
-                        ),
-                      ),
-                    ),
-                  ),
                 if (!showOverviewLayer)
                   Positioned(
                     left: 16.w,
                     right: 16.w,
-                    top: MediaQuery.paddingOf(context).top + 12.h,
+                    top: MediaQuery.paddingOf(context).top + 12,
                     child: IgnorePointer(
                       ignoring: !showPinned || isOverviewMode,
                       child: AnimatedSlide(
@@ -257,7 +245,7 @@ class StageStepScreenScaffold extends StatelessWidget {
                           child: Pressable(
                             onTap: onPinnedTap,
                             borderRadius: BorderRadius.circular(
-                              AppRadii.card.r,
+                              AppRadii.card,
                             ),
                             child: StagePinnedProgressCard(
                               rakaatIndex: pinnedRakaatIndex,
@@ -276,7 +264,7 @@ class StageStepScreenScaffold extends StatelessWidget {
                   Positioned(
                     left: 16.w,
                     right: 16.w,
-                    bottom: MediaQuery.paddingOf(context).bottom + 24.h,
+                    bottom: MediaQuery.paddingOf(context).bottom + 24,
                     child: IgnorePointer(
                       ignoring: false,
                       child: AnimatedSlide(
@@ -290,7 +278,7 @@ class StageStepScreenScaffold extends StatelessWidget {
                           child: Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(
-                                AppRadii.inner.r,
+                                AppRadii.inner,
                               ),
                               boxShadow: [
                                 BoxShadow(

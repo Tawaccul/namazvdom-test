@@ -43,6 +43,8 @@ class StageStepContentSection extends StatelessWidget {
     required this.nextButtonLabel,
     required this.onPrevStep,
     required this.onNextStep,
+    this.navButtonsOpacity = 1.0,
+    this.isGhost = false,
   });
 
   final Widget Function(Widget child) animateStepTransition;
@@ -77,6 +79,8 @@ class StageStepContentSection extends StatelessWidget {
   final String nextButtonLabel;
   final VoidCallback? onPrevStep;
   final VoidCallback? onNextStep;
+  final double navButtonsOpacity;
+  final bool isGhost;
 
   @override
   Widget build(BuildContext context) {
@@ -89,9 +93,11 @@ class StageStepContentSection extends StatelessWidget {
             final isSelected = playingStepKey == entryKey;
             final isEntryPlaying = isSelected && isAudioPlaying;
             return KeyedSubtree(
-              key: hasAdditionalSurahSelector
-                  ? ValueKey('additional-surah-$i-${entry.surahCode}')
-                  : keyForEntry(i),
+              key: isGhost
+                  ? ValueKey('ghost-ayah-$i')
+                  : hasAdditionalSurahSelector
+                      ? ValueKey('additional-surah-$i-${entry.surahCode}')
+                      : keyForEntry(i),
               child: StageAyahCard(
                 ayahIndex: i,
                 ayah: entry,
@@ -104,7 +110,7 @@ class StageStepContentSection extends StatelessWidget {
               ),
             );
           }(),
-          if (i != currentStepEntries.length - 1) SizedBox(height: 16.h),
+          if (i != currentStepEntries.length - 1) SizedBox(height: 16),
         ],
       ],
     );
@@ -142,16 +148,16 @@ class StageStepContentSection extends StatelessWidget {
                     child: Column(
                       children: [
                         Container(
-                          height: 260.h,
+                          height: 260,
                           decoration: BoxDecoration(
                             color: softColor,
                             borderRadius: BorderRadius.circular(
-                              AppRadii.inner.r,
+                              AppRadii.inner,
                             ),
                           ),
                           child: Center(child: stepImage),
                         ),
-                        SizedBox(height: 25.h),
+                        SizedBox(height: 25),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
@@ -164,7 +170,7 @@ class StageStepContentSection extends StatelessWidget {
                                 color: textPrimaryColor,
                               ),
                             ),
-                            SizedBox(height: 10.h),
+                            SizedBox(height: 10),
                             if (movementDescription.isNotEmpty)
                               Text(
                                 movementDescription,
@@ -182,7 +188,7 @@ class StageStepContentSection extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 12.h),
+              SizedBox(height: 12),
               if (hasAdditionalSurahSelector) ...[
                 animateAppear(
                   StageSurahSelector(
@@ -193,16 +199,16 @@ class StageStepContentSection extends StatelessWidget {
                     onSelect: onSelectAdditionalSurah,
                   ),
                 ),
-                SizedBox(height: 12.h),
+                SizedBox(height: 12),
               ],
               animateRakaat(animateAppear(recitationContent)),
               if (errorText != null) ...[
-                SizedBox(height: 12.h),
+                SizedBox(height: 12),
                 StageCard(
                   child: Text(
                     errorText!,
                     style: TextStyle(
-                      fontSize: 12.sp,
+                      fontSize: 12,
                       fontWeight: FontWeight.w600,
                       color: Colors.redAccent,
                     ),
@@ -213,39 +219,45 @@ class StageStepContentSection extends StatelessWidget {
           ),
         ),
         if (navButtonsVisible) ...[
-          SizedBox(height: 20.h),
-          Row(
-            children: [
-              Expanded(
-                flex: 4,
-                child: AnimatedOpacity(
-                  duration: const Duration(milliseconds: 160),
-                  curve: Curves.easeOutCubic,
-                  opacity: hasPrevStageStep ? 1 : 0.5,
-                  child: StageBottomButton(
-                    variant: StageBottomButtonVariant.secondary,
-                    label: backButtonLabel,
-                    icon: 'assets/icons/arrow-left.svg',
-                    onTap: canGoBack ? onPrevStep : null,
+          SizedBox(height: 20),
+          IgnorePointer(
+            ignoring: navButtonsOpacity < 0.5,
+            child: Opacity(
+              opacity: navButtonsOpacity.clamp(0.0, 1.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 4,
+                    child: AnimatedOpacity(
+                      duration: const Duration(milliseconds: 160),
+                      curve: Curves.easeOutCubic,
+                      opacity: hasPrevStageStep ? 1 : 0.5,
+                      child: StageBottomButton(
+                        variant: StageBottomButtonVariant.secondary,
+                        label: backButtonLabel,
+                        icon: 'assets/icons/arrow-left.svg',
+                        onTap: canGoBack ? onPrevStep : null,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              SizedBox(width: 12.w),
-              Expanded(
-                flex: 4,
-                child: AnimatedOpacity(
-                  duration: const Duration(milliseconds: 160),
-                  curve: Curves.easeOutCubic,
-                  opacity: hasNextStageStep ? 1 : 0.5,
-                  child: StageBottomButton(
-                    variant: StageBottomButtonVariant.primary,
-                    label: nextButtonLabel,
-                    icon: 'assets/icons/arrow-right.svg',
-                    onTap: canGoNext ? onNextStep : null,
+                  SizedBox(width: 12.w),
+                  Expanded(
+                    flex: 4,
+                    child: AnimatedOpacity(
+                      duration: const Duration(milliseconds: 160),
+                      curve: Curves.easeOutCubic,
+                      opacity: hasNextStageStep ? 1 : 0.5,
+                      child: StageBottomButton(
+                        variant: StageBottomButtonVariant.primary,
+                        label: nextButtonLabel,
+                        icon: 'assets/icons/arrow-right.svg',
+                        onTap: canGoNext ? onNextStep : null,
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
         ],
       ],

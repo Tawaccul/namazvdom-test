@@ -75,8 +75,8 @@ Widget buildStageOverviewPage({
     padding: EdgeInsets.symmetric(horizontal: 16.w),
     child: Padding(
       padding: EdgeInsets.only(
-        top: MediaQuery.paddingOf(context).top + 21.h,
-        bottom: 20.h,
+        top: MediaQuery.paddingOf(context).top + 21,
+        bottom: 20,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -97,16 +97,16 @@ Widget buildStageOverviewPage({
                 : displayProgress.current / displayProgress.total,
             animateProgress: false,
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: 12),
           StageCard(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Container(
-                  height: 260.h,
+                  height: 260,
                   decoration: BoxDecoration(
                     color: context.colors.soft,
-                    borderRadius: BorderRadius.circular(AppRadii.inner.r),
+                    borderRadius: BorderRadius.circular(AppRadii.inner),
                   ),
                   child: Center(
                     child: StageStepImage(
@@ -115,7 +115,7 @@ Widget buildStageOverviewPage({
                     ),
                   ),
                 ),
-                SizedBox(height: 25.h),
+                SizedBox(height: 25),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -128,7 +128,7 @@ Widget buildStageOverviewPage({
                         color: context.colors.textPrimary,
                       ),
                     ),
-                    SizedBox(height: 10.h),
+                    SizedBox(height: 10),
                     if (movementDescription.isNotEmpty)
                       Text(
                         movementDescription,
@@ -145,7 +145,7 @@ Widget buildStageOverviewPage({
             ),
           ),
           if (recitationEntries.isNotEmpty) ...[
-            SizedBox(height: 12.h),
+            SizedBox(height: 12),
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -160,7 +160,7 @@ Widget buildStageOverviewPage({
                     onTap: () {},
                     onPlayPause: () {},
                   ),
-                  if (i != recitationEntries.length - 1) SizedBox(height: 16.h),
+                  if (i != recitationEntries.length - 1) SizedBox(height: 16),
                 ],
               ],
             ),

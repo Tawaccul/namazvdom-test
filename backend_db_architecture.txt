@@ -1,0 +1,235 @@
+Что нужно изменить в API, чтобы оно соответствовало текущей архитектуре приложения
+
+Важно
+- БД сейчас менять не нужно.
+- Картинки и аудио будут браться из самого приложения.
+- С бэкенда должны приходить только структура намаза, тексты, переводы, транслитерация, суры и мета-информация для синхронизации.
+
+1. Что можно оставить как есть
+
+Можно оставить текущие endpoints:
+- GET /api/prayer/meta
+- GET /api/prayer
+- GET /api/surah
+
+Логика тоже может остаться такой же:
+- приложение передаёт prayerCode, madhhabCode, genderCode, languageCode, rakah, script
+- бэкенд возвращает уже готовую структуру для одного ракаата
+
+2. Что нужно изменить в запросе
+
+2.1. GET /api/prayer
+
+Текущий запрос в целом подходит.
+Нужно оставить такие параметры:
+- prayerCode
+- madhhabCode
+- genderCode
+- languageCode
+- rakah
+- script
+
+Но нужно уточнить правила:
+- prayerCode, madhhabCode, genderCode, languageCode, rakah должны быть обязательными
+- script должен быть обязательным тоже, потому что приложение уже зависит от вида транслитерации
+- rakah должен возвращать только один конкретный ракаат
+
+2.2. GET /api/prayer/meta
+
+Оставить как есть, но meta должна использоваться как техническая информация для синхронизации.
+Нужно, чтобы backend всегда возвращал:
+- lastModifiedAt
+- scope
+- version или checksum
+
+Сейчас одного lastModifiedAt недостаточно.
+Нужно добавить:
+- version
+или
+- checksum
+
+3. Что нужно изменить в ответе GET /api/prayer
+
+Текущий ответ близок к нужному, но его надо расширить так, чтобы фронт не дособирал важные части из локальной логики.
+
+Сейчас backend отдаёт:
+- context
+- steps
+- content внутри шага
+
+Этого недостаточно для полного соответствия текущему приложению.
+
+Нужно, чтобы каждый step в ответе содержал:
+
+- orderIndex
+- stepCode
+- recitationMode
+- hasRecitation
+- surahCode nullable
+- availableSurahs nullable
+- content
+
+Структура step должна быть такой:
+
+{
+  "orderIndex": 1,
+  "stepCode": "takbir",
+  "recitationMode": "silent",
+  "hasRecitation": true,
+  "surahCode": null,
+  "availableSurahs": [],
+  "content": {
+    "title": "Такбир",
+    "movementDescription": "Поднимите руки...",
+    "recitationArabic": "الله أكبر",
+    "translation": "Аллах Велик",
+    "transliteration": "Аллаху акбар"
+  }
+}
+
+4. Что обязательно нужно добавить в content
+
+Сейчас в Swagger у PrayerStepContentDto нет поля title.
+Но приложение уже работает с title в карточках.
+
+Поэтому content должен содержать:
+- title
+- movementDescription
+- recitationArabic
+- translation
+- transliteration
+
+Итог:
+
+PrayerStepContentDto должен быть таким:
+
+{
+  "title": "Такбир",
+  "movementDescription": "Поднимите руки...",
+  "recitationArabic": "الله أكبر",
+  "translation": "Аллах Велик",
+  "transliteration": "Аллаху акбар"
+}
+
+5. Что нужно добавить для сур
+
+Сейчас приложение умеет работать в двух режимах:
+- у шага есть конкретная сура
+- у шага есть выбор дополнительной суры
+
+Поэтому в step нужно поддержать:
+
+5.1. surahCode
+- если этот шаг связан с конкретной сурой
+
+5.2. availableSurahs
+- если это шаг выбора дополнительной суры
+
+Формат:
+
+"availableSurahs": [
+  { "code": "al_ikhlas", "name": "Аль-Ихлас" },
+  { "code": "al_kawthar", "name": "Аль-Каусар" }
+]
+
+6. Что backend НЕ должен отдавать
+
+Backend не должен отдавать:
+- imageAsset
+- audioUrl
+- local asset path
+
+Потому что:
+- картинки уже лежат в приложении
+- аудио уже лежит в приложении
+- фронт сам сопоставляет stepCode с локальной картинкой и локальным аудио
+
+7. Что нужно изменить в GET /api/surah
+
+Этот endpoint тоже в целом подходит.
+Но он должен стабильно возвращать:
+- code
+- ayahs
+
+И внутри каждого ayah:
+- index
+- recitationArabic
+- translation
+- transliteration
+
+Формат:
+
+{
+  "code": "al_ikhlas",
+  "ayahs": [
+    {
+      "index": 1,
+      "recitationArabic": "قُلْ هُوَ اللَّهُ أَحَدٌ",
+      "translation": "Скажи: Он Аллах Един",
+      "transliteration": "Qul huwallahu ahad"
+    }
+  ]
+}
+
+Важно:
+- для сур backend должен возвращать именно ayahs массивом
+- не одну строку целиком
+- потому что приложение уже разбивает суру на отдельные карточки/аяты
+
+8. Что нужно изменить в meta
+
+Ответ meta должен быть таким:
+
+{
+  "meta": {
+    "lastModifiedAt": "2026-03-12T10:00:00.000Z",
+    "scope": "prayer_context",
+    "version": "12",
+    "checksum": "abc123"
+  }
+}
+
+Минимум нужно добавить хотя бы одно:
+- version
+или
+- checksum
+
+Иначе потом нормальная синхронизация будет неудобной.
+
+9. Какой итоговый контракт нужен приложению
+
+Приложению с бэка нужно получать только:
+- context
+- steps
+- content.title
+- content.movementDescription
+- content.recitationArabic
+- content.translation
+- content.transliteration
+- surahCode
+- availableSurahs
+- surah ayahs
+- meta.lastModifiedAt
+- meta.scope
+- meta.version или checksum
+
+Приложению НЕ нужно получать с бэка:
+- картинки
+- аудио
+- локальные asset paths
+
+10. Коротко итог для backend
+
+Базу сейчас менять не нужно.
+Нужно только поправить API response contract:
+
+- в PrayerStepContentDto добавить title
+- в PrayerStepDto оставить/гарантировать surahCode
+- в PrayerStepDto оставить/гарантировать availableSurahs
+- в Surah response вернуть ayahs массивом
+- в meta добавить version или checksum
+- не отдавать imageAsset и audioUrl
+
+Итоговый принцип:
+- backend отдаёт только текстовый и структурный контент
+- приложение само подставляет локальные картинки и локальные аудио

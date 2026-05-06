@@ -21,10 +21,10 @@ class StageSurahSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     return Container(
-      padding: EdgeInsets.all(4.r),
+      padding: EdgeInsets.all(4),
       decoration: BoxDecoration(
         color: colors.card,
-        borderRadius: BorderRadius.circular(AppRadii.pill.r),
+        borderRadius: BorderRadius.circular(AppRadii.pill),
       ),
       child: Row(
         children: [
@@ -32,20 +32,20 @@ class StageSurahSelector extends StatelessWidget {
             Expanded(
               child: Pressable(
                 onTap: () => onSelect(index),
-                borderRadius: BorderRadius.circular(AppRadii.pill.r),
+                borderRadius: BorderRadius.circular(AppRadii.pill),
                 child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 12.h),
+                  padding: EdgeInsets.symmetric(vertical: 12),
                   decoration: BoxDecoration(
                     color: selectedIndex == index
                         ? colors.primary
                         : Colors.transparent,
-                    borderRadius: BorderRadius.circular(AppRadii.pill.r),
+                    borderRadius: BorderRadius.circular(AppRadii.pill),
                   ),
                   child: Text(
                     labels[index],
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: 14.sp,
+                      fontSize: 14,
                       height: 1.3,
                       fontWeight: FontWeight.w500,
                       color: selectedIndex == index

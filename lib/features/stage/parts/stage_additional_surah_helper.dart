@@ -120,7 +120,10 @@ class StageAdditionalSurahHelper {
             translateKey: translateKey,
           );
         }
-      } catch (_) {
+      } catch (e) {
+        debugPrint(
+          '[StageAdditionalSurahHelper] loadRemoteSteps failed, using local: $e',
+        );
         inserted = await _loadLocalAdditionalSurahSteps(
           surahCode: option.code,
           title: option.label,
@@ -261,7 +264,10 @@ class StageAdditionalSurahHelper {
         );
       }
       return ayahs.toList(growable: false);
-    } catch (_) {
+    } catch (e) {
+      debugPrint(
+        '[StageAdditionalSurahHelper] _loadLocalAdditionalSurahSteps parse failed: $e',
+      );
       return const [];
     }
   }

@@ -33,7 +33,7 @@ class _MadhhabInfoSheet extends StatelessWidget {
         color: colors.card,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
-            top: Radius.circular(AppRadii.card.r),
+            top: Radius.circular(AppRadii.card),
           ),
         ),
         clipBehavior: Clip.antiAlias,
@@ -61,7 +61,7 @@ class _MadhhabInfoBodyState extends State<_MadhhabInfoBody> {
   Widget build(BuildContext context) {
     final colors = context.colors;
     return Padding(
-      padding: EdgeInsets.fromLTRB(16.w, 24.h, 16.w, 48.h),
+      padding: EdgeInsets.fromLTRB(16.w, 24, 16.w, 48),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -72,7 +72,7 @@ class _MadhhabInfoBodyState extends State<_MadhhabInfoBody> {
                 child: Text(
                   context.t('madhhab.info.title'),
                   style: TextStyle(
-                    fontSize: 20.sp,
+                    fontSize: 20,
                     fontWeight: FontWeight.w600,
                     color: colors.textPrimary,
                     height: 1.2,
@@ -81,39 +81,39 @@ class _MadhhabInfoBodyState extends State<_MadhhabInfoBody> {
               ),
               Pressable(
                 onTap: () => Navigator.of(context).maybePop(),
-                borderRadius: BorderRadius.circular(AppRadii.circle.r),
+                borderRadius: BorderRadius.circular(AppRadii.circle),
                 child: SizedBox(
-                  width: 24.r,
-                  height: 24.r,
+                  width: 24,
+                  height: 24,
                   child: SvgPicture.asset(
                     closeIconAssetFor(context),
-                    width: 24.r,
+                    width: 24,
                   ),
                 ),
               ),
             ],
           ),
-          SizedBox(height: 20.h),
+          SizedBox(height: 20),
           Text(
             context.t('madhhab.info.paragraph1'),
             style: TextStyle(
-              fontSize: 16.sp,
+              fontSize: 16,
               height: 1.48,
               fontWeight: FontWeight.w400,
               color: colors.textSecondary,
             ),
           ),
-          SizedBox(height: 20.h),
+          SizedBox(height: 20),
           Text(
             context.t('madhhab.info.paragraph2'),
             style: TextStyle(
-              fontSize: 16.sp,
+              fontSize: 16,
               height: 1.48,
               fontWeight: FontWeight.w400,
               color: colors.textSecondary,
             ),
           ),
-          SizedBox(height: 20.h),
+          SizedBox(height: 20),
           _Section(
             title: context.t('madhhab.info.sections.hanafi.title'),
             expanded: _expandedId == 'hanafi',
@@ -168,16 +168,16 @@ class _Section extends StatelessWidget {
       children: [
         Pressable(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(AppRadii.pill.r),
+          borderRadius: BorderRadius.circular(AppRadii.pill),
           child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 16.h),
+            padding: EdgeInsets.symmetric(vertical: 16),
             child: Row(
               children: [
                 Expanded(
                   child: Text(
                     title,
                     style: TextStyle(
-                      fontSize: 16.sp,
+                      fontSize: 16,
                       fontWeight: FontWeight.w500,
                       color: colors.textPrimary,
                     ),
@@ -189,8 +189,8 @@ class _Section extends StatelessWidget {
                   curve: Curves.easeOut,
                   child: SvgPicture.asset(
                     'assets/icons/arrow-bottom.svg',
-                    width: 15.r,
-                    height: 7.r,
+                    width: 15,
+                    height: 7,
                     colorFilter: ColorFilter.mode(
                       colors.textPrimary,
                       BlendMode.srcIn,
@@ -207,11 +207,11 @@ class _Section extends StatelessWidget {
               ? CrossFadeState.showFirst
               : CrossFadeState.showSecond,
           firstChild: Padding(
-            padding: EdgeInsets.only(bottom: 16.h),
+            padding: EdgeInsets.only(bottom: 16),
             child: Text(
               body,
               style: TextStyle(
-                fontSize: 16.sp,
+                fontSize: 16,
                 height: 1.48,
                 fontWeight: FontWeight.w400,
                 color: colors.textSecondary,

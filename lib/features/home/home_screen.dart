@@ -113,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 _HomeMenuCard(
                   title: context.t('home.prayers.fajr.title'),
                   subtitle: context.t('home.prayers.fajr.subtitle'),
-                  trailing: const _Badge.star(count: 1),
+                  trailing: const _Badge.star(count: 2),
                   onTap: () => _openPrayer(
                     context,
                     code: 'fajr',
@@ -124,7 +124,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 _HomeMenuCard(
                   title: context.t('home.prayers.dhuhr.title'),
                   subtitle: context.t('home.prayers.dhuhr.subtitle'),
-                  trailing: const _Badge.star(count: 2),
+                  trailing: const _Badge.star(count: 4),
                   onTap: () => _openPrayer(
                     context,
                     code: 'dhuhr',
@@ -135,7 +135,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 _HomeMenuCard(
                   title: context.t('home.prayers.asr.title'),
                   subtitle: context.t('home.prayers.asr.subtitle'),
-                  trailing: const _Badge.star(count: 3),
+                  trailing: const _Badge.star(count: 4),
                   onTap: () => _openPrayer(
                     context,
                     code: 'asr',
@@ -146,7 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 _HomeMenuCard(
                   title: context.t('home.prayers.maghrib.title'),
                   subtitle: context.t('home.prayers.maghrib.subtitle'),
-                  trailing: const _Badge.star(count: 4),
+                  trailing: const _Badge.star(count: 3),
                   onTap: () => _openPrayer(
                     context,
                     code: 'maghrib',
@@ -157,7 +157,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 _HomeMenuCard(
                   title: context.t('home.prayers.isha.title'),
                   subtitle: context.t('home.prayers.isha.subtitle'),
-                  trailing: const _Badge.star(count: 5),
+                  trailing: const _Badge.star(count: 4),
                   onTap: () => _openPrayer(
                     context,
                     code: 'isha',
@@ -168,7 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 _HomeMenuCard(
                   title: context.t('home.additional.title'),
                   subtitle: context.t('home.additional.subtitle'),
-                  trailing: const _Badge.dome(),
+                  trailing: const _Badge.dome(count: 3),
                   onTap: () {},
                 ),
               ],
@@ -331,7 +331,7 @@ class _CircleIconButton extends StatelessWidget {
 
 class _Badge extends StatelessWidget {
   const _Badge.star({required this.count}) : _type = _BadgeType.star;
-  const _Badge.dome() : count = null, _type = _BadgeType.dome;
+  const _Badge.dome({this.count}) : _type = _BadgeType.dome;
 
   final int? count;
   final _BadgeType _type;

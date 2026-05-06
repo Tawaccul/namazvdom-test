@@ -208,7 +208,7 @@ class _StageSplashScreenState extends State<StageSplashScreen> {
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 24.h),
+                  padding: EdgeInsets.fromLTRB(16.w, 16, 16.w, 24),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -217,22 +217,22 @@ class _StageSplashScreenState extends State<StageSplashScreen> {
                         context.t('stage.splash.failedLoad'),
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: 16.sp,
+                          fontSize: 16,
                           fontWeight: FontWeight.w800,
                           color: colors.textSecondary,
                         ),
                       ),
-                      SizedBox(height: 8.h),
+                      SizedBox(height: 8),
                       Text(
                         shownError,
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: 12.sp,
+                          fontSize: 12,
                           fontWeight: FontWeight.w600,
                           color: Colors.redAccent,
                         ),
                       ),
-                      SizedBox(height: 16.h),
+                      SizedBox(height: 16),
                       FilledButton(
                         onPressed: () {
                           setState(() => _navigated = false);
@@ -249,18 +249,18 @@ class _StageSplashScreenState extends State<StageSplashScreen> {
                         },
                         style: FilledButton.styleFrom(
                           backgroundColor: colors.primary,
-                          padding: EdgeInsets.symmetric(vertical: 10.h),
+                          padding: EdgeInsets.symmetric(vertical: 10),
                         ),
                         child: Text(
                           context.t('common.retry'),
                           style: TextStyle(
-                            fontSize: 14.sp,
+                            fontSize: 14,
                             fontWeight: FontWeight.w800,
                             color: colors.card,
                           ),
                         ),
                       ),
-                      SizedBox(height: 12.h),
+                      SizedBox(height: 12),
                       AppButton(
                         label: context.t('stage.splash.openDemo'),
                         variant: AppButtonVariant.secondary,

@@ -30,24 +30,24 @@ class AblutionProgressBlock extends StatelessWidget {
           Text(
             title,
             style: TextStyle(
-              fontSize: 20.sp,
+              fontSize: 20,
               fontWeight: FontWeight.w500,
               color: colors.textPrimary,
             ),
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 16),
           Text(
             context.t(
               'ablution.progressSteps',
               namedArgs: {'current': '$stepIndex', 'total': '$totalSteps'},
             ),
             style: TextStyle(
-              fontSize: 14.sp,
+              fontSize: 14,
               fontWeight: FontWeight.w500,
               color: colors.secondary,
             ),
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: 12),
           StageProgressBar(value: progress, animate: false),
         ],
       ),

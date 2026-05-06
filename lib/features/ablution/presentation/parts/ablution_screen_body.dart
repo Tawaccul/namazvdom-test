@@ -213,7 +213,7 @@ class _AblutionStateMessage extends StatelessWidget {
       text,
       textAlign: centered ? TextAlign.center : null,
       style: TextStyle(
-        fontSize: 16.sp,
+        fontSize: 16,
         fontWeight: FontWeight.w500,
         color: color,
       ),
@@ -239,10 +239,10 @@ class _AblutionOverviewExitButton extends StatelessWidget {
     return Positioned(
       left: 16.w,
       right: 16.w,
-      bottom: MediaQuery.paddingOf(context).bottom + 24.h,
+      bottom: MediaQuery.paddingOf(context).bottom + 24,
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(AppRadii.inner.r),
+          borderRadius: BorderRadius.circular(AppRadii.inner),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(

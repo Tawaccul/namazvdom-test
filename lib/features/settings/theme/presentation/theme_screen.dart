@@ -25,7 +25,7 @@ class _ThemeScreenState extends State<ThemeScreen> {
       backgroundColor: colors.background,
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 24.h),
+          padding: EdgeInsets.fromLTRB(20.w, 12, 20.w, 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -33,11 +33,11 @@ class _ThemeScreenState extends State<ThemeScreen> {
                 title: context.t('theme.title'),
                 onBack: () => Navigator.of(context).maybePop(),
               ),
-              SizedBox(height: 24.h),
+              SizedBox(height: 24),
               Container(
                 decoration: BoxDecoration(
                   color: colors.card,
-                  borderRadius: BorderRadius.circular(AppRadii.pill.r),
+                  borderRadius: BorderRadius.circular(AppRadii.pill),
                 ),
                 child: Column(
                   children: [
@@ -55,7 +55,7 @@ class _ThemeScreenState extends State<ThemeScreen> {
                     ),
                     Container(
                       margin: EdgeInsets.symmetric(horizontal: 16.w),
-                      height: 1.h,
+                      height: 1,
                       color: colors.divider,
                     ),
                     _ThemeMenuRow(
@@ -92,16 +92,16 @@ class _ThemeMenuRow extends StatelessWidget {
     final colors = context.colors;
     return Pressable(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(AppRadii.pill.r),
+      borderRadius: BorderRadius.circular(AppRadii.pill),
       child: Padding(
-        padding: EdgeInsets.fromLTRB(16.w, 22.h, 16.w, 22.h),
+        padding: EdgeInsets.fromLTRB(16.w, 22, 16.w, 22),
         child: Row(
           children: [
             Expanded(
               child: Text(
                 title,
                 style: TextStyle(
-                  fontSize: 16.sp,
+                  fontSize: 16,
                   fontWeight: FontWeight.w500,
                   height: 1.36,
                   color: colors.textPrimary,

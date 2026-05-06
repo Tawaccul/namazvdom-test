@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ThemeTextSizeStore {
@@ -28,7 +29,9 @@ class ThemeTextSizeStore {
       final persisted = prefs.getDouble(_prefsKey);
       if (persisted == null) return;
       _normalized = snapNormalized(persisted);
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('[ThemeTextSizeStore] init failed: $e');
+    }
   }
 
   static void setNormalized(double value) {
@@ -77,6 +80,8 @@ class ThemeTextSizeStore {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setDouble(_prefsKey, _normalized);
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('[ThemeTextSizeStore] _persistNormalized failed: $e');
+    }
   }
 }

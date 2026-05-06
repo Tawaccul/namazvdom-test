@@ -293,7 +293,7 @@ class _BubbleCard extends StatelessWidget {
             _BubbleNotch.bottomLeft || _BubbleNotch.bottomRight => null,
           },
           bottom: switch (notch) {
-            _BubbleNotch.bottomLeft || _BubbleNotch.bottomRight => -1.h,
+            _BubbleNotch.bottomLeft || _BubbleNotch.bottomRight => -1,
             _BubbleNotch.topLeft || _BubbleNotch.topRight => null,
           },
           left: switch (notch) {
@@ -319,8 +319,8 @@ class _BubbleCard extends StatelessWidget {
             ),
             child: SvgPicture.asset(
               'assets/icons/bubbletail.svg',
-              width: 22.r,
-              height: 27.r,
+              width: 22,
+              height: 27,
               color: colors.card,
               colorFilter: ColorFilter.mode(colors.card, BlendMode.srcIn),
             ),
@@ -328,10 +328,10 @@ class _BubbleCard extends StatelessWidget {
         ),
         Container(
           width: 268.w,
-          padding: EdgeInsets.all(20.sp),
+          padding: EdgeInsets.all(20),
           decoration: BoxDecoration(
             color: colors.card,
-            borderRadius: BorderRadius.circular(30.r),
+            borderRadius: BorderRadius.circular(30),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withAlpha(20),
@@ -345,14 +345,14 @@ class _BubbleCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                width: 30.r,
-                height: 30.r,
+                width: 30,
+                height: 30,
                 child: switch (icon) {
                   _BubbleIcon.stage => Center(
                     child: SvgPicture.asset(
                       'assets/icons/slider-horizontal.svg',
-                      width: 30.r,
-                      height: 30.r,
+                      width: 30,
+                      height: 30,
                       colorFilter: ColorFilter.mode(
                         colors.primary,
                         BlendMode.srcIn,
@@ -361,24 +361,24 @@ class _BubbleCard extends StatelessWidget {
                   ),
                   _BubbleIcon.audio => Icon(
                     Icons.volume_up_outlined,
-                    size: 32.r,
+                    size: 32,
                     color: colors.primary,
                   ),
                 },
               ),
-              SizedBox(height: 16.h),
+              SizedBox(height: 16),
               Text(
                 message,
                 style: TextStyle(
-                  fontSize: 16.sp,
+                  fontSize: 16,
                   fontWeight: FontWeight.w400,
                   height: 1.4,
                   color: colors.textPrimary,
                 ),
               ),
-              SizedBox(height: 16.h),
+              SizedBox(height: 16),
               SizedBox(
-                height: 40.h,
+                height: 40,
                 child: AppButton(
                   label: context.t('common.next'),
                   onPressed: onNext,
@@ -411,7 +411,7 @@ class _HolePainter extends CustomPainter {
     }
 
     final holes = Path();
-    final targetRadius = stepIndex == 1 ? AppRadii.pill.r : AppRadii.card.r;
+    final targetRadius = stepIndex == 1 ? AppRadii.pill : AppRadii.card;
     for (final rect in rects) {
       final radiusValue = (rect.height / 2).clamp(
         targetRadius,

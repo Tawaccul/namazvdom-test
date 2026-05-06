@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../app/theme/app_colors.dart';
@@ -67,20 +66,24 @@ class StageStepImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Иллюстрация шага занимает ~64% ширины экрана,
+    // сохраняя пропорции на любом разрешении.
+    final width = MediaQuery.sizeOf(context).width * 0.64;
     if (stepImageAsset.toLowerCase().endsWith('.svg')) {
       return SvgPicture.asset(
         stepImageAsset,
-        width: 250.h,
-        fit: BoxFit.none,
+        width: width,
+        fit: BoxFit.contain,
         theme: SvgTheme(currentColor: context.colors.textPrimary),
-        placeholderBuilder: (context) => SizedBox(width: 250.h),
+        placeholderBuilder: (context) => SizedBox(width: width),
       );
     }
     return Image.asset(
       stepImageAsset,
-      width: 250.h,
+      width: width,
+      fit: BoxFit.contain,
       errorBuilder: (context, error, stack) =>
-          Image.asset(fallbackStepImageAsset, height: 250.h),
+          Image.asset(fallbackStepImageAsset, width: width, fit: BoxFit.contain),
     );
   }
 }

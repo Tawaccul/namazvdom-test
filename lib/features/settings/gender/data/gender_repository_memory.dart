@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../domain/entities/app_gender.dart';
@@ -32,7 +33,9 @@ class GenderRepositoryMemory implements GenderRepository {
         orElse: () => _genders.first,
       );
       _selected = persisted;
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('[GenderRepository] init failed: $e');
+    }
   }
 
   @override
@@ -54,6 +57,8 @@ class GenderRepositoryMemory implements GenderRepository {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(_prefsKey, _selected.id);
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('[GenderRepository] _persistSelected failed: $e');
+    }
   }
 }

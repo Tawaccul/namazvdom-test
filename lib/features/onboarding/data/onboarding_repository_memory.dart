@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../domain/repositories/onboarding_repository.dart';
@@ -22,7 +23,9 @@ class OnboardingRepositoryMemory implements OnboardingRepository {
       final prefs = await SharedPreferences.getInstance();
       _hasCompletedStart = prefs.getBool(_completedStartKey) ?? false;
       _hasCompletedStage = prefs.getBool(_completedStageKey) ?? false;
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('[OnboardingRepository] init failed: $e');
+    }
   }
 
   bool get hasCompletedStart => _hasCompletedStart;
@@ -54,13 +57,17 @@ class OnboardingRepositoryMemory implements OnboardingRepository {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool(_completedStartKey, true);
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('[OnboardingRepository] _persistCompletedStart failed: $e');
+    }
   }
 
   Future<void> _persistCompletedStage() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool(_completedStageKey, true);
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('[OnboardingRepository] _persistCompletedStage failed: $e');
+    }
   }
 }

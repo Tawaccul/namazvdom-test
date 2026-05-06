@@ -3,21 +3,18 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../app/app_dependencies_scope.dart';
 import '../../app/l10n/app_localization.dart';
 import '../../app/theme/app_colors.dart';
 import '../../core/audio/ayah_audio.dart';
 import '../../core/audio/ayah_audio_controller.dart';
-import '../../core/text/transliteration_localizer.dart';
-import '../onboarding/data/onboarding_repository_memory.dart';
-import '../prayer/domain/usecases/get_prayer_surah.dart';
 import '../settings/gender/data/gender_repository_memory.dart';
-import '../settings/language/data/language_repository_memory.dart';
 import '../settings/theme/presentation/theme_text_size_store.dart';
+import 'animations/stage_neighbor_step_bundle.dart';
+import 'state/stage_additional_surah_state.dart';
+import 'state/stage_onboarding_state.dart';
+import 'state/stage_scroll_visibility_state.dart';
 import 'parts/stage_overview_page_builder.dart';
-import 'parts/stage_additional_surah_helper.dart';
 import 'parts/stage_audio_playback_helper.dart';
 import 'parts/stage_step_data_helper.dart';
 import 'parts/stage_overview_state_helper.dart';
@@ -28,7 +25,6 @@ import 'parts/stage_step_image.dart';
 import 'models/rakaat_models.dart';
 import 'models/stage_step_screen_models.dart';
 import '../quran/model/quran_ayah.dart';
-import 'stage_prayer_loader.dart';
 import 'stage_overview_geometry.dart';
 
 class StageStepScreen extends StatefulWidget {
@@ -52,13 +48,12 @@ class StageStepScreen extends StatefulWidget {
 class _StageStepScreenState extends State<StageStepScreen>
     with SingleTickerProviderStateMixin {
   static const bool _alwaysShowStageOnboarding = false;
-  static const double _topBlurShowOffset = 80;
   static const double _horizontalSwipeVelocityThreshold = 220;
   static const double _overviewOpenScaleThreshold = 0.99;
   static const double _overviewCloseScaleThreshold = 0.985;
   static const double _overviewPageGap = -10;
   static const double _overviewPreviewScale = 0.50;
-  static const double _overviewDragFriction = 0.0000012;
+  static const double _overviewDragFriction = 0.0000035;
   static const double _overviewPanSpeedMultiplier = 3.0;
   static const double _overviewClosingTopInset = 50;
   static const double _overviewPreviewTopShift = 10;
@@ -75,16 +70,13 @@ class _StageStepScreenState extends State<StageStepScreen>
   late final math.Random _randomAudio;
   late final TransformationController _transformationController;
   late final AnimationController _overviewAnimationController;
-  final ScrollController _scrollController = ScrollController(
-    keepScrollOffset: false,
-  );
-  final Map<String, GlobalKey> _stepKeys = {};
-  final Map<String, String> _entryAudioUrls = {};
   final GlobalKey _progressKey = GlobalKey();
   final GlobalKey _stageButtonKey = GlobalKey();
-  bool _showPinned = false;
-  bool _showTopBlur = false;
-  bool _showOnboarding = false;
+  final Map<String, GlobalKey> _stepKeys = {};
+  final Map<String, String> _entryAudioUrls = {};
+  late final StageScrollVisibilityState _scrollState;
+  late final StageOnboardingState _onboarding;
+  late final StageAdditionalSurahState _surahState;
   bool _showOverviewLayer = false;
   bool _isOverviewClosing = false;
   bool _showOverviewExitButton = false;
@@ -97,11 +89,7 @@ class _StageStepScreenState extends State<StageStepScreen>
   int _autoplaySessionId = 0;
   String? _playingStepKey;
   String? _startedPlaybackStepKey;
-  bool _contentAppeared = false;
   int _selectedAyahIndex = 0;
-  String? _selectedAdditionalSurahCode;
-  int _additionalSurahAnimationToken = 0;
-  final Map<String, bool> _assetExistsMemo = {};
   bool _isOverviewMode = false;
   int _overviewSelectedFlatIndex = 0;
   int _overviewOriginFlatIndex = 0;
@@ -112,13 +100,9 @@ class _StageStepScreenState extends State<StageStepScreen>
   bool _overviewPinchCloseTriggered = false;
   bool _overviewGestureLock = false;
   int? _overviewPendingCloseFlatIndex;
-  bool _showTopControls = true;
-  int _topControlsRevealToken = 0;
   int _stepTransitionToken = 0;
   int _stepTransitionDirection = 1;
   bool _allowExitPop = false;
-  int _onboardingStepIndex = 0;
-  bool _onboardingStepAdvancing = false;
 
   @override
   void initState() {
@@ -137,15 +121,46 @@ class _StageStepScreenState extends State<StageStepScreen>
     if (_selectedAyahStep?.hasAudio ?? false) {
       _audio.setAyah(_stepToAyah(_selectedAyahStep!, _stepKey));
     }
-    _scrollController.addListener(_onScroll);
-    _showOnboarding =
-        _alwaysShowStageOnboarding ||
-        OnboardingRepositoryMemory.instance.consumeStageOnboarding();
-    _onboardingStepIndex = 0;
+    _scrollState = StageScrollVisibilityState(
+      notify: (fn) { if (mounted) setState(fn); },
+      isMounted: () => mounted,
+      getContext: () => context,
+      scrollController: ScrollController(keepScrollOffset: false),
+      progressKey: _progressKey,
+      isOverviewLayerShowing: () => _showOverviewLayer,
+    );
+    _scrollState.scrollController.addListener(_scrollState.onScroll);
+    _surahState = StageAdditionalSurahState(
+      notify: (fn) { if (mounted) setState(fn); },
+      isMounted: () => mounted,
+      getContext: () => context,
+      getRakaats: () => _rakaats,
+      getRakaatIndex: () => _rakaatIndex,
+      translateKey: _translateKey,
+      onRakaatsUpdated: (updated) => setState(() => _rakaats = updated),
+      onNavigateToStep: (stepIndex) => _selectStep(
+        stepIndex,
+        playIfAutoplay: false,
+        animateStepTransition: false,
+        jumpToTop: false,
+      ),
+      cancelAutoplay: ({bool disableAutoplay = false}) =>
+          _cancelAutoplaySequence(disableAutoplay: disableAutoplay),
+      setError: (msg) { if (mounted) setState(() => _error = msg); },
+    );
+    _onboarding = StageOnboardingState(
+      notify: (fn) { if (mounted) setState(fn); },
+      isMounted: () => mounted,
+      getStepKey: (key) => _stepKeys[key],
+      getOnboardingEntryKey: () => _entryKey(_clampedAyahIndex),
+      animateToTop: _animateToTop,
+      alwaysShow: _alwaysShowStageOnboarding,
+    );
+    _onboarding.initialize();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      _updatePinned();
-      setState(() => _contentAppeared = true);
+      _scrollState.updatePinned();
+      _scrollState.markContentAppeared();
     });
   }
 
@@ -161,95 +176,6 @@ class _StageStepScreenState extends State<StageStepScreen>
   List<RakaatSurahOption> get _additionalSurahOptions =>
       _currentRakaat?.additionalSurahOptions ?? const [];
 
-  bool _isAdditionalSurahStep(RakaatStep? step) =>
-      StageAdditionalSurahHelper.isAdditionalSurahStep(step);
-
-  int _selectedAdditionalSurahIndex(List<RakaatSurahOption> options) {
-    return _selectedAdditionalSurahIndexForStep(options, _currentStep);
-  }
-
-  int _selectedAdditionalSurahIndexForStep(
-    List<RakaatSurahOption> options,
-    RakaatStep? step,
-  ) => StageAdditionalSurahHelper.selectedIndexForStep(
-    options: options,
-    selectedAdditionalSurahCode: _selectedAdditionalSurahCode,
-    step: step,
-  );
-
-  Future<void> _onSelectAdditionalSurah({
-    required List<RakaatSurahOption> options,
-    required int optionIndex,
-  }) async {
-    if (optionIndex < 0 || optionIndex >= options.length) return;
-    final option = options[optionIndex];
-    setState(() => _selectedAdditionalSurahCode = option.code);
-    try {
-      final result =
-          await StageAdditionalSurahHelper.replaceAdditionalSurahSteps(
-            context: context,
-            rakaats: _rakaats,
-            rakaatIndex: _rakaatIndex,
-            option: option,
-            forceLocalOnly: StagePrayerLoader.forceLocalOnly,
-            assetExistsMemo: _assetExistsMemo,
-            translateKey: _translateKey,
-            loadRemoteSteps: _loadRemoteAdditionalSurahSteps,
-          );
-      if (result == null || !mounted) return;
-      setState(() {
-        _rakaats = result.updatedRakaats;
-        _additionalSurahAnimationToken++;
-      });
-      _autoplayEnabled = false;
-      await _selectStep(
-        result.targetStepIndex,
-        playIfAutoplay: false,
-        animateStepTransition: false,
-        jumpToTop: false,
-      );
-    } catch (e) {
-      if (!mounted) return;
-      setState(() => _error = e.toString());
-    }
-  }
-
-  Future<List<RakaatStep>> _loadRemoteAdditionalSurahSteps({
-    required String surahCode,
-    required String title,
-    required int orderIndex,
-    required String audioUrl,
-  }) async {
-    final repository = AppDependenciesScope.prayerRepositoryOf(context);
-    final getPrayerSurah = GetPrayerSurah(repository);
-    final languageCode = LanguageRepositoryMemory.instance
-        .getSelectedLanguage()
-        .id;
-    final surah = await getPrayerSurah(
-      surahCode: surahCode,
-      languageCode: languageCode,
-    );
-    return surah.ayahs
-        .map(
-          (ayah) => RakaatStep(
-            orderIndex: orderIndex,
-            title: title,
-            movementDescription: '',
-            arabic: ayah.recitationArabic,
-            transliteration: localizedTransliteration(
-              ayah.transliteration,
-              languageCode,
-            ),
-            translation: ayah.translation,
-            stepCode: 'additional_surah',
-            audioUrl: audioUrl,
-            surahCode: surahCode,
-            additionalSurahOptionCode: surahCode,
-          ),
-        )
-        .toList(growable: false);
-  }
-
   String _translateKey(String? key, {String fallback = ''}) {
     final normalized = (key ?? '').trim();
     if (normalized.isEmpty) return fallback;
@@ -260,134 +186,24 @@ class _StageStepScreenState extends State<StageStepScreen>
     return translated;
   }
 
-  void _jumpToTop() {
-    if (!_scrollController.hasClients) return;
-    _scrollController.jumpTo(0);
-  }
+  void _jumpToTop() => _scrollState.jumpToTop();
 
-  Future<void> _animateToTop() async {
-    if (!_scrollController.hasClients) return;
-    await _scrollController.animateTo(
-      0,
-      duration: const Duration(milliseconds: 420),
-      curve: Curves.easeOutCubic,
-    );
-  }
-
-  void _handleOnboardingStepChanged(int stepIndex) {
-    if (stepIndex != 2) return;
-    _scrollOnboardingStepIntoView();
-  }
-
-  void _scrollOnboardingStepIntoView({int attempt = 0}) {
-    final ctx = _stepKeys[_entryKey(_clampedAyahIndex)]?.currentContext;
-    if (ctx == null) {
-      if (attempt >= 12) return;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted || !_showOnboarding) return;
-        _scrollOnboardingStepIntoView(attempt: attempt + 1);
-      });
-      return;
-    }
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || !_showOnboarding) return;
-      Scrollable.ensureVisible(
-        ctx,
-        duration: const Duration(milliseconds: 420),
-        curve: Curves.easeOutCubic,
-        alignment: 0.5,
-        alignmentPolicy: ScrollPositionAlignmentPolicy.explicit,
-      ).then((_) {
-        if (!mounted || !_showOnboarding) return;
-        setState(() {});
-      });
-    });
-  }
-
-  void _onOnboardingNext() {
-    if (!_showOnboarding || _onboardingStepAdvancing) return;
-    _onboardingStepAdvancing = true;
-    HapticFeedback.mediumImpact();
-    if (_onboardingStepIndex >= 2) {
-      _finishOnboarding();
-      _onboardingStepAdvancing = false;
-      return;
-    }
-    final nextStep = _onboardingStepIndex + 1;
-    setState(() => _onboardingStepIndex = nextStep);
-    _handleOnboardingStepChanged(nextStep);
-    Future<void>.delayed(const Duration(milliseconds: 120), () {
-      if (!mounted) return;
-      _onboardingStepAdvancing = false;
-    });
-  }
+  Future<void> _animateToTop() => _scrollState.animateToTop();
 
   void _triggerLightHaptic() {
     HapticFeedback.lightImpact();
-  }
-
-  void _finishOnboarding() {
-    if (!_showOnboarding) return;
-    OnboardingRepositoryMemory.instance.completeStageOnboarding();
-    setState(() {
-      _showOnboarding = false;
-      _onboardingStepIndex = 0;
-      _onboardingStepAdvancing = false;
-    });
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      _animateToTop();
-    });
   }
 
   @override
   void dispose() {
     _audio.removeListener(_onAudioTick);
     _audio.dispose();
-    _scrollController.removeListener(_onScroll);
-    _scrollController.dispose();
+    _scrollState.scrollController.removeListener(_scrollState.onScroll);
+    _scrollState.scrollController.dispose();
     _transformationController.removeListener(_handleOverviewTransformChanged);
     _overviewAnimationController.dispose();
     _transformationController.dispose();
     super.dispose();
-  }
-
-  void _onScroll() {
-    if (_showOverviewLayer) {
-      if (_showPinned) {
-        setState(() => _showPinned = false);
-      }
-      if (_showTopBlur) {
-        setState(() => _showTopBlur = false);
-      }
-      return;
-    }
-    _updatePinned();
-    _updateTopBlur();
-  }
-
-  void _updateTopBlur() {
-    final shouldShow =
-        _scrollController.hasClients &&
-        _scrollController.offset > _topBlurShowOffset;
-    if (shouldShow == _showTopBlur) return;
-    setState(() => _showTopBlur = shouldShow);
-  }
-
-  void _updatePinned() {
-    final progressCtx = _progressKey.currentContext;
-    final stackBox = context.findRenderObject() as RenderBox?;
-    if (progressCtx == null || stackBox == null) return;
-    final progressBox = progressCtx.findRenderObject() as RenderBox?;
-    if (progressBox == null || !progressBox.hasSize) return;
-    final stackTop = stackBox.localToGlobal(Offset.zero).dy;
-    final progressTop = progressBox.localToGlobal(Offset.zero).dy - stackTop;
-    final progressBottom = progressTop + progressBox.size.height;
-    final pinnedTop = 64.h;
-    final shouldShow = progressBottom <= pinnedTop + 4.h;
-    if (shouldShow != _showPinned) {
-      setState(() => _showPinned = shouldShow);
-    }
   }
 
   RakaatData? get _currentRakaat => _rakaats.isEmpty
@@ -625,7 +441,7 @@ class _StageStepScreenState extends State<StageStepScreen>
         _rakaatIndex = nextRakaat;
         _stepIndex = nextStep;
         _selectedAyahIndex = 0;
-        _showPinned = false;
+        _scrollState.showPinned = false;
         if (animateStepTransition) {
           _stepTransitionToken++;
           _stepTransitionDirection = direction >= 0 ? 1 : -1;
@@ -685,6 +501,61 @@ class _StageStepScreenState extends State<StageStepScreen>
     stepIndex: stepIndex,
     stepOrderIndexesForRakaatIndex: _stepOrderIndexesForRakaatIndex,
   );
+
+  /// Собирает данные соседнего шага для ghost-карточки в карусели.
+  /// [direction]: -1 = предыдущий, +1 = следующий.
+  StageNeighborStepBundle? _resolveNeighborStepBundle({
+    required int direction,
+    required int currentStepCount,
+    required String genderCode,
+  }) {
+    if (_rakaats.isEmpty) return null;
+    var targetRakaat = _rakaatIndex;
+    var targetStep = _clampedStepIndex + direction;
+
+    if (targetStep < 0) {
+      targetRakaat -= 1;
+      if (targetRakaat < 0) return null;
+      final prevCount = _stepCountForRakaat(targetRakaat);
+      targetStep = prevCount - 1;
+    } else if (targetStep >= currentStepCount) {
+      targetRakaat += 1;
+      if (targetRakaat >= _rakaats.length) return null;
+      targetStep = 0;
+    }
+
+    final entries = _entriesForPage(
+      rakaatIndex: targetRakaat,
+      stepIndex: targetStep,
+    );
+    final recitationEntries = _recitationEntriesForPage(
+      rakaatIndex: targetRakaat,
+      stepIndex: targetStep,
+    );
+    final firstEntry = entries.isNotEmpty ? entries.first : null;
+    final stepTitle = (firstEntry?.title ?? '').trim().isEmpty
+        ? context.t('stage.defaultStepTitle')
+        : firstEntry!.title;
+    final movementDescription =
+        (firstEntry?.movementDescription ?? '').trim();
+    final fallbackImage = _rakaats[targetRakaat].imageAsset;
+    final stepImageAsset = resolveStageStepImageAsset(
+      explicitImageAsset: firstEntry?.imageAsset ?? '',
+      stepCode: firstEntry?.stepCode ?? '',
+      title: stepTitle,
+      movementDescription: movementDescription,
+      fallbackAsset: fallbackImage,
+      genderCode: genderCode,
+    );
+
+    return StageNeighborStepBundle(
+      stepTitle: stepTitle,
+      movementDescription: movementDescription,
+      stepImageAsset: stepImageAsset,
+      fallbackStepImageAsset: fallbackImage,
+      entries: recitationEntries,
+    );
+  }
 
   StageOverviewGeometry get _overviewGeometry => StageOverviewGeometry(
     pages: _allStagePages,
@@ -805,8 +676,8 @@ class _StageStepScreenState extends State<StageStepScreen>
     overviewMatrixForPage: _overviewMatrixForPage,
     overviewPreviewScale: _overviewPreviewScale,
     animateOverviewMatrix: _animateOverviewMatrix,
-    setTopControlsRevealToken: (value) => _topControlsRevealToken = value,
-    topControlsRevealToken: _topControlsRevealToken,
+    setTopControlsRevealToken: (value) => _scrollState.topControlsRevealToken = value,
+    topControlsRevealToken: _scrollState.topControlsRevealToken,
     setStateSafe: _setStateSafe,
     setOverviewOriginFlatIndex: (value) => _overviewOriginFlatIndex = value,
     setOverviewSelectedFlatIndex: (value) => _overviewSelectedFlatIndex = value,
@@ -815,12 +686,12 @@ class _StageStepScreenState extends State<StageStepScreen>
     setOverviewGestureLock: (value) => _overviewGestureLock = value,
     setOverviewPendingCloseFlatIndex: (value) =>
         _overviewPendingCloseFlatIndex = value,
-    setShowTopControls: (value) => _showTopControls = value,
+    setShowTopControls: (value) => _scrollState.showTopControls = value,
     setShowOverviewLayer: (value) => _showOverviewLayer = value,
     setIsOverviewMode: (value) => _isOverviewMode = value,
     setIsOverviewClosing: (value) => _isOverviewClosing = value,
     setShowOverviewExitButton: (value) => _showOverviewExitButton = value,
-    setShowPinned: (value) => _showPinned = value,
+    setShowPinned: (value) => _scrollState.showPinned = value,
     clearAudioPlaybackKeys: () {
       _playingStepKey = null;
       _startedPlaybackStepKey = null;
@@ -847,7 +718,7 @@ class _StageStepScreenState extends State<StageStepScreen>
         setIsOverviewClosing: (value) => _isOverviewClosing = value,
         setShowOverviewExitButton: (value) => _showOverviewExitButton = value,
         setOverviewGestureLock: (value) => _overviewGestureLock = value,
-        setShowPinned: (value) => _showPinned = value,
+        setShowPinned: (value) => _scrollState.showPinned = value,
         scheduleTopControlsReveal: _scheduleTopControlsReveal,
         animateOverviewMatrix: _animateOverviewMatrix,
         overviewMatrixForPage: _overviewMatrixForPage,
@@ -860,14 +731,15 @@ class _StageStepScreenState extends State<StageStepScreen>
 
   void _scheduleTopControlsReveal() =>
       StageOverviewStateHelper.scheduleTopControlsReveal(
-        nextToken: _topControlsRevealToken + 1,
-        setTopControlsRevealToken: (value) => _topControlsRevealToken = value,
+        nextToken: _scrollState.topControlsRevealToken + 1,
+        setTopControlsRevealToken: (value) =>
+            _scrollState.topControlsRevealToken = value,
         mounted: () => mounted,
-        topControlsRevealToken: () => _topControlsRevealToken,
+        topControlsRevealToken: () => _scrollState.topControlsRevealToken,
         showOverviewLayer: () => _showOverviewLayer,
-        showTopControls: () => _showTopControls,
+        showTopControls: () => _scrollState.showTopControls,
         setStateSafe: _setStateSafe,
-        setShowTopControls: (value) => _showTopControls = value,
+        setShowTopControls: (value) => _scrollState.showTopControls = value,
       );
 
   StagePageReference? _pageForFlatIndex(int flatIndex) {
@@ -940,7 +812,7 @@ class _StageStepScreenState extends State<StageStepScreen>
   }
 
   void _onScreenDoubleTap() {
-    if (_showOverviewLayer || _isOverviewClosing || _showOnboarding) return;
+    if (_showOverviewLayer || _isOverviewClosing || _onboarding.showOnboarding) return;
     unawaited(_openOverviewMode());
   }
 
@@ -973,7 +845,7 @@ class _StageStepScreenState extends State<StageStepScreen>
 
   Widget _animateAppear(Widget child) =>
       StageStepScreenFlowHelper.animateAppear(
-        contentAppeared: _contentAppeared,
+        contentAppeared: _scrollState.contentAppeared,
         child: child,
       );
 
@@ -1097,9 +969,10 @@ class _StageStepScreenState extends State<StageStepScreen>
     final additionalSurahOptions = _additionalSurahOptions;
     final hasAdditionalSurahSelector =
         additionalSurahOptions.isNotEmpty &&
-        _isAdditionalSurahStep(currentStep);
-    final selectedAdditionalSurahIndex = _selectedAdditionalSurahIndex(
+        _surahState.isAdditionalSurahStep(currentStep);
+    final selectedAdditionalSurahIndex = _surahState.selectedIndexForStep(
       additionalSurahOptions,
+      currentStep,
     );
     final currentStepEntries = _currentRecitationEntries;
     final selectedAyahCardKey = _stepKeys.putIfAbsent(
@@ -1114,24 +987,41 @@ class _StageStepScreenState extends State<StageStepScreen>
     final restingTopInset = _overviewRestingTopInset();
     final topControlInset = restingTopInset;
     final topContentPadding = topControlInset;
+
+    // Соседние шаги для карусельного ghost-контента.
+    final prevGhost = hasPrevStageStep
+        ? _resolveNeighborStepBundle(
+            direction: -1,
+            currentStepCount: _stepCountForRakaat(_rakaatIndex),
+            genderCode: selectedGenderCode,
+          )
+        : null;
+    final nextGhost = hasNextStageStep
+        ? _resolveNeighborStepBundle(
+            direction: 1,
+            currentStepCount: _stepCountForRakaat(_rakaatIndex),
+            genderCode: selectedGenderCode,
+          )
+        : null;
+
     return buildStageStepScreenBody(
       context: context,
       backgroundColor: colors.background,
       allowExitPop: _allowExitPop,
       showOverviewLayer: _showOverviewLayer,
       isOverviewClosing: _isOverviewClosing,
-      showTopBlur: _showTopBlur,
+      showTopBlur: _scrollState.showTopBlur,
       isOverviewMode: _isOverviewMode,
-      showPinned: _showPinned,
+      showPinned: _scrollState.showPinned,
       showOverviewExitButton: _showOverviewExitButton,
-      showTopControls: _showTopControls,
-      showOnboarding: _showOnboarding,
+      showTopControls: _scrollState.showTopControls,
+      showOnboarding: _onboarding.showOnboarding,
       onHorizontalDragEnd: _handleHorizontalDragEnd,
       onDoubleTap: _onScreenDoubleTap,
       onScaleStart: _onScaleStart,
       onScaleUpdate: _onScaleUpdate,
       onScaleEnd: _onScaleEnd,
-      mainScrollController: _scrollController,
+      mainScrollController: _scrollState.scrollController,
       transformationController: _transformationController,
       onOverviewInteractionStart: _handleOverviewInteractionStart,
       onOverviewInteractionUpdate: _handleOverviewPanUpdate,
@@ -1176,12 +1066,13 @@ class _StageStepScreenState extends State<StageStepScreen>
       hasAdditionalSurahSelector: hasAdditionalSurahSelector,
       additionalSurahOptions: additionalSurahOptions,
       selectedAdditionalSurahIndex: selectedAdditionalSurahIndex,
-      onSelectAdditionalSurah: (optionIndex) => _onSelectAdditionalSurah(
-        options: additionalSurahOptions,
-        optionIndex: optionIndex,
-      ),
+      onSelectAdditionalSurah: (optionIndex) =>
+          _surahState.onSelectAdditionalSurah(
+            options: additionalSurahOptions,
+            optionIndex: optionIndex,
+          ),
       currentStepEntries: currentStepEntries,
-      additionalSurahAnimationToken: _additionalSurahAnimationToken,
+      additionalSurahAnimationToken: _surahState.additionalSurahAnimationToken,
       entryKeyFor: _entryKey,
       keyForEntry: (index) {
         final entryKey = _entryKey(index);
@@ -1206,11 +1097,14 @@ class _StageStepScreenState extends State<StageStepScreen>
       canGoNext: canGoNext,
       onPrevStep: _prevStep,
       onNextStep: _nextStep,
-      onboardingStepIndex: _onboardingStepIndex,
-      onOnboardingNext: _onOnboardingNext,
+      onboardingStepIndex: _onboarding.stepIndex,
+      onOnboardingNext: _onboarding.onNext,
       selectedAyahCardKey: selectedAyahCardKey,
       topControlInset: topControlInset,
       onOverviewExit: () => unawaited(_closeOverviewMode()),
+      prevGhost: prevGhost,
+      nextGhost: nextGhost,
+      onCarouselDragStarted: _scrollState.jumpScrollToTop,
     );
   }
 

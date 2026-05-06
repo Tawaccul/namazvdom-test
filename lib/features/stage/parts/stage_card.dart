@@ -13,10 +13,10 @@ class StageCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     return Container(
-      padding: EdgeInsets.all(20.sp),
+      padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: colors.card,
-        borderRadius: BorderRadius.circular(AppRadii.card.r),
+        borderRadius: BorderRadius.circular(AppRadii.card),
       ),
       child: child,
     );

@@ -35,7 +35,7 @@ class ThemeSettingsHeader extends StatelessWidget {
           Text(
             title,
             style: TextStyle(
-              fontSize: 16.sp,
+              fontSize: 16,
               fontWeight: FontWeight.w600,
               color: colors.textPrimary,
             ),
@@ -54,7 +54,7 @@ class _CircleBackButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final radius = 22.r;
+    final radius = 22.0;
     return Pressable(
       onTap: onTap,
       borderRadius: BorderRadius.circular(radius),
@@ -64,8 +64,8 @@ class _CircleBackButton extends StatelessWidget {
         decoration: BoxDecoration(color: colors.card, shape: BoxShape.circle),
         child: SvgPicture.asset(
           'assets/icons/back.svg',
-          width: 7.r,
-          height: 15.r,
+          width: 7,
+          height: 15,
           fit: BoxFit.none,
           colorFilter: ColorFilter.mode(colors.textPrimary, BlendMode.srcIn),
         ),

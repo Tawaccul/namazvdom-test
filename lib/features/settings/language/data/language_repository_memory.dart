@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../domain/entities/app_language.dart';
@@ -34,7 +35,9 @@ class LanguageRepositoryMemory implements LanguageRepository {
         _hasPersistedSelection = true;
         return;
       }
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('[LanguageRepository] init failed: $e');
+    }
     _selected = _languageForLocale(PlatformDispatcher.instance.locale);
   }
 
@@ -78,6 +81,8 @@ class LanguageRepositoryMemory implements LanguageRepository {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(_prefsKey, _selected.id);
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('[LanguageRepository] _persistSelected failed: $e');
+    }
   }
 }

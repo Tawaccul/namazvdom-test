@@ -46,7 +46,7 @@ Widget buildAblutionPageContent({
     physics: const BouncingScrollPhysics(),
     padding: EdgeInsets.only(
       top: topContentPadding,
-      bottom: 24.h + bottomInset,
+      bottom: 24 + bottomInset,
     ),
     children: [
       IgnorePointer(
@@ -68,12 +68,12 @@ Widget buildAblutionPageContent({
           ),
         ),
       ),
-      SizedBox(height: 20.h),
+      SizedBox(height: 20),
       KeyedSubtree(
         key: progressKey,
         child: Pressable(
           onTap: onOpenOverview,
-          borderRadius: BorderRadius.circular(AppRadii.card.r),
+          borderRadius: BorderRadius.circular(AppRadii.card),
           child: AblutionProgressBlock(
             title: title,
             stepIndex: stepNumber,
@@ -82,7 +82,7 @@ Widget buildAblutionPageContent({
           ),
         ),
       ),
-      SizedBox(height: 12.h),
+      SizedBox(height: 12),
       animateStepTransition(
         Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -94,10 +94,10 @@ Widget buildAblutionPageContent({
               highlightKey: step.text == null ? onboardingHighlightKey : null,
             ),
             if (step.text != null) ...[
-              SizedBox(height: 12.h),
+              SizedBox(height: 12),
               Pressable(
                 onTap: () => onToggleStepAudio(step),
-                borderRadius: BorderRadius.circular(AppRadii.card.r),
+                borderRadius: BorderRadius.circular(AppRadii.card),
                 child: KeyedSubtree(
                   key: onboardingHighlightKey,
                   child: _AblutionTextCard(
@@ -112,7 +112,7 @@ Widget buildAblutionPageContent({
           ],
         ),
       ),
-      SizedBox(height: 20.h),
+      SizedBox(height: 20),
       Row(
         children: [
           Expanded(
@@ -169,22 +169,22 @@ class _AblutionStepCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Container(
-            height: 260.h,
+            height: 260,
             decoration: BoxDecoration(
               color: colors.soft,
-              borderRadius: BorderRadius.circular(AppRadii.inner.r),
+              borderRadius: BorderRadius.circular(AppRadii.inner),
             ),
             child: Center(
               child: SvgPicture.asset(
                 imageAsset,
-                width: 250.h,
+                width: 250,
                 fit: BoxFit.contain,
                 placeholderBuilder: (_) =>
-                    SizedBox(width: 250.h, height: 250.h),
+                    SizedBox(width: 250, height: 250),
               ),
             ),
           ),
-          SizedBox(height: 24.h),
+          SizedBox(height: 24),
           Text(
             context.t(step.titleKey),
             style: TextStyle(
@@ -193,7 +193,7 @@ class _AblutionStepCard extends StatelessWidget {
               color: colors.textPrimary,
             ),
           ),
-          SizedBox(height: 10.h),
+          SizedBox(height: 10),
           Text(
             context.t(step.descriptionKey),
             style: TextStyle(
@@ -233,10 +233,10 @@ class _AblutionTextCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12),
             decoration: BoxDecoration(
               color: colors.soft,
-              borderRadius: BorderRadius.circular(AppRadii.inner.r),
+              borderRadius: BorderRadius.circular(AppRadii.inner),
             ),
             child: Row(
               children: [
@@ -263,7 +263,7 @@ class _AblutionTextCard extends StatelessWidget {
                     textDirection: TextDirection.rtl,
                     textScaler: TextScaler.noScaling,
                     style: TextStyle(
-                      fontSize: 24.sp,
+                      fontSize: 24,
                       fontWeight: FontWeight.w500,
                       color: colors.textSecondary,
                     ),
@@ -272,7 +272,7 @@ class _AblutionTextCard extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(height: 20.h),
+          SizedBox(height: 20),
           Text(
             transliteration,
             style: TextStyle(
@@ -282,7 +282,7 @@ class _AblutionTextCard extends StatelessWidget {
               color: colors.textPrimary,
             ),
           ),
-          SizedBox(height: 8.h),
+          SizedBox(height: 8),
           Text(
             context.t(text.translationKey),
             style: TextStyle(

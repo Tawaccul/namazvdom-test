@@ -37,7 +37,7 @@ Future<AppLanguage?> showLanguageBottomSheet(BuildContext context) {
             child: Material(
               color: colors.card,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(32.r)),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
               ),
               clipBehavior: Clip.antiAlias,
               child: CustomScrollView(
@@ -104,16 +104,16 @@ class _LanguageTileState extends State<_LanguageTile> {
         curve: Curves.easeOutCubic,
         decoration: BoxDecoration(
           color: bg,
-          borderRadius: BorderRadius.circular(12.r),
+          borderRadius: BorderRadius.circular(12),
         ),
-        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 16.h),
+        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 16),
         child: Row(
           children: [
             Expanded(
               child: Text(
                 widget.title,
                 style: TextStyle(
-                  fontSize: 16.sp,
+                  fontSize: 16,
                   height: 1,
                   fontWeight: FontWeight.w500,
                   color: colors.textPrimary,
@@ -123,14 +123,14 @@ class _LanguageTileState extends State<_LanguageTile> {
             widget.selected
                 ? SvgPicture.asset(
                     'assets/icons/check.svg',
-                    width: 15.r,
-                    height: 11.r,
+                    width: 15,
+                    height: 11,
                     colorFilter: ColorFilter.mode(
                       colors.primary,
                       BlendMode.srcIn,
                     ),
                   )
-                : SizedBox(width: 26.r, height: 26.r),
+                : SizedBox(width: 26, height: 26),
           ],
         ),
       ),
@@ -144,10 +144,10 @@ class _LanguageSheetHeaderDelegate extends SliverPersistentHeaderDelegate {
   final VoidCallback onClose;
 
   @override
-  double get minExtent => 86.h;
+  double get minExtent => 86;
 
   @override
-  double get maxExtent => 86.h;
+  double get maxExtent => 86;
 
   @override
   Widget build(
@@ -157,7 +157,7 @@ class _LanguageSheetHeaderDelegate extends SliverPersistentHeaderDelegate {
   ) {
     final colors = context.colors;
     return Container(
-      padding: EdgeInsets.fromLTRB(16.w, 24.h, 16.w, 0),
+      padding: EdgeInsets.fromLTRB(16.w, 24, 16.w, 0),
       color: colors.card,
       child: Column(
         children: [
@@ -167,7 +167,7 @@ class _LanguageSheetHeaderDelegate extends SliverPersistentHeaderDelegate {
                 child: Text(
                   context.t('language.chooseLanguage'),
                   style: TextStyle(
-                    fontSize: 20.sp,
+                    fontSize: 20,
                     height: 1.2,
                     fontWeight: FontWeight.w600,
                     color: colors.textPrimary,
@@ -176,17 +176,17 @@ class _LanguageSheetHeaderDelegate extends SliverPersistentHeaderDelegate {
               ),
               Pressable(
                 onTap: onClose,
-                borderRadius: BorderRadius.circular(AppRadii.circle.r),
+                borderRadius: BorderRadius.circular(AppRadii.circle),
                 child: Container(
-                  width: 24.r,
-                  height: 24.r,
+                  width: 24,
+                  height: 24,
                   decoration: BoxDecoration(
                     color: colors.soft,
-                    borderRadius: BorderRadius.circular(AppRadii.circle.r),
+                    borderRadius: BorderRadius.circular(AppRadii.circle),
                   ),
                   child: SvgPicture.asset(
                     closeIconAssetFor(context),
-                    width: 24.r,
+                    width: 24,
                   ),
                 ),
               ),

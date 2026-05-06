@@ -184,19 +184,19 @@ _Metrics _metricsFor(AppButtonSize size) {
   switch (size) {
     case AppButtonSize.large:
       return _Metrics(
-        height: 58.h,
+        height: 50,
         paddingX: 20.w,
-        iconSize: 22.w,
+        iconSize: 22,
         gap: 12.w,
-        textStyle: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),
+        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
       );
     case AppButtonSize.medium:
       return _Metrics(
-        height: 50.h,
+        height: 50,
         paddingX: 16.w,
-        iconSize: 20.w,
+        iconSize: 20,
         gap: 10.w,
-        textStyle: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500),
+        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
       );
   }
 }

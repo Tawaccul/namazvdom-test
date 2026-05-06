@@ -25,14 +25,14 @@ class _ThemeBottomSheet extends StatelessWidget {
     final controller = AppScope.themeControllerOf(context);
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 20.h),
+      padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 20),
       child: Column(
         children: [
           AppTopBar(
             title: context.t('theme.title'),
             onBack: () => Navigator.of(context).maybePop(),
           ),
-          SizedBox(height: 18.h),
+          SizedBox(height: 18),
           AnimatedBuilder(
             animation: controller,
             builder: (context, _) {
@@ -49,16 +49,16 @@ class _ThemeBottomSheet extends StatelessWidget {
                   trailing: selected
                       ? Icon(
                           Icons.check,
-                          size: 26.r,
+                          size: 26,
                           color: context.colors.primary,
                         )
-                      : SizedBox(width: 26.r, height: 26.r),
+                      : SizedBox(width: 26, height: 26),
                 );
               }
 
               return AppCard(
                 radius: 32,
-                padding: EdgeInsets.symmetric(vertical: 8.h),
+                padding: EdgeInsets.symmetric(vertical: 8),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
