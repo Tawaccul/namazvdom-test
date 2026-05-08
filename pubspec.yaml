@@ -90,6 +90,8 @@ flutter:
   -  assets/icons/check.svg
   -  assets/icons/more-circle.svg
   -  assets/icons/ablution.svg
+  -  assets/icons/ablution-dark.png
+  -  assets/icons/ablution-light.png
   -  assets/icons/additional-prayers.svg
   -  assets/icons/numeration.svg
   -  assets/icons/arrow-right-chevron.svg

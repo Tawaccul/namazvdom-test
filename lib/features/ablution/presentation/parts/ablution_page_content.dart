@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../app/l10n/app_localization.dart';
 import '../../../../app/theme/app_colors.dart';
@@ -8,9 +9,10 @@ import '../../../../app/theme/app_radii.dart';
 import '../../../../core/widgets/pressable.dart';
 import '../../../stage/parts/stage_bottom_button.dart';
 import '../../../stage/parts/stage_card.dart';
+import '../../../stage/parts/stage_progress_bar.dart';
 import '../../../stage/parts/stage_top_bar.dart';
 import '../models/ablution_manifest_models.dart';
-import 'ablution_progress_block.dart';
+import 'ablution_layout_data.dart';
 
 Widget buildAblutionPageContent({
   required BuildContext context,
@@ -18,10 +20,7 @@ Widget buildAblutionPageContent({
   required int stepNumber,
   required int totalSteps,
   required double progress,
-  required double cardTextSize,
   required String title,
-  required double topContentPadding,
-  required double bottomInset,
   required bool showTopControls,
   required GlobalKey stageButtonKey,
   required GlobalKey progressKey,
@@ -41,6 +40,12 @@ Widget buildAblutionPageContent({
 }) {
   final hasPrevStep = stepNumber > 1;
   final hasNextStep = stepNumber < totalSteps;
+  return Builder(
+    builder: (context) {
+  final layout = AblutionLayoutData.of(context);
+  final topContentPadding = layout.topInset;
+  final bottomInset = layout.bottomInset;
+  final cardTextSize = layout.cardTextSize;
   return ListView(
     controller: scrollController,
     physics: const BouncingScrollPhysics(),
@@ -68,33 +73,45 @@ Widget buildAblutionPageContent({
           ),
         ),
       ),
-      SizedBox(height: 20),
+      SizedBox(height: 16.h),
       KeyedSubtree(
         key: progressKey,
         child: Pressable(
           onTap: onOpenOverview,
           borderRadius: BorderRadius.circular(AppRadii.card),
-          child: AblutionProgressBlock(
+          child: StageProgressBlock(
             title: title,
             stepIndex: stepNumber,
             totalSteps: totalSteps,
             progress: progress.clamp(0.0, 1.0),
+            showRakaats: false,
+            animateProgress: false,
           ),
         ),
       ),
-      SizedBox(height: 12),
+      SizedBox(height: 14.h),
       animateStepTransition(
         Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _AblutionStepCard(
-              step: step,
-              cardTextSize: cardTextSize,
-              imageAsset: stepImageAsset(step),
-              highlightKey: step.text == null ? onboardingHighlightKey : null,
-            ),
+            Builder(builder: (context) {
+              final image = SvgPicture.asset(
+                stepImageAsset(step),
+                width: MediaQuery.sizeOf(context).width * 0.64,
+                fit: BoxFit.contain,
+                placeholderBuilder: (_) => const SizedBox(width: 220, height: 220),
+              );
+              final card = StageStepCard(
+                imageWidget: image,
+                title: context.t(step.titleKey),
+                description: context.t(step.descriptionKey),
+                textSize: cardTextSize,
+              );
+              final key = step.text == null ? onboardingHighlightKey : null;
+              return key == null ? card : KeyedSubtree(key: key, child: card);
+            }),
             if (step.text != null) ...[
-              SizedBox(height: 12),
+              SizedBox(height: 12.h),
               Pressable(
                 onTap: () => onToggleStepAudio(step),
                 borderRadius: BorderRadius.circular(AppRadii.card),
@@ -112,7 +129,7 @@ Widget buildAblutionPageContent({
           ],
         ),
       ),
-      SizedBox(height: 20),
+      SizedBox(height: 26.h),
       Row(
         children: [
           Expanded(
@@ -146,6 +163,8 @@ Widget buildAblutionPageContent({
       ),
     ],
   );
+    },
+  );
 }
 
 class _AblutionStepCard extends StatelessWidget {
@@ -167,9 +186,10 @@ class _AblutionStepCard extends StatelessWidget {
     final child = StageCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            height: 260,
+            height: 244.h,
             decoration: BoxDecoration(
               color: colors.soft,
               borderRadius: BorderRadius.circular(AppRadii.inner),
@@ -177,14 +197,14 @@ class _AblutionStepCard extends StatelessWidget {
             child: Center(
               child: SvgPicture.asset(
                 imageAsset,
-                width: 250,
+                width: 220.h,
                 fit: BoxFit.contain,
                 placeholderBuilder: (_) =>
                     SizedBox(width: 250, height: 250),
               ),
             ),
           ),
-          SizedBox(height: 24),
+          SizedBox(height: 22.h),
           Text(
             context.t(step.titleKey),
             style: TextStyle(
@@ -193,12 +213,12 @@ class _AblutionStepCard extends StatelessWidget {
               color: colors.textPrimary,
             ),
           ),
-          SizedBox(height: 10),
+          SizedBox(height:6.h),
           Text(
             context.t(step.descriptionKey),
             style: TextStyle(
               fontSize: cardTextSize.sp,
-              height: 1.48,
+              height: 1.45,
               fontWeight: FontWeight.w500,
               color: colors.textSecondary,
             ),
@@ -233,7 +253,7 @@ class _AblutionTextCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12),
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
             decoration: BoxDecoration(
               color: colors.soft,
               borderRadius: BorderRadius.circular(AppRadii.inner),
@@ -262,9 +282,9 @@ class _AblutionTextCard extends StatelessWidget {
                     textAlign: TextAlign.right,
                     textDirection: TextDirection.rtl,
                     textScaler: TextScaler.noScaling,
-                    style: TextStyle(
+                    style: GoogleFonts.notoNaskhArabic(
                       fontSize: 24,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w400,
                       color: colors.textSecondary,
                     ),
                   ),
@@ -272,7 +292,7 @@ class _AblutionTextCard extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(height: 20),
+          SizedBox(height: 20.h),
           Text(
             transliteration,
             style: TextStyle(
@@ -282,7 +302,7 @@ class _AblutionTextCard extends StatelessWidget {
               color: colors.textPrimary,
             ),
           ),
-          SizedBox(height: 8),
+          SizedBox(height: 4.h),
           Text(
             context.t(text.translationKey),
             style: TextStyle(

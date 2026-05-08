@@ -8,7 +8,7 @@ class ThemeTextSizeStore {
 
   static const String _prefsKey = 'settings.theme.text_size';
   static const List<double> _snapPoints = <double>[0.0, 0.5, 1.0];
-  static const List<double> _textSizes = <double>[14.0, 16.0, 18.0];
+  static const List<double> _textSizes = <double>[12.0, 14.0, 16.0];
 
   static double _normalized = 0.5;
   static bool _isInitialized = false;

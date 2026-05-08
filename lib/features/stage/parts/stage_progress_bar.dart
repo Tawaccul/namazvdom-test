@@ -9,22 +9,24 @@ class StageProgressBlock extends StatelessWidget {
   const StageProgressBlock({
     super.key,
     required this.title,
-    required this.rakaatIndex,
-    required this.totalRakaats,
     required this.stepIndex,
     required this.totalSteps,
     required this.progress,
+    this.rakaatIndex,
+    this.totalRakaats,
+    this.showRakaats = true,
     this.animateProgress = true,
     this.titleFontSize,
     this.metaFontSize,
   });
 
   final String title;
-  final int rakaatIndex;
-  final int totalRakaats;
+  final int? rakaatIndex;
+  final int? totalRakaats;
   final int stepIndex;
   final int totalSteps;
   final double progress;
+  final bool showRakaats;
   final bool animateProgress;
   final double? titleFontSize;
   final double? metaFontSize;
@@ -32,8 +34,8 @@ class StageProgressBlock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final resolvedTitleFontSize = titleFontSize ?? 20;
-    final resolvedMetaFontSize = metaFontSize ?? 14;
+    final resolvedTitleFontSize = titleFontSize ?? 18;
+    final resolvedMetaFontSize = metaFontSize ?? 12;
     return StageCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -46,50 +48,66 @@ class StageProgressBlock extends StatelessWidget {
               color: colors.textPrimary,
             ),
           ),
-          SizedBox(height: 16),
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  context.t(
-                    'stage.progress.rakaats',
-                    namedArgs: {
-                      'current': '$rakaatIndex',
-                      'total': '$totalRakaats',
-                    },
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: resolvedMetaFontSize.sp,
-                    fontWeight: FontWeight.w500,
-                    color: colors.secondary,
-                  ),
-                ),
-              ),
-              SizedBox(width: 12.w),
-              Expanded(
-                child: Text(
-                  context.t(
-                    'stage.progress.steps',
-                    namedArgs: {
-                      'current': '$stepIndex',
-                      'total': '$totalSteps',
-                    },
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                    fontSize: resolvedMetaFontSize.sp,
-                    fontWeight: FontWeight.w500,
-                    color: colors.secondary,
+          SizedBox(height: 12.h),
+          if (showRakaats)
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    context.t(
+                      'stage.progress.rakaats',
+                      namedArgs: {
+                        'current': '${rakaatIndex ?? 0}',
+                        'total': '${totalRakaats ?? 0}',
+                      },
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: resolvedMetaFontSize.sp,
+                      fontWeight: FontWeight.w500,
+                      color: colors.secondary,
+                    ),
                   ),
                 ),
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: Text(
+                    context.t(
+                      'stage.progress.steps',
+                      namedArgs: {
+                        'current': '$stepIndex',
+                        'total': '$totalSteps',
+                      },
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      fontSize: resolvedMetaFontSize.sp,
+                      fontWeight: FontWeight.w500,
+                      color: colors.secondary,
+                    ),
+                  ),
+                ),
+              ],
+            )
+          else
+            Text(
+              context.t(
+                'ablution.progressSteps',
+                namedArgs: {
+                  'current': '$stepIndex',
+                  'total': '$totalSteps',
+                },
               ),
-            ],
-          ),
-          SizedBox(height: 12),
+              style: TextStyle(
+                fontSize: resolvedMetaFontSize.sp,
+                fontWeight: FontWeight.w500,
+                color: colors.secondary,
+              ),
+            ),
+          SizedBox(height: 10.h),
           StageProgressBar(value: progress, animate: animateProgress),
         ],
       ),

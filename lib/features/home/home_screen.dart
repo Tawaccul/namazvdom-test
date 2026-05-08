@@ -79,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: ListView(
               controller: _scrollController,
               physics: const BouncingScrollPhysics(),
-              padding: EdgeInsets.fromLTRB(16.w, 72.h, 16.w, 28.h),
+              padding: EdgeInsets.fromLTRB(14.w, 64.h, 14.w, 28.h), 
               children: [
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -89,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       isDark
                           ? 'assets/images/logo-white.png'
                           : 'assets/images/logo.png',
-                      height: 20.h,
+                      height: 18.5.h,
                     ),
                     SizedBox(width: 12.w),
                     _CircleIconButton(
@@ -98,18 +98,20 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ],
                 ),
-                SizedBox(height: 32.h),
+                SizedBox(height: 18.h),
                 _HomeMenuCard(
                   title: context.t('home.ablution.title'),
                   subtitle: context.t('home.ablution.subtitle'),
-                  trailing: SvgPicture.asset(
-                    'assets/icons/ablution.svg',
-                    width: 46.r,
-                    height: 46.r,
+                  trailing: Image.asset(
+                    Theme.of(context).brightness == Brightness.dark
+                        ? 'assets/icons/ablution-dark.png'
+                        : 'assets/icons/ablution-light.png',
+                    width: 42.r,
+                    height: 42.r,
                   ),
                   onTap: () => _openAblution(context),
                 ),
-                SizedBox(height: 32.h),
+                SizedBox(height: 20.h), 
                 _HomeMenuCard(
                   title: context.t('home.prayers.fajr.title'),
                   subtitle: context.t('home.prayers.fajr.subtitle'),
@@ -164,7 +166,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     title: localizedPrayerLabel(context, 'isha'),
                   ),
                 ),
-                SizedBox(height: 32.h),
+                SizedBox(height: 20.h),
                 _HomeMenuCard(
                   title: context.t('home.additional.title'),
                   subtitle: context.t('home.additional.subtitle'),
@@ -244,13 +246,14 @@ class _HomeMenuCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final borderRadius = BorderRadius.circular(AppRadii.card.r);
+    final borderRadius = BorderRadius.circular(AppRadii.inner.r);
 
     return Pressable(
       onTap: onTap,
       borderRadius: borderRadius,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+        height: 71.h,
+        padding: EdgeInsets.only(right: 20.w, left: 20.w),
         decoration: BoxDecoration(
           color: colors.card,
           borderRadius: borderRadius,
@@ -265,19 +268,21 @@ class _HomeMenuCard extends StatelessWidget {
                   Text(
                     title,
                     style: TextStyle(
-                      fontSize: 20.sp,
+                      fontSize: 17.sp,
                       fontWeight: FontWeight.w500,
-                      height: 1.2,
+                        letterSpacing: 0,
+                      height: 1,
                       color: isDark ? colors.textPrimary : colors.secondary,
                     ),
                   ),
-                  SizedBox(height: 8.h),
+                  SizedBox(height: 7.h),
                   Text(
                     subtitle,
                     style: TextStyle(
                       fontSize: 14.sp,
+                      letterSpacing: 0,
                       fontWeight: FontWeight.w400,
-                      height: 1.2,
+                      height: 1,
                       color: isDark ? colors.textMuted : colors.textPrimary,
                     ),
                   ),
@@ -285,7 +290,7 @@ class _HomeMenuCard extends StatelessWidget {
               ),
             ),
             SizedBox(width: 16.w),
-            SizedBox(width: 46.r, height: 46.r, child: trailing),
+            SizedBox( height: 42.h, child: trailing),
           ],
         ),
       ),
@@ -303,7 +308,7 @@ class _CircleIconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final radius = 22.r;
+    final radius = 21.0;
     return Pressable(
       onTap: onTap,
       borderRadius: BorderRadius.circular(radius),
@@ -317,8 +322,8 @@ class _CircleIconButton extends StatelessWidget {
         child: Center(
           child: SvgPicture.asset(
             icon,
-            width: 20.r,
-            height: 20.r,
+            width: 20,
+            height: 20,
             colorFilter: isDark
                 ? ColorFilter.mode(colors.textPrimary, BlendMode.srcIn)
                 : null,
@@ -357,7 +362,7 @@ class _Badge extends StatelessWidget {
                   : 'assets/icons/additional-prayers.svg',
               width: size,
               height: size,
-              colorFilter: ColorFilter.mode(stroke, BlendMode.srcIn),
+              color: context.colors.accentColor,
             ),
             if (count != null)
               Text(

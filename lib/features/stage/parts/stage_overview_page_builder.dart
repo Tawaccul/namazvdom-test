@@ -72,7 +72,7 @@ Widget buildStageOverviewPage({
   );
 
   return Padding(
-    padding: EdgeInsets.symmetric(horizontal: 16.w),
+    padding: EdgeInsets.symmetric(horizontal: 14.w),
     child: Padding(
       padding: EdgeInsets.only(
         top: MediaQuery.paddingOf(context).top + 21,
@@ -95,15 +95,16 @@ Widget buildStageOverviewPage({
             progress: displayProgress.total == 0
                 ? 0
                 : displayProgress.current / displayProgress.total,
+            showRakaats: true,
             animateProgress: false,
           ),
-          SizedBox(height: 12),
+          SizedBox(height: 14.h),
           StageCard(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Container(
-                  height: 260,
+                  height: 244.h,
                   decoration: BoxDecoration(
                     color: context.colors.soft,
                     borderRadius: BorderRadius.circular(AppRadii.inner),
@@ -115,7 +116,7 @@ Widget buildStageOverviewPage({
                     ),
                   ),
                 ),
-                SizedBox(height: 25),
+                SizedBox(height: 22.h),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -123,18 +124,18 @@ Widget buildStageOverviewPage({
                       title,
                       style: TextStyle(
                         fontSize: cardTextSize.sp,
-                        height: 1.48,
+                        height: 1.45,
                         fontWeight: FontWeight.w500,
                         color: context.colors.textPrimary,
                       ),
                     ),
-                    SizedBox(height: 10),
+                    SizedBox(height: 6.h),
                     if (movementDescription.isNotEmpty)
                       Text(
                         movementDescription,
                         style: TextStyle(
                           fontSize: cardTextSize.sp,
-                          height: 1.48,
+                          height: 1.45,
                           fontWeight: FontWeight.w500,
                           color: context.colors.textSecondary,
                         ),
@@ -145,7 +146,7 @@ Widget buildStageOverviewPage({
             ),
           ),
           if (recitationEntries.isNotEmpty) ...[
-            SizedBox(height: 12),
+            SizedBox(height: 12.h),
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [

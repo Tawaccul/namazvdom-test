@@ -66,8 +66,7 @@ class StageTopBar extends StatelessWidget {
               borderRadius: BorderRadius.circular(AppRadii.pill),
               child: Container(
                 key: stageButtonKey,
-                padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10),
-               
+                padding: EdgeInsets.symmetric(vertical: 10.h),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -77,7 +76,7 @@ class StageTopBar extends StatelessWidget {
                         colors.textPrimary,
                         BlendMode.srcIn,
                       ),
-                      width: 24.w,
+                      width: 23.w,
                     ),
                     SizedBox(width: 8.w),
                     Flexible(

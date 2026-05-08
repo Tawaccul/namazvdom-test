@@ -24,15 +24,15 @@ import 'parts/ablution_step_selector_sheet.dart';
 
 class AblutionScreenState extends State<AblutionScreen>
     with SingleTickerProviderStateMixin {
-  static const double _topBlurShowOffset = 80;
-  static const double _horizontalSwipeVelocityThreshold = 220;
+  static const double _topBlurShowOffset = 38;
+  static const double _horizontalSwipeVelocityThreshold = 520;
   static const double _overviewOpenScaleThreshold = 0.99;
   static const double _overviewCloseScaleThreshold = 0.985;
   static const double _overviewPageGap = -10;
   static const double _overviewPreviewScale = 0.50;
   static const double _overviewDragFriction = 0.0000012;
-  static const double _overviewPanSpeedMultiplier = 3.0;
-  static const double _overviewClosingTopInset = 50;
+  static const double _overviewPanSpeedMultiplier = 7.0;
+  static const double _overviewClosingTopInset = 30;
   static const double _overviewPreviewTopShift = 10;
   static const double _overviewCanvasInset = 280;
   static const double _overviewFitPadding = 24;
@@ -741,6 +741,7 @@ class AblutionScreenState extends State<AblutionScreen>
     });
     await _animateOverviewMatrix(
       _overviewMatrixForPage(selected),
+      duration: _overviewMatrixDuration,
       curve: Curves.easeInOutCubic,
     );
     if (!mounted) return;
@@ -803,7 +804,6 @@ class AblutionScreenState extends State<AblutionScreen>
     required AblutionOverviewPageReference page,
     required AblutionManifest manifest,
     required String title,
-    required double cardTextSize,
     required double pageHeight,
   }) {
     final pageId = page.stepIndex;
@@ -812,7 +812,6 @@ class AblutionScreenState extends State<AblutionScreen>
       page: page,
       manifest: manifest,
       title: title,
-      cardTextSize: cardTextSize,
       pageHeight: pageHeight,
       pageScrollController: _overviewScrollControllerFor(pageId),
       shouldScheduleOverflowCheck: !_overviewOverflowByPage.containsKey(pageId),
@@ -825,7 +824,6 @@ class AblutionScreenState extends State<AblutionScreen>
   Widget _buildOverviewLayer({
     required AblutionManifest manifest,
     required String title,
-    required double cardTextSize,
   }) {
     final pages = _allOverviewPages;
     final pageHeight = MediaQuery.sizeOf(context).height;
@@ -838,7 +836,6 @@ class AblutionScreenState extends State<AblutionScreen>
       context: context,
       manifest: manifest,
       title: title,
-      cardTextSize: cardTextSize,
       pages: pages,
       pageHeight: pageHeight,
       cardSize: cardSize,
@@ -856,7 +853,6 @@ class AblutionScreenState extends State<AblutionScreen>
         page: page,
         manifest: manifest,
         title: title,
-        cardTextSize: cardTextSize,
         pageHeight: pageHeight,
       ),
     );
@@ -866,10 +862,7 @@ class AblutionScreenState extends State<AblutionScreen>
     required int stepNumber,
     required int totalSteps,
     required double progress,
-    required double cardTextSize,
     required String title,
-    required double topContentPadding,
-    required double bottomInset,
     ScrollController? scrollController,
     required VoidCallback onBack,
     required VoidCallback onStage,
@@ -881,10 +874,7 @@ class AblutionScreenState extends State<AblutionScreen>
     stepNumber: stepNumber,
     totalSteps: totalSteps,
     progress: progress,
-    cardTextSize: cardTextSize,
     title: title,
-    topContentPadding: topContentPadding,
-    bottomInset: bottomInset,
     showTopControls: _showTopControls,
     stageButtonKey: _stageButtonKey,
     progressKey: _progressKey,
@@ -937,10 +927,7 @@ class AblutionScreenState extends State<AblutionScreen>
             required stepNumber,
             required totalSteps,
             required progress,
-            required cardTextSize,
             required title,
-            required topContentPadding,
-            required bottomInset,
             required scrollController,
             required onBack,
             required onStage,
@@ -951,10 +938,7 @@ class AblutionScreenState extends State<AblutionScreen>
             stepNumber: stepNumber,
             totalSteps: totalSteps,
             progress: progress,
-            cardTextSize: cardTextSize,
             title: title,
-            topContentPadding: topContentPadding,
-            bottomInset: bottomInset,
             scrollController: scrollController,
             onBack: onBack,
             onStage: onStage,

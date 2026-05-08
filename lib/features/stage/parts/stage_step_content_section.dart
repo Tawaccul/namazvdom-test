@@ -148,7 +148,7 @@ class StageStepContentSection extends StatelessWidget {
                     child: Column(
                       children: [
                         Container(
-                          height: 260,
+                          height: 244.h,
                           decoration: BoxDecoration(
                             color: softColor,
                             borderRadius: BorderRadius.circular(
@@ -157,7 +157,7 @@ class StageStepContentSection extends StatelessWidget {
                           ),
                           child: Center(child: stepImage),
                         ),
-                        SizedBox(height: 25),
+                        SizedBox(height: 22.h),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
@@ -165,18 +165,18 @@ class StageStepContentSection extends StatelessWidget {
                               stepTitle,
                               style: TextStyle(
                                 fontSize: cardTextSize.sp,
-                                height: 1.48,
+                                height: 1.45,
                                 fontWeight: FontWeight.w500,
                                 color: textPrimaryColor,
                               ),
                             ),
-                            SizedBox(height: 10),
+                            SizedBox(height: 6.h),
                             if (movementDescription.isNotEmpty)
                               Text(
                                 movementDescription,
                                 style: TextStyle(
                                   fontSize: cardTextSize.sp,
-                                  height: 1.48,
+                                  height: 1.45,
                                   fontWeight: FontWeight.w500,
                                   color: textSecondaryColor,
                                 ),
@@ -188,7 +188,7 @@ class StageStepContentSection extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 12),
+              SizedBox(height: 12.h),
               if (hasAdditionalSurahSelector) ...[
                 animateAppear(
                   StageSurahSelector(
@@ -199,11 +199,11 @@ class StageStepContentSection extends StatelessWidget {
                     onSelect: onSelectAdditionalSurah,
                   ),
                 ),
-                SizedBox(height: 12),
+                SizedBox(height: 12.h),
               ],
               animateRakaat(animateAppear(recitationContent)),
               if (errorText != null) ...[
-                SizedBox(height: 12),
+                SizedBox(height: 12.h),
                 StageCard(
                   child: Text(
                     errorText!,

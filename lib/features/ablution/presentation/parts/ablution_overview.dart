@@ -1,22 +1,23 @@
-import 'dart:async';
+ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../app/l10n/app_localization.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_radii.dart';
 import '../../../stage/parts/stage_card.dart';
+import '../../../stage/parts/stage_progress_bar.dart';
 import '../models/ablution_manifest_models.dart';
-import 'ablution_progress_block.dart';
+import 'ablution_layout_data.dart';
 
 Widget buildAblutionOverviewLayer({
   required BuildContext context,
   required AblutionManifest manifest,
   required String title,
-  required double cardTextSize,
   required List<AblutionOverviewPageReference> pages,
   required double pageHeight,
   required Size cardSize,
@@ -73,7 +74,6 @@ Widget buildAblutionOverviewPage({
   required AblutionOverviewPageReference page,
   required AblutionManifest manifest,
   required String title,
-  required double cardTextSize,
   required double pageHeight,
   required ScrollController pageScrollController,
   required bool shouldScheduleOverflowCheck,
@@ -99,55 +99,58 @@ Widget buildAblutionOverviewPage({
   return SizedBox(
     height: pageHeight,
     child: Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.w),
-      child: Stack(
-        clipBehavior: Clip.none,
-        fit: StackFit.expand,
-        children: [
-          NotificationListener<ScrollMetricsNotification>(
-            onNotification: (notification) {
-              setOverviewOverflow(
-                pageId,
-                notification.metrics.maxScrollExtent > 0.5,
-              );
-              return false;
-            },
-            child: SingleChildScrollView(
-              controller: pageScrollController,
-              physics: const NeverScrollableScrollPhysics(),
-              padding: EdgeInsets.only(
-                top: MediaQuery.paddingOf(context).top + 21,
-                bottom: 20,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  AblutionProgressBlock(
-                    title: title,
-                    stepIndex: stepNumber,
-                    totalSteps: manifest.steps.length,
-                    progress: progress,
-                  ),
-                  SizedBox(height: 12),
-                  _AblutionOverviewStepCard(
-                    step: step,
-                    cardTextSize: cardTextSize,
-                    imageAsset: stepImageAsset(step),
-                  ),
-                  if (step.text != null) ...[
-                    SizedBox(height: 12),
-                    _AblutionOverviewTextCard(
-                      step: step,
-                      cardTextSize: cardTextSize,
-                      transliteration: localizedStepTransliteration(step),
+      padding: EdgeInsets.symmetric(horizontal: 14.w),
+      child: OverflowBox(
+        alignment: Alignment.topCenter,
+        maxHeight: double.infinity,
+        child: Builder(
+          builder: (context) {
+            final topInset = AblutionLayoutData.of(context).topInset + 5.h;
+            return NotificationListener<ScrollMetricsNotification>(
+              onNotification: (notification) {
+                setOverviewOverflow(
+                  pageId,
+                  notification.metrics.maxScrollExtent > 0.5,
+                );
+                return false;
+              },
+              child: SingleChildScrollView(
+                controller: pageScrollController,
+                physics: const NeverScrollableScrollPhysics(),
+                padding: EdgeInsets.only(
+                  top: topInset,
+                  bottom: 20,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    StageProgressBlock(
+                      title: title,
+                      stepIndex: stepNumber,
+                      totalSteps: manifest.steps.length,
+                      progress: progress,
+                      showRakaats: false,
+                      animateProgress: false,
                     ),
+                    SizedBox(height: 14.h),
+                    _AblutionOverviewStepCard(
+                      step: step,
+                      imageAsset: stepImageAsset(step),
+                    ),
+                    if (step.text != null) ...[
+                      SizedBox(height: 12.h),
+                      _AblutionOverviewTextCard(
+                        step: step,
+                        transliteration: localizedStepTransliteration(step),
+                      ),
+                    ],
                   ],
-                ],
+                ),
               ),
-            ),
-          ),
-        ],
+            );
+          },
+        ),
       ),
     ),
   );
@@ -189,24 +192,23 @@ class _AblutionOverviewCardSlot extends StatelessWidget {
 class _AblutionOverviewStepCard extends StatelessWidget {
   const _AblutionOverviewStepCard({
     required this.step,
-    required this.cardTextSize,
     required this.imageAsset,
   });
 
   final AblutionStepManifest step;
-  final double cardTextSize;
   final String imageAsset;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+    final cardTextSize = AblutionLayoutData.of(context).cardTextSize;
     return StageCard(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Container(
-            height: 260,
+            height: 244.h,
             decoration: BoxDecoration(
               color: colors.soft,
               borderRadius: BorderRadius.circular(AppRadii.inner),
@@ -221,7 +223,7 @@ class _AblutionOverviewStepCard extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 24),
+          SizedBox(height: 22.h),
           Text(
             context.t(step.titleKey),
             style: TextStyle(
@@ -230,12 +232,12 @@ class _AblutionOverviewStepCard extends StatelessWidget {
               color: colors.textPrimary,
             ),
           ),
-          SizedBox(height: 10),
+          SizedBox(height: 6.h),
           Text(
             context.t(step.descriptionKey),
             style: TextStyle(
               fontSize: cardTextSize.sp,
-              height: 1.48,
+              height: 1.45,
               fontWeight: FontWeight.w500,
               color: colors.textSecondary,
             ),
@@ -249,24 +251,23 @@ class _AblutionOverviewStepCard extends StatelessWidget {
 class _AblutionOverviewTextCard extends StatelessWidget {
   const _AblutionOverviewTextCard({
     required this.step,
-    required this.cardTextSize,
     required this.transliteration,
   });
 
   final AblutionStepManifest step;
-  final double cardTextSize;
   final String transliteration;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+    final cardTextSize = AblutionLayoutData.of(context).cardTextSize;
     final text = step.text!;
     return StageCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12),
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
             decoration: BoxDecoration(
               color: colors.soft,
               borderRadius: BorderRadius.circular(AppRadii.inner),
@@ -293,9 +294,9 @@ class _AblutionOverviewTextCard extends StatelessWidget {
                     textAlign: TextAlign.right,
                     textDirection: TextDirection.rtl,
                     textScaler: TextScaler.noScaling,
-                    style: TextStyle(
+                    style: GoogleFonts.notoNaskhArabic(
                       fontSize: 24,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w400,
                       color: colors.textSecondary,
                     ),
                   ),
@@ -303,7 +304,7 @@ class _AblutionOverviewTextCard extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(height: 20),
+          SizedBox(height: 20.h),
           Text(
             transliteration,
             style: TextStyle(
@@ -313,7 +314,7 @@ class _AblutionOverviewTextCard extends StatelessWidget {
               color: colors.textPrimary,
             ),
           ),
-          SizedBox(height: 8),
+          SizedBox(height: 4.h),
           Text(
             context.t(text.translationKey),
             style: TextStyle(

@@ -86,23 +86,23 @@
     "prayers": {
       "fajr": {
         "title": "Fajr",
-        "subtitle": "Dawn prayer – 2 rakats"
+        "subtitle": "Dawn prayer"
       },
       "dhuhr": {
         "title": "Zuhr",
-        "subtitle": "Midday prayer – 4 rakats"
+        "subtitle": "Midday prayer"
       },
       "asr": {
         "title": "Asr",
-        "subtitle": "Afternoon prayer – 4 rakats"
+        "subtitle": "Afternoon prayer"
       },
       "maghrib": {
         "title": "Maghrib",
-        "subtitle": "Sunset prayer – 3 rakats"
+        "subtitle": "Sunset prayer"
       },
       "isha": {
         "title": "Isha",
-        "subtitle": "Night prayer – 4 rakats"
+        "subtitle": "Night prayer"
       }
     },
     "additional": {
@@ -236,7 +236,7 @@
 
 
   "ablution": {
-    "title": "Ablution (Wudu)",
+    "title": "Ablution",
     "description": "Step-by-step guide to performing ablution before prayer",
     "progressSteps": "{current}/{total} steps",
     "selectSection": "Select the appropriate section",

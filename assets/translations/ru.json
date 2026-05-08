@@ -217,7 +217,7 @@
     }
   },
   "ablution": {
-    "title": "Омовение (Вуду)",
+    "title": "Омовение",
     "description": "Пошаговое руководство по омовению перед намазом",
     "progressSteps": "{current}/{total} шагов",
     "selectSection": "Выберите подходящий раздел",

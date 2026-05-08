@@ -184,7 +184,7 @@ _Metrics _metricsFor(AppButtonSize size) {
   switch (size) {
     case AppButtonSize.large:
       return _Metrics(
-        height: 50,
+        height: 50.h,
         paddingX: 20.w,
         iconSize: 22,
         gap: 12.w,

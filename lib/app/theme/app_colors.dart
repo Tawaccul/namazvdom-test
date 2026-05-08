@@ -5,6 +5,7 @@ class AppColorPalette {
   const AppColorPalette({
     required this.background,
     required this.backgroundLightBlue,
+    required this.accentColor,
     required this.card,
     required this.soft,
     required this.primary,
@@ -22,6 +23,7 @@ class AppColorPalette {
   final Color card;
   final Color soft;
   final Color backgroundLightBlue;
+  final Color accentColor;
   final Color primary;
   final Color secondary;
 
@@ -40,6 +42,7 @@ class AppColors {
   static const light = AppColorPalette(
     background: Color(0xFFF0F4FF),
     backgroundLightBlue: (Color(0xFFE6ECFF)),
+    accentColor: Color(0xFFE9EFFF),
     card: Color(0xFFFFFFFF),
     soft: Color(0xFFF7F9FF),
     primary: Color(0xFF497FFF),
@@ -56,6 +59,7 @@ class AppColors {
   static const dark = AppColorPalette(
     background: Color(0xFF1E1E25),
     backgroundLightBlue: (Color(0xFF1E1E25)),
+    accentColor: Color(0xFF3F3F4C),
     card: Color(0xFF2A2B35),
     soft: Color(0xFF25252F),
     primary: Color(0xFF497FFF),

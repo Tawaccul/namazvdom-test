@@ -115,6 +115,7 @@ Widget buildStageStepScreenBody({
           stepIndex: stepIndex,
           totalSteps: totalSteps,
           progress: stepProgress.clamp(0.0, 1.0),
+          showRakaats: true,
           animateProgress: false,
         ),
       ),

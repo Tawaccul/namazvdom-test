@@ -10,6 +10,8 @@ import '../../../../app/ui_kit/app_blurred_top_overlay.dart';
 import '../../../stage/parts/stage_top_bar.dart';
 import '../../../stage/stage_onboarding_overlay.dart';
 import '../models/ablution_manifest_models.dart';
+import 'ablution_content_freeze_layer.dart';
+import 'ablution_layout_data.dart';
 
 Widget buildAblutionScreenBody({
   required BuildContext context,
@@ -40,10 +42,7 @@ Widget buildAblutionScreenBody({
     required int stepNumber,
     required int totalSteps,
     required double progress,
-    required double cardTextSize,
     required String title,
-    required double topContentPadding,
-    required double bottomInset,
     required ScrollController scrollController,
     required VoidCallback onBack,
     required VoidCallback onStage,
@@ -54,7 +53,6 @@ Widget buildAblutionScreenBody({
   required Widget Function({
     required AblutionManifest manifest,
     required String title,
-    required double cardTextSize,
   })
   buildOverviewLayer,
   required AblutionStepManifest Function() currentStep,
@@ -71,11 +69,15 @@ Widget buildAblutionScreenBody({
   required Future<void> Function({bool applySelection}) closeOverviewMode,
   required VoidCallback onOnboardingNext,
 }) {
-  return PopScope(
-    canPop: allowExitPop,
-    child: Scaffold(
-      backgroundColor: backgroundColor,
-      body: SafeArea(
+  return AblutionLayoutData(
+    topInset: topControlInset,
+    bottomInset: bottomInset,
+    cardTextSize: cardTextSize,
+    child: PopScope(
+      canPop: allowExitPop,
+      child: Scaffold(
+        backgroundColor: backgroundColor,
+        body: SafeArea(
         top: false,
         bottom: false,
         child: GestureDetector(
@@ -117,28 +119,28 @@ Widget buildAblutionScreenBody({
 
               return AppBlurredTopOverlay(
                 visible: showTopBlur && !showOverviewLayer,
-                height: 150,
-                maxBlurSigma: 60,
+                height: 104.h,
+                maxBlurSigma: 6,
                 child: Stack(
                   children: [
                     IgnorePointer(
                       ignoring: showOverviewLayer,
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16.w),
-                        child: buildPageContent(
-                          step: currentStep(),
-                          stepNumber: stepNumber,
-                          totalSteps: totalSteps,
-                          progress: progress,
-                          cardTextSize: cardTextSize,
-                          title: title,
-                          topContentPadding: topControlInset,
-                          bottomInset: bottomInset,
-                          scrollController: scrollController,
-                          onBack: () => unawaited(popToHome()),
-                          onStage: () => unawaited(showStepSelector()),
-                          onPrev: () => unawaited(prevStep()),
-                          onNext: () => unawaited(nextStep()),
+                      child: AblutionContentFreezeLayer(
+                        frozen: isOverviewClosing,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 14.w),
+                          child: buildPageContent(
+                            step: currentStep(),
+                            stepNumber: stepNumber,
+                            totalSteps: totalSteps,
+                            progress: progress,
+                            title: title,
+                            scrollController: scrollController,
+                            onBack: () => unawaited(popToHome()),
+                            onStage: () => unawaited(showStepSelector()),
+                            onPrev: () => unawaited(prevStep()),
+                            onNext: () => unawaited(nextStep()),
+                          ),
                         ),
                       ),
                     ),
@@ -149,7 +151,6 @@ Widget buildAblutionScreenBody({
                           child: buildOverviewLayer(
                             manifest: manifest,
                             title: title,
-                            cardTextSize: cardTextSize,
                           ),
                         ),
                       ),
@@ -193,6 +194,7 @@ Widget buildAblutionScreenBody({
         ),
       ),
     ),
+  ),
   );
 }
 
