@@ -9,6 +9,7 @@ import '../../../app/ui_kit/app_button.dart';
 import '../../../core/widgets/pressable.dart';
 import '../models/stage_step_screen_models.dart';
 import '../stage_onboarding_overlay.dart';
+import '../stage_overview_constants.dart';
 import 'stage_overview_layer.dart';
 import 'stage_pinned_progress.dart';
 import 'stage_top_bar.dart';
@@ -99,7 +100,6 @@ class StageStepScreenScaffold extends StatelessWidget {
   final Offset Function(StagePageReference page) pagePositionFor;
   final Future<void> Function(StagePageReference page) onPageTap;
   final Widget Function(StagePageReference page) pageBuilder;
-
   final double topContentPadding;
   final VoidCallback onBack;
   final VoidCallback onStage;
@@ -155,7 +155,7 @@ class StageStepScreenScaffold extends StatelessWidget {
                       ignoring: showOverviewLayer,
                       child: AppBlurredTopOverlay(
                         visible: showTopBlur && !isOverviewMode,
-                        height: MediaQuery.paddingOf(context).top + 40,
+                        height: MediaQuery.paddingOf(context).top + 20.h,
                         maxBlurSigma: 6,
                         child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: 14.w),
@@ -214,6 +214,7 @@ class StageStepScreenScaffold extends StatelessWidget {
                             minScale: overviewMinScale,
                             maxScale: 1,
                             canvasSize: overviewCanvasSize,
+                            canvasInset: StageOverviewConstants.overviewCanvasInset,
                             pages: overviewPages,
                             cardSize: overviewCardSize,
                             pagePositionFor: pagePositionFor,
@@ -228,7 +229,7 @@ class StageStepScreenScaffold extends StatelessWidget {
                   Positioned(
                     left: 14.w,
                     right: 14.w,
-                    top: MediaQuery.paddingOf(context).top + 12,
+                    top: MediaQuery.paddingOf(context).top + 8.h,
                     child: IgnorePointer(
                       ignoring: !showPinned || isOverviewMode,
                       child: AnimatedSlide(

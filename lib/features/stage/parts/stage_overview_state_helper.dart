@@ -9,7 +9,7 @@ class StageOverviewStateHelper {
     required bool showOverviewLayer,
     required bool isAnimatingOverviewMatrix,
     required bool isClampingOverviewTransform,
-    required Matrix4 Function(Matrix4 matrix) clampOverviewTransform,
+    required Matrix4 Function(Matrix4 matrix) clampOverviewTransformYOnly,
     required TransformationController transformationController,
     required bool Function(Matrix4 a, Matrix4 b) matricesAreEqual,
     required void Function(bool value) setIsClampingOverviewTransform,
@@ -19,7 +19,7 @@ class StageOverviewStateHelper {
         isClampingOverviewTransform) {
       return;
     }
-    final clamped = clampOverviewTransform(transformationController.value);
+    final clamped = clampOverviewTransformYOnly(transformationController.value);
     final current = transformationController.value;
     if (matricesAreEqual(current, clamped)) {
       return;

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -7,6 +9,7 @@ import '../../../../app/l10n/app_localization.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_radii.dart';
 import '../../../../core/widgets/pressable.dart';
+import '../../../stage/animations/stage_drag_carousel.dart';
 import '../../../stage/parts/stage_bottom_button.dart';
 import '../../../stage/parts/stage_card.dart';
 import '../../../stage/parts/stage_progress_bar.dart';
@@ -34,137 +37,264 @@ Widget buildAblutionPageContent({
   required VoidCallback onStage,
   required VoidCallback onPrev,
   required VoidCallback onNext,
+  required Future<void> Function() onProgrammaticPrev,
+  required Future<void> Function() onProgrammaticNext,
   required VoidCallback onOpenOverview,
   required void Function(AblutionStepManifest step) onToggleStepAudio,
+  AblutionStepManifest? prevGhostStep,
+  AblutionStepManifest? nextGhostStep,
+  VoidCallback? onCarouselDragStarted,
   ScrollController? scrollController,
 }) {
+  final carouselController = StageDragCarouselController();
   final hasPrevStep = stepNumber > 1;
   final hasNextStep = stepNumber < totalSteps;
-  return Builder(
-    builder: (context) {
-  final layout = StageLayoutData.of(context);
-  final topContentPadding = layout.topInset;
-  final bottomInset = layout.bottomInset;
-  final cardTextSize = layout.cardTextSize;
-  return ListView(
-    controller: scrollController,
-    physics: const BouncingScrollPhysics(),
-    padding: EdgeInsets.only(
-      top: topContentPadding,
-      bottom: 24 + bottomInset,
-    ),
-    children: [
-      IgnorePointer(
-        ignoring: !showTopControls,
-        child: AnimatedScale(
-          duration: const Duration(milliseconds: 180),
-          curve: Curves.easeOutCubic,
-          scale: showTopControls ? 1 : 0.9,
-          alignment: Alignment.center,
-          child: AnimatedOpacity(
-            duration: const Duration(milliseconds: 220),
-            curve: Curves.easeOutCubic,
-            opacity: showTopControls ? 1 : 0,
-            child: StageTopBar(
-              onBack: onBack,
-              onStage: onStage,
-              stageButtonKey: stageButtonKey,
-            ),
-          ),
+  Widget buildStepContent(
+    BuildContext context,
+    AblutionStepManifest contentStep, {
+    required double navButtonsOpacity,
+    required GlobalKey? stepCardKey,
+    required GlobalKey? textCardKey,
+    required bool interactive,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Builder(
+          builder: (context) {
+            final card = _AblutionStepCard(
+              step: contentStep,
+              cardTextSize: AblutionLayoutData.of(context).cardTextSize,
+              imageAsset: stepImageAsset(contentStep),
+              highlightKey: stepCardKey,
+            );
+            return card;
+          },
         ),
-      ),
-      SizedBox(height: 16.h),
-      KeyedSubtree(
-        key: progressKey,
-        child: Pressable(
-          onTap: onOpenOverview,
-          borderRadius: BorderRadius.circular(AppRadii.card),
-          child: StageProgressBlock(
-            title: title,
-            stepIndex: stepNumber,
-            totalSteps: totalSteps,
-            progress: progress.clamp(0.0, 1.0),
-            showRakaats: false,
-            animateProgress: false,
-          ),
-        ),
-      ),
-      SizedBox(height: 12.h),
-      animateStepTransition(
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Builder(builder: (context) {
-              final image = SvgPicture.asset(
-                stepImageAsset(step),
-                width: 244.w,
-                fit: BoxFit.none,
-                placeholderBuilder: (_) => const SizedBox(width: 220, height: 220),
-              );
-              final card = StageStepCard(
-                imageWidget: image,
-                title: context.t(step.titleKey),
-                description: context.t(step.descriptionKey),
-                textSize: cardTextSize,
-              );
-              final key = step.text == null ? onboardingHighlightKey : null;
-              return key == null ? card : KeyedSubtree(key: key, child: card);
-            }),
-            if (step.text != null) ...[
-              SizedBox(height: 12.h),
-              Pressable(
-                onTap: () => onToggleStepAudio(step),
-                borderRadius: BorderRadius.circular(AppRadii.card),
-                child: KeyedSubtree(
-                  key: onboardingHighlightKey,
-                  child: _AblutionTextCard(
-                    step: step,
-                    cardTextSize: cardTextSize,
-                    isPlaying: isStepAudioPlaying(step),
-                    transliteration: localizedStepTransliteration(step),
-                  ),
-                ),
-              ),
-            ],
-          ],
-        ),
-      ),
-      SizedBox(height: 26.h),
-      Row(
-        children: [
-          Expanded(
-            child: AnimatedOpacity(
-              duration: const Duration(milliseconds: 160),
-              curve: Curves.easeOutCubic,
-              opacity: hasPrevStep ? 1 : 0.5,
-              child: StageBottomButton(
-                variant: StageBottomButtonVariant.secondary,
-                label: context.t('common.back'),
-                icon: 'assets/icons/arrow-left.svg',
-                onTap: hasPrevStep ? onPrev : null,
-              ),
-            ),
-          ),
-          SizedBox(width: 12.w),
-          Expanded(
-            child: AnimatedOpacity(
-              duration: const Duration(milliseconds: 160),
-              curve: Curves.easeOutCubic,
-              opacity: hasNextStep ? 1 : 0.5,
-              child: StageBottomButton(
-                variant: StageBottomButtonVariant.primary,
-                label: context.t('common.next'),
-                icon: 'assets/icons/arrow-right.svg',
-                onTap: hasNextStep ? onNext : null,
+        if (contentStep.text != null) ...[
+          SizedBox(height: 12.h),
+          Pressable(
+            onTap: interactive ? () => onToggleStepAudio(contentStep) : null,
+            borderRadius: BorderRadius.circular(AppRadii.card),
+            child: KeyedSubtree(
+              key: textCardKey,
+              child: _AblutionTextCard(
+                step: contentStep,
+                cardTextSize: AblutionLayoutData.of(context).cardTextSize,
+                isPlaying: interactive && isStepAudioPlaying(contentStep),
+                transliteration: localizedStepTransliteration(contentStep),
               ),
             ),
           ),
         ],
-      ),
-    ],
-  );
+        SizedBox(height: 26.h),
+        Row(
+          children: [
+            Expanded(
+              child: AnimatedOpacity(
+                duration: const Duration(milliseconds: 360),
+                curve: Curves.easeOutCubic,
+                opacity: (hasPrevStep ? 1.0 : 0.5) * navButtonsOpacity,
+                child: StageBottomButton(
+                  variant: StageBottomButtonVariant.secondary,
+                  label: context.t('common.back'),
+                  icon: 'assets/icons/arrow-left.svg',
+                  onTap: interactive && hasPrevStep
+                      ? () => unawaited(carouselController.animatePrev())
+                      : null,
+                ),
+              ),
+            ),
+            SizedBox(width: 12.w),
+            Expanded(
+              child: AnimatedOpacity(
+                duration: const Duration(milliseconds: 360),
+                curve: Curves.easeOutCubic,
+                opacity: (hasNextStep ? 1.0 : 0.5) * navButtonsOpacity,
+                child: StageBottomButton(
+                  variant: StageBottomButtonVariant.primary,
+                  label: context.t('common.next'),
+                  icon: 'assets/icons/arrow-right.svg',
+                  onTap: interactive && hasNextStep
+                      ? () => unawaited(carouselController.animateNext())
+                      : null,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  return Builder(
+    builder: (context) {
+      final layout = AblutionLayoutData.of(context);
+      final topContentPadding = layout.topInset;
+      final bottomInset = layout.bottomInset;
+      return ListView(
+        controller: scrollController,
+        clipBehavior: Clip.none,
+        physics: const BouncingScrollPhysics(),
+        padding: EdgeInsets.only(
+          top: topContentPadding,
+          bottom: 24 + bottomInset,
+        ),
+        children: [
+          IgnorePointer(
+            ignoring: !showTopControls,
+            child: AnimatedScale(
+              duration: const Duration(milliseconds: 180),
+              curve: Curves.easeOutCubic,
+              scale: showTopControls ? 1 : 0.9,
+              alignment: Alignment.center,
+              child: AnimatedOpacity(
+                duration: const Duration(milliseconds: 220),
+                curve: Curves.easeOutCubic,
+                opacity: showTopControls ? 1 : 0,
+                child: StageTopBar(
+                  onBack: onBack,
+                  onStage: onStage,
+                  stageButtonKey: stageButtonKey,
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: 16.h),
+          KeyedSubtree(
+            key: progressKey,
+            child: Pressable(
+              onTap: onOpenOverview,
+              borderRadius: BorderRadius.circular(AppRadii.card),
+              child: StageProgressBlock(
+                title: title,
+                stepIndex: stepNumber,
+                totalSteps: totalSteps,
+                progress: progress.clamp(0.0, 1.0),
+                showRakaats: false,
+                animateProgress: false,
+              ),
+            ),
+          ),
+          SizedBox(height: 14.h),
+          StageDragCarousel(
+            controller: carouselController,
+            canGoNext: hasNextStep,
+            canGoPrev: hasPrevStep,
+            onNext: () async => onNext(),
+            onPrev: () async => onPrev(),
+            onProgrammaticNext: onProgrammaticNext,
+            onProgrammaticPrev: onProgrammaticPrev,
+            onDragStarted: onCarouselDragStarted,
+            childBuilder: (context, dragProgress) {
+              final delayedProgress = ((dragProgress - 0.5) / 0.5).clamp(
+                0.0,
+                1.0,
+              );
+              final navButtonsOpacity = (1 - delayedProgress).clamp(0.0, 1.0);
+              return animateStepTransition(
+                buildStepContent(
+                  context,
+                  step,
+                  navButtonsOpacity: navButtonsOpacity,
+                  stepCardKey: step.text == null
+                      ? onboardingHighlightKey
+                      : null,
+                  textCardKey: step.text != null
+                      ? onboardingHighlightKey
+                      : null,
+                  interactive: true,
+                ),
+              );
+            },
+            prevGhost: prevGhostStep == null
+                ? null
+                : buildStepContent(
+                    context,
+                    prevGhostStep,
+                    navButtonsOpacity: 0,
+                    stepCardKey: null,
+                    textCardKey: null,
+                    interactive: false,
+                  ),
+            nextGhost: nextGhostStep == null
+                ? null
+                : buildStepContent(
+                    context,
+                    nextGhostStep,
+                    navButtonsOpacity: 0,
+                    stepCardKey: null,
+                    textCardKey: null,
+                    interactive: false,
+                  ),
+          ),
+        ],
+      );
     },
   );
+}
+
+class _AblutionStepCard extends StatelessWidget {
+  const _AblutionStepCard({
+    required this.step,
+    required this.cardTextSize,
+    required this.imageAsset,
+    this.highlightKey,
+  });
+
+  final AblutionStepManifest step;
+  final double cardTextSize;
+  final String imageAsset;
+  final GlobalKey? highlightKey;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final child = StageCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            height: 244.h,
+            decoration: BoxDecoration(
+              color: colors.soft,
+              borderRadius: BorderRadius.circular(AppRadii.inner),
+            ),
+            child: Center(
+              child: SvgPicture.asset(
+                imageAsset,
+                width: 220.h,
+                fit: BoxFit.contain,
+                placeholderBuilder: (_) => SizedBox(width: 250, height: 250),
+              ),
+            ),
+          ),
+          SizedBox(height: 22.h),
+          Text(
+            context.t(step.titleKey),
+            style: TextStyle(
+              fontSize: cardTextSize.sp,
+              fontWeight: FontWeight.w500,
+              color: colors.textPrimary,
+            ),
+          ),
+          SizedBox(height: 6.h),
+          Text(
+            context.t(step.descriptionKey),
+            style: TextStyle(
+              fontSize: cardTextSize.sp,
+              height: 1.45,
+              fontWeight: FontWeight.w500,
+              color: colors.textSecondary,
+            ),
+          ),
+        ],
+      ),
+    );
+    final key = highlightKey;
+    return key == null ? child : KeyedSubtree(key: key, child: child);
+  }
 }
 
 class _AblutionTextCard extends StatelessWidget {
@@ -228,7 +358,7 @@ class _AblutionTextCard extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(height: 17.h),
+          SizedBox(height: 20.h),
           Text(
             transliteration,
             style: TextStyle(

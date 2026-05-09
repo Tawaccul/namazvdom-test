@@ -69,7 +69,7 @@ class StageAyahCard extends StatelessWidget {
               isPlaying: isPlaying,
               onPlayPause: onPlayPause,
             ),
-            SizedBox(height: 12.h),
+            SizedBox(height: 18.h),
             Text(
               ayah.transliteration,
               style: TextStyle(
@@ -79,7 +79,7 @@ class StageAyahCard extends StatelessWidget {
                 color: colors.textPrimary,
               ),
             ),
-            SizedBox(height: 8),
+            SizedBox(height: 4.h),
             Text(
               ayah.translation,
               style: TextStyle(
@@ -114,7 +114,7 @@ class _AyahPill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final height = 58.0;
+    final height = 58.h;
     final iconAreaWidth = 24.w;
 
     return ClipRRect(

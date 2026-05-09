@@ -5,7 +5,6 @@ import 'package:prayday/app/theme/app_radii.dart';
 
 import '../../../../app/l10n/app_localization.dart';
 import '../../../../app/theme/app_colors.dart';
-import '../../../../app/ui_kit/app_blurred_top_overlay.dart';
 import '../../../../app/ui_kit/app_card.dart';
 import '../../../../app/ui_kit/app_divider.dart';
 import '../../../../app/ui_kit/app_list_tile.dart';
@@ -67,54 +66,46 @@ class _GenderScreenState extends State<GenderScreen> {
         top: false,
         child: Stack(
           children: [
-            Padding(
-              padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 28),
-              child: ListView(
-                controller: _scrollController,
-                physics: const BouncingScrollPhysics(),
-                padding: EdgeInsets.only(
-                  top: MediaQuery.paddingOf(context).top + 12,
+            ListView(
+              controller: _scrollController,
+              physics: const BouncingScrollPhysics(),
+              padding: EdgeInsets.fromLTRB(14.w, 60.h, 14.w, 12),
+              children: [
+                AppTopBar(
+                  title: context.t('gender.title'),
+                  onBack: () => Navigator.of(context).maybePop(),
                 ),
-                children: [
-                  AppTopBar(
-                    title: context.t('gender.title'),
-                    onBack: () => Navigator.of(context).maybePop(),
-                  ),
-                  SizedBox(height: 24),
-                  AnimatedBuilder(
-                    animation: _controller,
-                    builder: (context, _) {
-                      return AppCard(
-                        radius: AppRadii.pill,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            for (
-                              var i = 0;
-                              i < _controller.genders.length;
-                              i++
-                            ) ...[
-                              _GenderTile(
-                                gender: _controller.genders[i],
-                                selected:
-                                    _controller.genders[i].id ==
-                                    _controller.selected.id,
-                                onTap: () =>
-                                    _controller.select(_controller.genders[i]),
-                              ),
-                              if (i != _controller.genders.length - 1)
-                                const AppDivider(
-                                  insetLeft: 22,
-                                  insetRight: 22,
-                                ),
-                            ],
+                SizedBox(height: 16.h),
+                AnimatedBuilder(
+                  animation: _controller,
+                  builder: (context, _) {
+                    return AppCard(
+                      radius: AppRadii.pill,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          for (
+                            var i = 0;
+                            i < _controller.genders.length;
+                            i++
+                          ) ...[
+                            _GenderTile(
+                              gender: _controller.genders[i],
+                              selected:
+                                  _controller.genders[i].id ==
+                                  _controller.selected.id,
+                              onTap: () =>
+                                  _controller.select(_controller.genders[i]),
+                            ),
+                            if (i != _controller.genders.length - 1)
+                              const AppDivider(insetLeft: 22, insetRight: 22),
                           ],
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
           ],
         ),

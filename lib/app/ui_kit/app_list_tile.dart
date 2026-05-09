@@ -38,7 +38,7 @@ class AppListTile extends StatelessWidget {
                 style:
                     titleStyle ??
                     TextStyle(
-                      fontSize: 16.sp,
+                      fontSize: 14.sp,
                       height: 1.36,
                       fontWeight: FontWeight.w500,
                       color: colors.textPrimary,

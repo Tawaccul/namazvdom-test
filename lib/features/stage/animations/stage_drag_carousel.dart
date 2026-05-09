@@ -2,6 +2,23 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+class StageDragCarouselController {
+  Future<void> Function()? _animateNext;
+  Future<void> Function()? _animatePrev;
+
+  Future<void> animateNext() async {
+    final callback = _animateNext;
+    if (callback == null) return;
+    await callback();
+  }
+
+  Future<void> animatePrev() async {
+    final callback = _animatePrev;
+    if (callback == null) return;
+    await callback();
+  }
+}
+
 /// Карусель шагов: контент следует за пальцем, рядом сразу
 /// показывается копия — даёт ощущение листающихся страниц.
 /// Когда жест переключает шаг — родитель перерисовывает child
@@ -18,6 +35,9 @@ class StageDragCarousel extends StatefulWidget {
     required this.canGoPrev,
     this.onDragStarted,
     this.thresholdFraction = 0.28,
+    this.controller,
+    this.onProgrammaticNext,
+    this.onProgrammaticPrev,
   });
 
   /// Вызывается, когда пользователь начал горизонтальный свайп
@@ -36,9 +56,12 @@ class StageDragCarousel extends StatefulWidget {
   final Widget? nextGhost;
   final Future<void> Function() onNext;
   final Future<void> Function() onPrev;
+  final Future<void> Function()? onProgrammaticNext;
+  final Future<void> Function()? onProgrammaticPrev;
   final bool canGoNext;
   final bool canGoPrev;
   final double thresholdFraction;
+  final StageDragCarouselController? controller;
 
   @override
   State<StageDragCarousel> createState() => _StageDragCarouselState();
@@ -58,6 +81,7 @@ class _StageDragCarouselState extends State<StageDragCarousel>
   @override
   void initState() {
     super.initState();
+    _bindController();
     _settleController.addListener(() {
       if (_settleAnimation == null) return;
       setState(() => _dragOffset = _settleAnimation!.value);
@@ -65,9 +89,32 @@ class _StageDragCarouselState extends State<StageDragCarousel>
   }
 
   @override
+  void didUpdateWidget(covariant StageDragCarousel oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller != widget.controller) {
+      _unbindController(oldWidget.controller);
+      _bindController();
+    }
+  }
+
+  @override
   void dispose() {
+    _unbindController(widget.controller);
     _settleController.dispose();
     super.dispose();
+  }
+
+  void _bindController() {
+    final controller = widget.controller;
+    if (controller == null) return;
+    controller._animateNext = () => _animateProgrammaticCommit(next: true);
+    controller._animatePrev = () => _animateProgrammaticCommit(next: false);
+  }
+
+  void _unbindController(StageDragCarouselController? controller) {
+    if (controller == null) return;
+    controller._animateNext = null;
+    controller._animatePrev = null;
   }
 
   bool _isAllowedDirection(double delta) {
@@ -97,10 +144,10 @@ class _StageDragCarouselState extends State<StageDragCarousel>
     _isDragging = false;
     final threshold = width * widget.thresholdFraction;
     final velocity = details.primaryVelocity ?? 0;
-    final shouldGoNext = widget.canGoNext &&
-        (_dragOffset <= -threshold || velocity <= -600);
-    final shouldGoPrev = widget.canGoPrev &&
-        (_dragOffset >= threshold || velocity >= 600);
+    final shouldGoNext =
+        widget.canGoNext && (_dragOffset <= -threshold || velocity <= -600);
+    final shouldGoPrev =
+        widget.canGoPrev && (_dragOffset >= threshold || velocity >= 600);
 
     if (shouldGoNext || shouldGoPrev) {
       _committing = true;
@@ -119,17 +166,61 @@ class _StageDragCarouselState extends State<StageDragCarousel>
   }
 
   Future<void> _animateOffsetTo(double target) async {
-    _settleAnimation = Tween<double>(
-      begin: _dragOffset,
-      end: target,
-    ).animate(CurvedAnimation(
-      parent: _settleController,
-      curve: Curves.easeOutCubic,
-    ));
+    _settleAnimation = Tween<double>(begin: _dragOffset, end: target).animate(
+      CurvedAnimation(parent: _settleController, curve: Curves.easeOutCubic),
+    );
     _settleController
       ..stop()
       ..value = 0;
     await _settleController.forward(from: 0);
+  }
+
+  Future<void> _animateProgrammaticCommit({required bool next}) async {
+    if (_isDragging || _committing) return;
+    if (next && !widget.canGoNext) return;
+    if (!next && !widget.canGoPrev) return;
+    final width = _currentCarouselWidth();
+    final callback = next
+        ? (widget.onProgrammaticNext ?? widget.onNext)
+        : (widget.onProgrammaticPrev ?? widget.onPrev);
+    if (width <= 0) {
+      await callback();
+      return;
+    }
+    widget.onDragStarted?.call();
+    _committing = true;
+    try {
+      _settleController.stop();
+      await callback();
+      if (!mounted) return;
+      setState(() => _dragOffset = next ? width : -width);
+      await WidgetsBinding.instance.endOfFrame;
+      if (!mounted) return;
+      _settleAnimation = Tween<double>(begin: _dragOffset, end: 0).animate(
+        CurvedAnimation(parent: _settleController, curve: Curves.easeOutCubic),
+      );
+      _settleController
+        ..duration = const Duration(milliseconds: 260)
+        ..value = 0;
+      await _settleController.forward(from: 0);
+    } finally {
+      if (mounted) {
+        setState(() => _dragOffset = 0);
+      } else {
+        _dragOffset = 0;
+      }
+      _committing = false;
+    }
+  }
+
+  double _currentCarouselWidth() {
+    final renderObject = context.findRenderObject();
+    if (renderObject is RenderBox &&
+        renderObject.hasSize &&
+        renderObject.size.width > 0) {
+      return renderObject.size.width;
+    }
+    return MediaQuery.sizeOf(context).width;
   }
 
   void _handleDragCancel() {
@@ -141,52 +232,68 @@ class _StageDragCarouselState extends State<StageDragCarousel>
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.sizeOf(context).width;
-    final dragProgress = (_dragOffset.abs() / width).clamp(0.0, 1.0);
-    final mainContent = widget.childBuilder(context, dragProgress);
     const gap = 0;
 
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onHorizontalDragStart: _handleDragStart,
-      onHorizontalDragUpdate: (details) {
-        if (!_isAllowedDirection(details.delta.dx) && _dragOffset == 0) {
-          return;
-        }
-        _handleDragUpdate(details, width);
-      },
-      onHorizontalDragEnd: (details) =>
-          unawaited(_handleDragEnd(details, width)),
-      onHorizontalDragCancel: _handleDragCancel,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Transform.translate(
-            offset: Offset(_dragOffset, 0),
-            child: mainContent,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final constrainedWidth = constraints.maxWidth;
+        final width = constrainedWidth.isFinite && constrainedWidth > 0
+            ? constrainedWidth
+            : MediaQuery.sizeOf(context).width;
+        final dragProgress = width <= 0
+            ? 0.0
+            : (_dragOffset.abs() / width).clamp(0.0, 1.0);
+        final mainContent = widget.childBuilder(context, dragProgress);
+
+        return GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onHorizontalDragStart: _handleDragStart,
+          onHorizontalDragUpdate: (details) {
+            if (!_isAllowedDirection(details.delta.dx) && _dragOffset == 0) {
+              return;
+            }
+            _handleDragUpdate(details, width);
+          },
+          onHorizontalDragEnd: (details) =>
+              unawaited(_handleDragEnd(details, width)),
+          onHorizontalDragCancel: _handleDragCancel,
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Transform.translate(
+                offset: Offset(_dragOffset, 0),
+                child: mainContent,
+              ),
+              if (widget.canGoPrev && widget.prevGhost != null)
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  top: 0,
+                  child: IgnorePointer(
+                    ignoring: true,
+                    child: Transform.translate(
+                      offset: Offset(_dragOffset - width - gap, 0),
+                      child: widget.prevGhost!,
+                    ),
+                  ),
+                ),
+              if (widget.canGoNext && widget.nextGhost != null)
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  top: 0,
+                  child: IgnorePointer(
+                    ignoring: true,
+                    child: Transform.translate(
+                      offset: Offset(_dragOffset + width + gap, 0),
+                      child: widget.nextGhost!,
+                    ),
+                  ),
+                ),
+            ],
           ),
-          if (widget.canGoPrev && widget.prevGhost != null)
-            Positioned.fill(
-              child: IgnorePointer(
-                ignoring: true,
-                child: Transform.translate(
-                  offset: Offset(_dragOffset - width - gap, 0),
-                  child: widget.prevGhost!,
-                ),
-              ),
-            ),
-          if (widget.canGoNext && widget.nextGhost != null)
-            Positioned.fill(
-              child: IgnorePointer(
-                ignoring: true,
-                child: Transform.translate(
-                  offset: Offset(_dragOffset + width + gap, 0),
-                  child: widget.nextGhost!,
-                ),
-              ),
-            ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

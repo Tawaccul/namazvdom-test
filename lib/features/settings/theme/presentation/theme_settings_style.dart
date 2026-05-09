@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 
 import '../../../../app/theme/app_colors.dart';
-import '../../../../core/widgets/pressable.dart';
+import '../../../../app/ui_kit/app_top_bar.dart';
 
 const kThemeSettingsScreenBg = Color(0xFFEFF1FB);
 const kThemeSettingsTitleColor = Color(0xFF041E73);
@@ -30,7 +28,7 @@ class ThemeSettingsHeader extends StatelessWidget {
         children: [
           Align(
             alignment: Alignment.centerLeft,
-            child: _CircleBackButton(onTap: onBack),
+            child: CircleBackButton(onTap: onBack),
           ),
           Text(
             title,
@@ -41,34 +39,6 @@ class ThemeSettingsHeader extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _CircleBackButton extends StatelessWidget {
-  const _CircleBackButton({required this.onTap});
-
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    final radius = 22.0;
-    return Pressable(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(radius),
-      child: Container(
-        width: radius * 2,
-        height: radius * 2,
-        decoration: BoxDecoration(color: colors.card, shape: BoxShape.circle),
-        child: SvgPicture.asset(
-          'assets/icons/back.svg',
-          width: 7,
-          height: 15,
-          fit: BoxFit.none,
-          colorFilter: ColorFilter.mode(colors.textPrimary, BlendMode.srcIn),
-        ),
       ),
     );
   }

@@ -7,7 +7,6 @@ import '../../../app/theme/app_radii.dart';
 import '../../../app/ui_kit/app_button.dart';
 import '../../../core/widgets/pressable.dart';
 import '../animations/stage_drag_carousel.dart';
-import '../animations/stage_ghost_step_card.dart';
 import '../animations/stage_neighbor_step_bundle.dart';
 import '../models/rakaat_models.dart';
 import '../models/stage_step_screen_models.dart';
@@ -90,6 +89,8 @@ Widget buildStageStepScreenBody({
   required bool canGoNext,
   required Future<void> Function() onPrevStep,
   required Future<void> Function() onNextStep,
+  required Future<void> Function() onPrevStepProgrammatic,
+  required Future<void> Function() onNextStepProgrammatic,
   required int onboardingStepIndex,
   required VoidCallback onOnboardingNext,
   required GlobalKey selectedAyahCardKey,
@@ -99,6 +100,7 @@ Widget buildStageStepScreenBody({
   StageNeighborStepBundle? nextGhost,
   VoidCallback? onCarouselDragStarted,
 }) {
+  final carouselController = StageDragCarouselController();
   final progressCard = animateAppear(
     Pressable(
       onTap: onOpenOverview,
@@ -125,7 +127,8 @@ Widget buildStageStepScreenBody({
   // Билдер активного контента шага. Получает [dragProgress] (0..1) для
   // плавного скрытия кнопок навигации при свайпе.
   Widget buildStepContent(BuildContext context, double dragProgress) {
-    final navOpacity = (1 - dragProgress * 2).clamp(0.0, 1.0);
+    final delayedProgress = ((dragProgress - 0.5) / 0.5).clamp(0.0, 1.0);
+    final navOpacity = (1 - delayedProgress).clamp(0.0, 1.0);
     return StageStepContentSection(
       animateStepTransition: animateStepTransition,
       animateRakaat: animateRakaat,
@@ -160,32 +163,69 @@ Widget buildStageStepScreenBody({
       canGoNext: canGoNext,
       backButtonLabel: context.t('common.back'),
       nextButtonLabel: context.t('common.next'),
-      onPrevStep: canGoBack ? () => unawaited(onPrevStep()) : null,
-      onNextStep: canGoNext ? () => unawaited(onNextStep()) : null,
+      onPrevStep: canGoBack
+          ? () => unawaited(carouselController.animatePrev())
+          : null,
+      onNextStep: canGoNext
+          ? () => unawaited(carouselController.animateNext())
+          : null,
       navButtonsOpacity: navOpacity,
     );
   }
 
   Widget? buildGhost(StageNeighborStepBundle? bundle) {
     if (bundle == null) return null;
-    return StageGhostStepCard(
-      stepTitle: bundle.stepTitle,
-      movementDescription: bundle.movementDescription,
-      cardTextSize: cardTextSize,
-      softColor: softColor,
-      textPrimaryColor: textPrimaryColor,
-      textSecondaryColor: textSecondaryColor,
-      stepImageAsset: bundle.stepImageAsset,
-      fallbackStepImageAsset: bundle.fallbackStepImageAsset,
-      entries: bundle.entries,
+    return IgnorePointer(
+      ignoring: true,
+      child: StageStepContentSection(
+        animateStepTransition: (child) => child,
+        animateRakaat: (child) => child,
+        animateAppear: (child) => child,
+        stepTitle: bundle.stepTitle,
+        movementDescription: bundle.movementDescription,
+        cardTextSize: cardTextSize,
+        softColor: softColor,
+        textPrimaryColor: textPrimaryColor,
+        textSecondaryColor: textSecondaryColor,
+        stepImage: StageStepImage(
+          stepImageAsset: bundle.stepImageAsset,
+          fallbackStepImageAsset: bundle.fallbackStepImageAsset,
+        ),
+        hasAdditionalSurahSelector: false,
+        additionalSurahOptions: const [],
+        selectedAdditionalSurahIndex: 0,
+        onSelectAdditionalSurah: (_) {},
+        currentStepEntries: bundle.entries,
+        additionalSurahAnimationToken: 0,
+        entryKeyFor: (index) => 'ghost-${bundle.stepTitle}-$index',
+        keyForEntry: (index) => ValueKey('ghost-${bundle.stepTitle}-$index'),
+        playingStepKey: null,
+        isAudioPlaying: false,
+        audioProgress: 0,
+        onAyahTap: (_) {},
+        errorText: null,
+        navButtonsVisible: false,
+        hasPrevStageStep: false,
+        hasNextStageStep: false,
+        canGoBack: false,
+        canGoNext: false,
+        backButtonLabel: context.t('common.back'),
+        nextButtonLabel: context.t('common.next'),
+        onPrevStep: null,
+        onNextStep: null,
+        isGhost: true,
+      ),
     );
   }
 
   final stepContentSection = StageDragCarousel(
+    controller: carouselController,
     canGoNext: hasNextStageStep,
     canGoPrev: hasPrevStageStep,
     onNext: onNextStep,
     onPrev: onPrevStep,
+    onProgrammaticNext: onNextStepProgrammatic,
+    onProgrammaticPrev: onPrevStepProgrammatic,
     onDragStarted: onCarouselDragStarted,
     childBuilder: (context, dragProgress) =>
         buildStepContent(context, dragProgress),

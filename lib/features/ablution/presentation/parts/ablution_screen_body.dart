@@ -7,7 +7,6 @@ import '../../../../app/l10n/app_localization.dart';
 import '../../../../app/theme/app_radii.dart';
 import '../../../../app/ui_kit/app_button.dart';
 import '../../../../app/ui_kit/app_blurred_top_overlay.dart';
-import '../../../stage/parts/stage_overview_layer.dart';
 import '../../../stage/parts/stage_top_bar.dart';
 import '../../../stage/stage_onboarding_overlay.dart';
 import '../models/ablution_manifest_models.dart';
@@ -51,19 +50,11 @@ Widget buildAblutionScreenBody({
     required VoidCallback onNext,
   })
   buildPageContent,
-  required TransformationController overviewTransformationController,
-  required GestureScaleStartCallback onOverviewInteractionStart,
-  required GestureScaleUpdateCallback onOverviewInteractionUpdate,
-  required GestureScaleEndCallback onOverviewInteractionEnd,
-  required bool overviewPanEnabled,
-  required double overviewDragFriction,
-  required double overviewMinScale,
-  required Size overviewCanvasSize,
-  required List<AblutionOverviewPageReference> overviewPages,
-  required Size overviewCardSize,
-  required Offset Function(AblutionOverviewPageReference page) pagePositionFor,
-  required Future<void> Function(AblutionOverviewPageReference page) onPageTap,
-  required Widget Function(AblutionOverviewPageReference page) pageBuilder,
+  required Widget Function({
+    required AblutionManifest manifest,
+    required String title,
+  })
+  buildOverviewLayer,
   required AblutionStepManifest Function() currentStep,
   required int clampedStepIndex,
   required int totalSteps,
@@ -78,7 +69,7 @@ Widget buildAblutionScreenBody({
   required Future<void> Function({bool applySelection}) closeOverviewMode,
   required VoidCallback onOnboardingNext,
 }) {
-  return StageLayoutData(
+  return AblutionLayoutData(
     topInset: topControlInset,
     bottomInset: bottomInset,
     cardTextSize: cardTextSize,
@@ -122,8 +113,9 @@ Widget buildAblutionScreenBody({
                 );
               }
 
+              final resolvedTotalSteps = manifest.steps.length;
               final stepNumber = clampedStepIndex + 1;
-              final progress = stepNumber / totalSteps;
+              final progress = stepNumber / resolvedTotalSteps;
               final title = context.t(manifest.titleKey);
 
               return AppBlurredTopOverlay(
@@ -141,7 +133,7 @@ Widget buildAblutionScreenBody({
                           child: buildPageContent(
                             step: currentStep(),
                             stepNumber: stepNumber,
-                            totalSteps: totalSteps,
+                            totalSteps: resolvedTotalSteps,
                             progress: progress,
                             title: title,
                             scrollController: scrollController,
@@ -157,21 +149,9 @@ Widget buildAblutionScreenBody({
                       Positioned.fill(
                         child: IgnorePointer(
                           ignoring: isOverviewClosing,
-                          child: StageOverviewLayer<AblutionOverviewPageReference>(
-                            transformationController: overviewTransformationController,
-                            onInteractionStart: onOverviewInteractionStart,
-                            onInteractionUpdate: onOverviewInteractionUpdate,
-                            onInteractionEnd: onOverviewInteractionEnd,
-                            panEnabled: overviewPanEnabled,
-                            interactionEndFrictionCoefficient: overviewDragFriction,
-                            minScale: overviewMinScale,
-                            maxScale: 1,
-                            canvasSize: overviewCanvasSize,
-                            pages: overviewPages,
-                            cardSize: overviewCardSize,
-                            pagePositionFor: pagePositionFor,
-                            onPageTap: (page) => unawaited(onPageTap(page)),
-                            pageBuilder: pageBuilder,
+                          child: buildOverviewLayer(
+                            manifest: manifest,
+                            title: title,
                           ),
                         ),
                       ),

@@ -28,7 +28,7 @@ class AppTopBar extends StatelessWidget {
         children: [
           Align(
             alignment: Alignment.centerLeft,
-            child: _CircleBackButton(onTap: onBack),
+            child: CircleBackButton(onTap: onBack),
           ),
           Center(
             child: Text(
@@ -53,15 +53,15 @@ class AppTopBar extends StatelessWidget {
   }
 }
 
-class _CircleBackButton extends StatelessWidget {
-  const _CircleBackButton({required this.onTap});
+class CircleBackButton extends StatelessWidget {
+  const CircleBackButton({required this.onTap});
 
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final radius = 22.r;
+    final radius = 21.r;
     return Pressable(
       onTap: onTap,
       borderRadius: BorderRadius.circular(radius),

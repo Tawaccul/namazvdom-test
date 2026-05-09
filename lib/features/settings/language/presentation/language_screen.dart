@@ -10,7 +10,6 @@ import '../../../../app/ui_kit/app_card.dart';
 import '../../../../app/ui_kit/app_divider.dart';
 import '../../../../app/ui_kit/app_list_tile.dart';
 import '../../../../app/ui_kit/app_button.dart';
-import '../../../../app/ui_kit/app_blurred_top_overlay.dart';
 import '../../../../app/ui_kit/app_top_bar.dart';
 import '../data/language_repository_memory.dart';
 import '../domain/entities/app_language.dart';
@@ -78,61 +77,53 @@ class _LanguageScreenState extends State<LanguageScreen> {
         top: false,
         child: Stack(
           children: [
-            Padding(
-              padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 28),
-              child: ListView(
-                controller: _scrollController,
-                physics: const BouncingScrollPhysics(),
-                padding: EdgeInsets.only(
-                  top: MediaQuery.paddingOf(context).top + 12,
+            ListView(
+              controller: _scrollController,
+              physics: const BouncingScrollPhysics(),
+              padding: EdgeInsets.fromLTRB(14.w, 60.h, 14.w, 12),
+              children: [
+                AppTopBar(
+                  title: context.t('language.title'),
+                  onBack: () => Navigator.of(context).maybePop(),
                 ),
-                children: [
-                  AppTopBar(
-                    title: context.t('language.title'),
-                    onBack: () => Navigator.of(context).maybePop(),
-                  ),
-                  SizedBox(height: 24),
-                  AnimatedBuilder(
-                    animation: _controller,
-                    builder: (context, _) {
-                      return AppCard(
-                        radius: AppRadii.pill,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            for (
-                              var i = 0;
-                              i < _controller.languages.length;
-                              i++
-                            ) ...[
-                              _LanguageTile(
-                                language: _controller.languages[i],
-                                selected:
-                                    _controller.languages[i].id ==
-                                    _controller.selected.id,
-                                onTap: () => _onSelect(_controller.languages[i]),
-                              ),
-                              if (i != _controller.languages.length - 1)
-                                const AppDivider(
-                                  insetLeft: 22,
-                                  insetRight: 22,
-                                ),
-                            ],
+                SizedBox(height: 16.h),
+                AnimatedBuilder(
+                  animation: _controller,
+                  builder: (context, _) {
+                    return AppCard(
+                      radius: AppRadii.pill,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          for (
+                            var i = 0;
+                            i < _controller.languages.length;
+                            i++
+                          ) ...[
+                            _LanguageTile(
+                              language: _controller.languages[i],
+                              selected:
+                                  _controller.languages[i].id ==
+                                  _controller.selected.id,
+                              onTap: () => _onSelect(_controller.languages[i]),
+                            ),
+                            if (i != _controller.languages.length - 1)
+                              const AppDivider(insetLeft: 22, insetRight: 22),
                           ],
-                        ),
-                      );
-                    },
+                        ],
+                      ),
+                    );
+                  },
+                ),
+                if (widget.mode == LanguageScreenMode.onboarding) ...[
+                  SizedBox(height: 18),
+                  AppButton.iconRight(
+                    label: context.t('common.next'),
+                    iconAsset: 'assets/icons/arrow-right.svg',
+                    onPressed: widget.onCompleted,
                   ),
-                  if (widget.mode == LanguageScreenMode.onboarding) ...[
-                    SizedBox(height: 18),
-                    AppButton.iconRight(
-                      label: context.t('common.next'),
-                      iconAsset: 'assets/icons/arrow-right.svg',
-                      onPressed: widget.onCompleted,
-                    ),
-                  ],
                 ],
-              ),
+              ],
             ),
           ],
         ),

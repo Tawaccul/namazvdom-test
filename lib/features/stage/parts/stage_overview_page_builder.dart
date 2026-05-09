@@ -65,7 +65,7 @@ class StageOverviewPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             progressBlock,
-            SizedBox(height: 14.h),
+            SizedBox(height: 12.h),
             stepCard,
             for (final card in extraCards) ...[
               SizedBox(height: 12.h),

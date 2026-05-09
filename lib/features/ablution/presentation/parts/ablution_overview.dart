@@ -1,4 +1,5 @@
-import 'dart:async';
+ import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,11 +10,9 @@ import '../../../../app/l10n/app_localization.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_radii.dart';
 import '../../../stage/parts/stage_card.dart';
-import '../../../stage/parts/stage_overview_layer.dart';
-import '../../../stage/parts/stage_overview_page_builder.dart';
 import '../../../stage/parts/stage_progress_bar.dart';
-import '../../../stage/parts/stage_step_image.dart';
 import '../models/ablution_manifest_models.dart';
+import 'ablution_layout_data.dart';
 
 Widget buildAblutionOverviewLayer({
   required BuildContext context,
@@ -35,21 +34,38 @@ Widget buildAblutionOverviewLayer({
   required Widget Function(AblutionOverviewPageReference page) pageBuilder,
 }) {
   if (pages.isEmpty) return const SizedBox.shrink();
-  return StageOverviewLayer<AblutionOverviewPageReference>(
-    transformationController: transformationController,
-    onInteractionStart: onInteractionStart,
-    onInteractionUpdate: onInteractionUpdate,
-    onInteractionEnd: onInteractionEnd,
-    panEnabled: !overviewGestureLock,
-    interactionEndFrictionCoefficient: overviewDragFriction,
-    minScale: overviewPreviewScale,
-    maxScale: 1,
-    canvasSize: canvasSize,
-    pages: pages,
-    cardSize: cardSize,
-    pagePositionFor: (page) => cardPositionFor(page.stepIndex),
-    onPageTap: (page) => unawaited(onPageTap(page)),
-    pageBuilder: pageBuilder,
+  return ColoredBox(
+    color: context.colors.background,
+    child: InteractiveViewer(
+      transformationController: transformationController,
+      onInteractionStart: onInteractionStart,
+      onInteractionUpdate: onInteractionUpdate,
+      onInteractionEnd: onInteractionEnd,
+      boundaryMargin: const EdgeInsets.all(double.infinity),
+      constrained: false,
+      panEnabled: !overviewGestureLock,
+      scaleEnabled: !overviewGestureLock,
+      panAxis: PanAxis.horizontal,
+      interactionEndFrictionCoefficient: overviewDragFriction,
+      minScale: overviewPreviewScale,
+      maxScale: 1,
+      child: SizedBox(
+        width: canvasSize.width,
+        height: canvasSize.height,
+        child: Stack(
+          children: [
+            for (final page in pages)
+              _AblutionOverviewCardSlot(
+                page: page,
+                position: cardPositionFor(page.stepIndex),
+                cardSize: cardSize,
+                onTap: onPageTap,
+                child: pageBuilder(page),
+              ),
+          ],
+        ),
+      ),
+    ),
   );
 }
 
@@ -59,77 +75,192 @@ Widget buildAblutionOverviewPage({
   required AblutionManifest manifest,
   required String title,
   required double pageHeight,
-  required double topInset,
-  required double cardTextSize,
   required ScrollController pageScrollController,
   required bool shouldScheduleOverflowCheck,
   required bool mounted,
   required void Function(int pageId, bool hasOverflow) setOverviewOverflow,
   required String Function(AblutionStepManifest step) stepImageAsset,
-  required String Function(AblutionStepManifest step) localizedStepTransliteration,
+  required String Function(AblutionStepManifest step)
+  localizedStepTransliteration,
 }) {
   final pageId = page.stepIndex;
+  if (shouldScheduleOverflowCheck) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !pageScrollController.hasClients) return;
+      setOverviewOverflow(
+        pageId,
+        pageScrollController.position.maxScrollExtent > 0.5,
+      );
+    });
+  }
   final step = manifest.steps[page.stepIndex];
   final stepNumber = page.stepIndex + 1;
-  final totalSteps = manifest.steps.length;
-  final progress = totalSteps == 0 ? 0.0 : stepNumber / totalSteps;
-
-  final progressBlock = StageProgressBlock(
-    title: title,
-    stepIndex: stepNumber,
-    totalSteps: totalSteps,
-    progress: progress,
-    showRakaats: false,
-    animateProgress: false,
-  );
-
-  final stepCard = StageStepCard(
-    imageWidget: StageStepImage(
-      stepImageAsset: stepImageAsset(step),
-      fallbackStepImageAsset: stepImageAsset(step),
-    ),
-    title: context.t(step.titleKey),
-    description: context.t(step.descriptionKey),
-    textSize: cardTextSize,
-  );
-
-  final extraCards = [
-    if (step.text != null)
-      _AblutionOverviewTextCard(
-        step: step,
-        transliteration: localizedStepTransliteration(step),
-        cardTextSize: cardTextSize,
+  final progress = stepNumber / math.max(manifest.steps.length, 1);
+  return SizedBox(
+    height: pageHeight,
+    child: Padding(
+      padding: EdgeInsets.symmetric(horizontal: 14.w),
+      child: OverflowBox(
+        alignment: Alignment.topCenter,
+        maxHeight: double.infinity,
+        child: Builder(
+          builder: (context) {
+            final topInset = AblutionLayoutData.of(context).topInset + 5.h;
+            return NotificationListener<ScrollMetricsNotification>(
+              onNotification: (notification) {
+                setOverviewOverflow(
+                  pageId,
+                  notification.metrics.maxScrollExtent > 0.5,
+                );
+                return false;
+              },
+              child: SingleChildScrollView(
+                controller: pageScrollController,
+                physics: const NeverScrollableScrollPhysics(),
+                padding: EdgeInsets.only(
+                  top: topInset,
+                  bottom: 20,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    StageProgressBlock(
+                      title: title,
+                      stepIndex: stepNumber,
+                      totalSteps: manifest.steps.length,
+                      progress: progress,
+                      showRakaats: false,
+                      animateProgress: false,
+                    ),
+                    SizedBox(height: 14.h),
+                    _AblutionOverviewStepCard(
+                      step: step,
+                      imageAsset: stepImageAsset(step),
+                    ),
+                    if (step.text != null) ...[
+                      SizedBox(height: 12.h),
+                      _AblutionOverviewTextCard(
+                        step: step,
+                        transliteration: localizedStepTransliteration(step),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
       ),
-  ];
-
-  return StageOverviewPage(
-    pageHeight: pageHeight,
-    topInset: topInset,
-    pageId: pageId,
-    progressBlock: progressBlock,
-    stepCard: stepCard,
-    extraCards: extraCards,
-    scrollController: pageScrollController,
-    shouldScheduleOverflowCheck:
-        shouldScheduleOverflowCheck && mounted,
-    setOverviewOverflow: setOverviewOverflow,
+    ),
   );
+}
+
+class _AblutionOverviewCardSlot extends StatelessWidget {
+  const _AblutionOverviewCardSlot({
+    required this.page,
+    required this.position,
+    required this.cardSize,
+    required this.onTap,
+    required this.child,
+  });
+
+  final AblutionOverviewPageReference page;
+  final Offset position;
+  final Size cardSize;
+  final Future<void> Function(AblutionOverviewPageReference page) onTap;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      left: position.dx,
+      top: position.dy,
+      width: cardSize.width,
+      height: cardSize.height,
+      child: RepaintBoundary(
+        child: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: () => unawaited(onTap(page)),
+          child: IgnorePointer(ignoring: true, child: child),
+        ),
+      ),
+    );
+  }
+}
+
+class _AblutionOverviewStepCard extends StatelessWidget {
+  const _AblutionOverviewStepCard({
+    required this.step,
+    required this.imageAsset,
+  });
+
+  final AblutionStepManifest step;
+  final String imageAsset;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final cardTextSize = AblutionLayoutData.of(context).cardTextSize;
+    return StageCard(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(
+            height: 244.h,
+            decoration: BoxDecoration(
+              color: colors.soft,
+              borderRadius: BorderRadius.circular(AppRadii.inner),
+            ),
+            child: Center(
+              child: SvgPicture.asset(
+                imageAsset,
+                width: 250,
+                fit: BoxFit.contain,
+                placeholderBuilder: (_) =>
+                    SizedBox(width: 250, height: 250),
+              ),
+            ),
+          ),
+          SizedBox(height: 22.h),
+          Text(
+            context.t(step.titleKey),
+            style: TextStyle(
+              fontSize: cardTextSize.sp,
+              fontWeight: FontWeight.w500,
+              color: colors.textPrimary,
+            ),
+          ),
+          SizedBox(height: 6.h),
+          Text(
+            context.t(step.descriptionKey),
+            style: TextStyle(
+              fontSize: cardTextSize.sp,
+              height: 1.45,
+              fontWeight: FontWeight.w500,
+              color: colors.textSecondary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _AblutionOverviewTextCard extends StatelessWidget {
   const _AblutionOverviewTextCard({
     required this.step,
     required this.transliteration,
-    required this.cardTextSize,
   });
 
   final AblutionStepManifest step;
   final String transliteration;
-  final double cardTextSize;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+    final cardTextSize = AblutionLayoutData.of(context).cardTextSize;
     final text = step.text!;
     return StageCard(
       child: Column(

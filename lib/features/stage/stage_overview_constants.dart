@@ -4,8 +4,8 @@ abstract final class StageOverviewConstants {
   static const double overviewCloseScaleThreshold = 0.985;
   static const double overviewPageGap = -10;
   static const double overviewPreviewScale = 0.50;
-  static const double overviewDragFriction = 0.0000012;
-  static const double overviewPanSpeedMultiplier = 7.0;
+  static const double overviewDragFriction = 0.00001;
+  static const double overviewPanSpeedMultiplier = 1.0;
   static const double overviewClosingTopInset = 30;
   static const double overviewPreviewTopShift = 10;
   static const double overviewCanvasInset = 280;

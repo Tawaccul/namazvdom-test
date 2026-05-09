@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 
 import '../../app/l10n/app_localization.dart';
 import '../../app/theme/app_colors.dart';
-import '../../core/widgets/pressable.dart';
+import '../../app/ui_kit/app_top_bar.dart';
 
 class AboutProjectScreen extends StatelessWidget {
   const AboutProjectScreen({super.key});
@@ -16,33 +15,17 @@ class AboutProjectScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: colors.background,
       body: SafeArea(
+        top: false,
         child: Padding(
-          padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 24.h),
+          padding: EdgeInsets.fromLTRB(14.w, 60.h, 14.w, 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              SizedBox(
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: _CircleBackButton(
-                        onTap: () => Navigator.of(context).maybePop(),
-                      ),
-                    ),
-                    Text(
-                      context.t('about.title'),
-                      style: TextStyle(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w600,
-                        color: colors.textPrimary,
-                      ),
-                    ),
-                  ],
-                ),
+              AppTopBar(
+                title: context.t('about.title'),
+                onBack: () => Navigator.of(context).maybePop(),
               ),
-              SizedBox(height: 24.h),
+              SizedBox(height: 16.h),
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
@@ -125,34 +108,6 @@ class AboutProjectScreen extends StatelessWidget {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _CircleBackButton extends StatelessWidget {
-  const _CircleBackButton({required this.onTap});
-
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    final radius = 22.r;
-    return Pressable(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(radius),
-      child: Container(
-        width: radius * 2,
-        height: radius * 2,
-        decoration: BoxDecoration(color: colors.card, shape: BoxShape.circle),
-        child: SvgPicture.asset(
-          'assets/icons/back.svg',
-          width: 7.r,
-          height: 15.r,
-          fit: BoxFit.none,
-          colorFilter: ColorFilter.mode(colors.textPrimary, BlendMode.srcIn),
         ),
       ),
     );

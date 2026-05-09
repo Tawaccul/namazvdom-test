@@ -182,7 +182,7 @@ class StageStepContentSection extends StatelessWidget {
           ),
         ),
         if (navButtonsVisible) ...[
-          SizedBox(height: 20),
+          SizedBox(height: 26.h),
           IgnorePointer(
             ignoring: navButtonsOpacity < 0.5,
             child: Opacity(
@@ -192,7 +192,7 @@ class StageStepContentSection extends StatelessWidget {
                   Expanded(
                     flex: 4,
                     child: AnimatedOpacity(
-                      duration: const Duration(milliseconds: 160),
+                      duration: const Duration(milliseconds: 360),
                       curve: Curves.easeOutCubic,
                       opacity: hasPrevStageStep ? 1 : 0.5,
                       child: StageBottomButton(
@@ -207,7 +207,7 @@ class StageStepContentSection extends StatelessWidget {
                   Expanded(
                     flex: 4,
                     child: AnimatedOpacity(
-                      duration: const Duration(milliseconds: 160),
+                      duration: const Duration(milliseconds: 360),
                       curve: Curves.easeOutCubic,
                       opacity: hasNextStageStep ? 1 : 0.5,
                       child: StageBottomButton(

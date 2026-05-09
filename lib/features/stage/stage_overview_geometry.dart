@@ -116,13 +116,27 @@ class StageOverviewGeometry {
     return next;
   }
 
+  // Клампит только Y и scale — X не трогает, чтобы не обрывать инерцию.
+  Matrix4 clampTransformYOnly(BuildContext context, Matrix4 matrix) {
+    final next = Matrix4.copy(matrix);
+    final scale = next.storage[0].clamp(previewScale, 1.0).toDouble();
+    final clampedDy = topInsetForScale(context, scale) - (contentRect(context).top * scale);
+
+    next.storage[0] = scale;
+    next.storage[5] = scale;
+    next.storage[10] = 1;
+    next.storage[13] = clampedDy;
+    next.storage[14] = 0;
+    return next;
+  }
+
   bool matricesAreEqual(Matrix4 a, Matrix4 b) {
     for (var i = 0; i < 16; i++) {
       if ((a.storage[i] - b.storage[i]).abs() > 0.001) {
         return false;
       }
     }
-    return false;
+    return true;
   }
 
   int nearestFlatIndexFromTransform(BuildContext context, Matrix4 matrix) {

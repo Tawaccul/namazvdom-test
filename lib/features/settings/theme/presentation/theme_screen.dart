@@ -24,8 +24,9 @@ class _ThemeScreenState extends State<ThemeScreen> {
     return Scaffold(
       backgroundColor: colors.background,
       body: SafeArea(
+        top: false,
         child: Padding(
-          padding: EdgeInsets.fromLTRB(20.w, 12, 20.w, 24),
+          padding: EdgeInsets.fromLTRB(14.w, 60.h, 14.w, 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -33,7 +34,7 @@ class _ThemeScreenState extends State<ThemeScreen> {
                 title: context.t('theme.title'),
                 onBack: () => Navigator.of(context).maybePop(),
               ),
-              SizedBox(height: 24),
+              SizedBox(height: 16.h),
               Container(
                 decoration: BoxDecoration(
                   color: colors.card,
@@ -101,7 +102,7 @@ class _ThemeMenuRow extends StatelessWidget {
               child: Text(
                 title,
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w500,
                   height: 1.36,
                   color: colors.textPrimary,

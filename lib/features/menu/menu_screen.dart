@@ -9,6 +9,7 @@ import '../../app/l10n/app_localization.dart';
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_radii.dart';
 import '../../app/ui_kit/app_blurred_top_overlay.dart';
+import '../../app/ui_kit/app_top_bar.dart';
 import '../../core/widgets/pressable.dart';
 import '../settings/gender/data/gender_repository_memory.dart';
 import '../settings/gender/presentation/gender_screen.dart';
@@ -101,39 +102,48 @@ class _MenuScreenState extends State<MenuScreen> {
     final selectedLanguage = LanguageRepositoryMemory.instance
         .getSelectedLanguage();
     final selectedGender = GenderRepositoryMemory.instance.getSelectedGender();
+    void goBack() => Navigator.of(context).maybePop();
 
     return Scaffold(
       backgroundColor: colors.background,
       body: AppBlurredTopOverlay(
         visible: _showTopBlur,
-        height: 150,
-        maxBlurSigma: 60,
+        height: 60.h,
+        maxBlurSigma: 4,
         child: SafeArea(
           bottom: false,
           top: false,
           child: ListView(
             controller: _scrollController,
             physics: const BouncingScrollPhysics(),
-            padding: EdgeInsets.fromLTRB(16.w, 72, 16.w, 28),
+            padding: EdgeInsets.fromLTRB(14.w, 52.h, 14.w, 12),
             children: [
               SizedBox(height: 10),
               Row(
                 children: [
-                  _CircleBackButton(
-                    onTap: () => Navigator.of(context).maybePop(),
-                  ),
+                  CircleBackButton(onTap: goBack),
                   SizedBox(width: 12.w),
-                  Text(
-                    context.t('common.back'),
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: colors.textPrimary,
+                  Pressable(
+                    onTap: goBack,
+                    borderRadius: BorderRadius.circular(AppRadii.chip),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 4.w,
+                        vertical: 8.h,
+                      ),
+                      child: Text(
+                        context.t('common.back'),
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w500,
+                          color: colors.textPrimary,
+                        ),
+                      ),
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 24),
+              SizedBox(height: 16.h),
               _MenuCard(
                 children: [
                   _MenuRow(
@@ -161,7 +171,7 @@ class _MenuScreenState extends State<MenuScreen> {
                   ),
                 ],
               ),
-              SizedBox(height: 18),
+              SizedBox(height: 16.h),
               _MenuCard(
                 children: [
                   _MenuRow(
@@ -177,7 +187,7 @@ class _MenuScreenState extends State<MenuScreen> {
                   ),
                 ],
               ),
-              SizedBox(height: 18),
+              SizedBox(height: 16.h),
               _MenuCard(
                 children: [
                   _MenuRow(
@@ -215,7 +225,7 @@ class _MenuScreenState extends State<MenuScreen> {
                   ),
                 ],
               ),
-              SizedBox(height: 18),
+              SizedBox(height: 16.h),
               _MenuCard(
                 children: [
                   _MenuRow(
@@ -237,7 +247,7 @@ class _MenuScreenState extends State<MenuScreen> {
                   ),
                 ],
               ),
-              SizedBox(height: 18),
+              SizedBox(height: 16.h),
               _MenuCard(
                 children: [
                   _MenuRow(
@@ -255,34 +265,6 @@ class _MenuScreenState extends State<MenuScreen> {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _CircleBackButton extends StatelessWidget {
-  const _CircleBackButton({required this.onTap});
-
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    final radius = 22.0;
-    return Pressable(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(radius),
-      child: Container(
-        width: radius * 2,
-        height: radius * 2,
-        decoration: BoxDecoration(color: colors.card, shape: BoxShape.circle),
-        child: SvgPicture.asset(
-          'assets/icons/back.svg',
-          width: 7,
-          height: 15,
-          fit: BoxFit.none,
-          colorFilter: ColorFilter.mode(colors.textPrimary, BlendMode.srcIn),
         ),
       ),
     );
@@ -341,7 +323,7 @@ class _MenuRow extends StatelessWidget {
               child: Text(
                 title,
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w500,
                   color: colors.textPrimary,
                   height: 1.36,
@@ -353,7 +335,7 @@ class _MenuRow extends StatelessWidget {
               Text(
                 trailingValue!,
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w500,
                   color: colors.textSecondary,
                 ),
@@ -400,12 +382,7 @@ class _BlueIcon extends StatelessWidget {
         color: colors.primary,
         borderRadius: BorderRadius.circular(AppRadii.chip),
       ),
-      child: SvgPicture.asset(
-        icon,
-        height: 16,
-        width: 16.w,
-        fit: BoxFit.none,
-      ),
+      child: SvgPicture.asset(icon, height: 16, width: 16.w, fit: BoxFit.none),
     );
   }
 }

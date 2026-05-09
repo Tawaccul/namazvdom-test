@@ -1,11 +1,10 @@
 import 'dart:async';
+import 'dart:math' as math;
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../app/l10n/app_localization.dart';
 import '../../../app/theme/app_colors.dart';
-import '../../stage/stage_overview_constants.dart';
-import '../../stage/stage_overview_geometry.dart';
 import '../../../core/audio/ayah_audio.dart';
 import '../../../core/audio/ayah_audio_controller.dart';
 import '../../../core/text/transliteration_localizer.dart';
@@ -26,18 +25,18 @@ import 'parts/ablution_step_selector_sheet.dart';
 class AblutionScreenState extends State<AblutionScreen>
     with SingleTickerProviderStateMixin {
   static const double _topBlurShowOffset = 38;
-  static const double _horizontalSwipeVelocityThreshold = StageOverviewConstants.horizontalSwipeVelocityThreshold;
-  static const double _overviewOpenScaleThreshold = StageOverviewConstants.overviewOpenScaleThreshold;
-  static const double _overviewCloseScaleThreshold = StageOverviewConstants.overviewCloseScaleThreshold;
-  static const double _overviewPageGap = StageOverviewConstants.overviewPageGap;
-  static const double _overviewPreviewScale = StageOverviewConstants.overviewPreviewScale;
-  static const double _overviewDragFriction = StageOverviewConstants.overviewDragFriction;
-  static const double _overviewPanSpeedMultiplier = StageOverviewConstants.overviewPanSpeedMultiplier;
-  static const double _overviewClosingTopInset = StageOverviewConstants.overviewClosingTopInset;
-  static const double _overviewPreviewTopShift = StageOverviewConstants.overviewPreviewTopShift;
-  static const double _overviewCanvasInset = StageOverviewConstants.overviewCanvasInset;
-  static const double _overviewFitPadding = StageOverviewConstants.overviewFitPadding;
-  static const Duration _overviewMatrixDuration = StageOverviewConstants.overviewMatrixDuration;
+  static const double _horizontalSwipeVelocityThreshold = 520;
+  static const double _overviewOpenScaleThreshold = 0.99;
+  static const double _overviewCloseScaleThreshold = 0.985;
+  static const double _overviewPageGap = -10;
+  static const double _overviewPreviewScale = 0.50;
+  static const double _overviewDragFriction = 0.0000012;
+  static const double _overviewPanSpeedMultiplier = 7.0;
+  static const double _overviewClosingTopInset = 30;
+  static const double _overviewPreviewTopShift = 10;
+  static const double _overviewCanvasInset = 280;
+  static const double _overviewFitPadding = 24;
+  static const Duration _overviewMatrixDuration = Duration(milliseconds: 320);
   late final AyahAudio _audio;
   late final TransformationController _overviewTransformationController;
   late final AnimationController _overviewAnimationController;
@@ -307,6 +306,19 @@ class AblutionScreenState extends State<AblutionScreen>
     }
     _stopAudioSilently();
   }
+
+  Future<void> _nextStepWithoutTransition() async {
+    if (_totalSteps == 0) return;
+    if (_clampedStepIndex < _totalSteps - 1) {
+      await _selectStepIndex(
+        _clampedStepIndex + 1,
+        direction: 1,
+        animateTransition: false,
+      );
+      return;
+    }
+    _stopAudioSilently();
+  }
   Future<void> _popToHome() async {
     if (!mounted) return;
     setState(() => _allowExitPop = true);
@@ -314,6 +326,20 @@ class AblutionScreenState extends State<AblutionScreen>
     if (!popped && mounted) {
       setState(() => _allowExitPop = false);
     }
+  }
+
+  Future<void> _prevStepWithoutTransition() async {
+    if (_totalSteps == 0) return;
+    if (_clampedStepIndex > 0) {
+      await _selectStepIndex(
+        _clampedStepIndex - 1,
+        direction: -1,
+        animateTransition: false,
+      );
+      return;
+    }
+    _stopAudioSilently();
+    await _popToHome();
   }
   void _handleHorizontalDragEnd(DragEndDetails details) {
     final velocity = details.primaryVelocity ?? 0;
@@ -371,7 +397,7 @@ class AblutionScreenState extends State<AblutionScreen>
     return TweenAnimationBuilder<double>(
       key: ValueKey<int>(_stepTransitionToken),
       tween: Tween<double>(begin: 0, end: 1),
-      duration: const Duration(milliseconds: 360),
+      duration: const Duration(milliseconds: 510),
       curve: Curves.easeOutCubic,
       builder: (context, value, animatedChild) {
         return Transform.translate(
@@ -401,26 +427,36 @@ class AblutionScreenState extends State<AblutionScreen>
     if (pages.isEmpty) return null;
     return pages[flatIndex.clamp(0, pages.length - 1)];
   }
-  StageOverviewGeometry get _overviewGeometry => StageOverviewGeometry(
-    pageCount: _allOverviewPages.length,
-    previewScale: _overviewPreviewScale,
-    pageGap: _overviewPageGap,
-    canvasInset: _overviewCanvasInset,
-    fitPadding: _overviewFitPadding,
-    closingTopInset: _overviewClosingTopInset,
-    previewTopShift: _overviewPreviewTopShift,
-  );
-
-  double _overviewRestingTopInset() => _overviewGeometry.restingTopInset(context);
-  Size _overviewCardSize() => _overviewGeometry.cardSize(context);
-  Size _overviewCanvasSize() => _overviewGeometry.canvasSize(context);
-  Offset _getCardPosition(int flatIndex) =>
-      _overviewGeometry.cardPositionForFlatIndex(context, flatIndex);
-  Matrix4 _overviewMatrixForPage(
-    AblutionOverviewPageReference page, {
-    double scale = 1,
-  }) => _overviewGeometry.matrixForFlatIndex(context, page.stepIndex, scale: scale);
-
+  Size _overviewViewportSize() {
+    final size = MediaQuery.sizeOf(context);
+    return Size(size.width, size.height);
+  }
+  double _overviewRestingTopInset() {
+    return math.max(
+      MediaQuery.paddingOf(context).top,
+      _overviewClosingTopInset.h,
+    );
+  }
+  double _overviewPreviewTopInset() {
+    return math.max(
+      MediaQuery.paddingOf(context).top,
+      _overviewRestingTopInset() - _overviewPreviewTopShift.h,
+    );
+  }
+  double _overviewTopInsetForScale(double scale) {
+    final normalized =
+        ((scale - _overviewPreviewScale) / (1 - _overviewPreviewScale)).clamp(
+          0.0,
+          1.0,
+        );
+    return ui.lerpDouble(
+          _overviewPreviewTopInset(),
+          _overviewRestingTopInset(),
+          normalized,
+        ) ??
+        _overviewRestingTopInset();
+  }
+  Size _overviewCardSize() => _overviewViewportSize();
   ScrollController _overviewScrollControllerFor(int pageId) {
     return _overviewScrollControllers.putIfAbsent(
       pageId,
@@ -432,21 +468,91 @@ class AblutionScreenState extends State<AblutionScreen>
     if (previous == hasOverflow || !mounted) return;
     setState(() => _overviewOverflowByPage[pageId] = hasOverflow);
   }
+  Offset _getCardPosition(int flatIndex) {
+    final size = _overviewCardSize();
+    final x =
+        _overviewCanvasInset + flatIndex * (size.width + _overviewPageGap);
+    final y = _overviewCanvasInset;
+    return Offset(x, y);
+  }
+  Rect _overviewContentRect() {
+    final size = _overviewCardSize();
+    final pageCount = math.max(_allOverviewPages.length, 1);
+    final width = pageCount * size.width + (pageCount - 1) * _overviewPageGap;
+    final height = size.height;
+    return Rect.fromLTWH(
+      _overviewCanvasInset,
+      _overviewCanvasInset,
+      width,
+      height,
+    );
+  }
+  Size _overviewCanvasSize() {
+    final rect = _overviewContentRect();
+    return Size(
+      rect.right + _overviewCanvasInset,
+      rect.bottom + _overviewCanvasInset,
+    );
+  }
+  Rect _overviewCardRect(AblutionOverviewPageReference page) {
+    final size = _overviewCardSize();
+    final position = _getCardPosition(page.stepIndex);
+    return Rect.fromLTWH(position.dx, position.dy, size.width, size.height);
+  }
+  Matrix4 _overviewMatrixForPage(
+    AblutionOverviewPageReference page, {
+    double scale = 1,
+  }) {
+    final viewport = _overviewViewportSize();
+    final rect = _overviewCardRect(page);
+    final dx =
+        (viewport.width - (rect.width * scale)) / 2 - (rect.left * scale);
+    final topInset = _overviewTopInsetForScale(scale);
+    final dy = topInset - (rect.top * scale);
+    final matrix = Matrix4.identity()..scaleByDouble(scale, scale, 1, 1);
+    matrix.setTranslationRaw(dx, dy, 0);
+    return matrix;
+  }
   void _handleOverviewTransformChanged() {
     if (!_showOverviewLayer ||
         _isAnimatingOverviewMatrix ||
         _isClampingOverviewTransform) {
       return;
     }
-    final clamped = _overviewGeometry.clampTransform(
-      context,
+    final clamped = _clampOverviewTransform(
       _overviewTransformationController.value,
     );
     final current = _overviewTransformationController.value;
-    if (_overviewGeometry.matricesAreEqual(current, clamped)) return;
+    if (_matricesAreEqual(current, clamped)) return;
     _isClampingOverviewTransform = true;
     _overviewTransformationController.value = clamped;
     _isClampingOverviewTransform = false;
+  }
+  Matrix4 _clampOverviewTransform(Matrix4 matrix) {
+    final rect = _overviewContentRect();
+    final next = Matrix4.copy(matrix);
+    final scale = next.storage[0].clamp(_overviewPreviewScale, 1.0).toDouble();
+    final viewport = _overviewViewportSize();
+    final minDx = viewport.width - _overviewFitPadding - (rect.right * scale);
+    final maxDx = _overviewFitPadding - (rect.left * scale);
+    final rawDx = next.storage[12];
+    final clampedDx = rawDx.clamp(minDx, maxDx).toDouble();
+    final clampedDy = _overviewTopInsetForScale(scale) - (rect.top * scale);
+    next.storage[0] = scale;
+    next.storage[5] = scale;
+    next.storage[10] = 1;
+    next.storage[12] = clampedDx;
+    next.storage[13] = clampedDy;
+    next.storage[14] = 0;
+    return next;
+  }
+  bool _matricesAreEqual(Matrix4 a, Matrix4 b) {
+    for (var i = 0; i < 16; i++) {
+      if ((a.storage[i] - b.storage[i]).abs() > 0.001) {
+        return false;
+      }
+    }
+    return true;
   }
   Future<void> _animateOverviewMatrix(
     Matrix4 target, {
@@ -478,18 +584,53 @@ class AblutionScreenState extends State<AblutionScreen>
       _isAnimatingOverviewMatrix = false;
     }
   }
-  int _nearestFlatIndexFromCurrentTransform() =>
-      _overviewGeometry.nearestFlatIndexFromTransform(
-        context,
-        _overviewTransformationController.value,
-      );
-
-  int _flatIndexForViewportPoint(Offset viewportPoint) =>
-      _overviewGeometry.flatIndexForViewportPoint(
-        context,
-        viewportPoint,
-        _overviewTransformationController.value,
-      );
+  int _nearestFlatIndexFromCurrentTransform() {
+    final pages = _allOverviewPages;
+    if (pages.isEmpty) return 0;
+    final viewport = _overviewViewportSize();
+    final matrix = _overviewTransformationController.value;
+    final scale = matrix.storage[0]
+        .clamp(_overviewPreviewScale, 1.0)
+        .toDouble();
+    final dx = matrix.storage[12];
+    final viewportCenterX = viewport.width / 2;
+    final contentCenterX = (viewportCenterX - dx) / scale;
+    final cardWidth = _overviewCardSize().width;
+    var bestIndex = 0;
+    var bestDistance = double.infinity;
+    for (var i = 0; i < pages.length; i++) {
+      final pageCenterX =
+          _overviewCanvasInset +
+          i * (cardWidth + _overviewPageGap) +
+          cardWidth / 2;
+      final distance = (pageCenterX - contentCenterX).abs();
+      if (distance < bestDistance) {
+        bestDistance = distance;
+        bestIndex = i;
+      }
+    }
+    return bestIndex;
+  }
+  int _flatIndexForViewportPoint(Offset viewportPoint) {
+    final pages = _allOverviewPages;
+    if (pages.isEmpty) return 0;
+    final matrix = _overviewTransformationController.value;
+    final scale = matrix.storage[0]
+        .clamp(_overviewPreviewScale, 1.0)
+        .toDouble();
+    final dx = matrix.storage[12];
+    final dy = matrix.storage[13];
+    final contentPoint = Offset(
+      (viewportPoint.dx - dx) / scale,
+      (viewportPoint.dy - dy) / scale,
+    );
+    for (var i = 0; i < pages.length; i++) {
+      if (_overviewCardRect(pages[i]).contains(contentPoint)) {
+        return i;
+      }
+    }
+    return _nearestFlatIndexFromCurrentTransform();
+  }
   void _handleOverviewPanUpdate(ScaleUpdateDetails details) {
     if (_isAnimatingOverviewMatrix || _isClampingOverviewTransform) return;
     if (_overviewGestureLock) return;
@@ -533,7 +674,7 @@ class AblutionScreenState extends State<AblutionScreen>
     final boosted = Matrix4.copy(_overviewTransformationController.value)
       ..translateByDouble(extraDx, 0, 0, 1);
     _isClampingOverviewTransform = true;
-    _overviewTransformationController.value = _overviewGeometry.clampTransform(context, boosted);
+    _overviewTransformationController.value = _clampOverviewTransform(boosted);
     _isClampingOverviewTransform = false;
   }
   void _handleOverviewInteractionStart(ScaleStartDetails details) {
@@ -686,12 +827,12 @@ class AblutionScreenState extends State<AblutionScreen>
     if (_showOverviewLayer || _isOverviewClosing) return;
     unawaited(_openOverviewMode());
   }
-  Widget _buildOverviewPage(
-    AblutionOverviewPageReference page,
-    AblutionManifest manifest,
-    String title,
-    double pageHeight,
-  ) {
+  Widget _buildOverviewPage({
+    required AblutionOverviewPageReference page,
+    required AblutionManifest manifest,
+    required String title,
+    required double pageHeight,
+  }) {
     final pageId = page.stepIndex;
     return buildAblutionOverviewPage(
       context: context,
@@ -699,14 +840,48 @@ class AblutionScreenState extends State<AblutionScreen>
       manifest: manifest,
       title: title,
       pageHeight: pageHeight,
-      topInset: _overviewRestingTopInset(),
-      cardTextSize: ThemeTextSizeStore.textSize,
       pageScrollController: _overviewScrollControllerFor(pageId),
       shouldScheduleOverflowCheck: !_overviewOverflowByPage.containsKey(pageId),
       mounted: mounted,
       setOverviewOverflow: _setOverviewOverflow,
       stepImageAsset: _stepImageAsset,
       localizedStepTransliteration: _localizedStepTransliteration,
+    );
+  }
+  Widget _buildOverviewLayer({
+    required AblutionManifest manifest,
+    required String title,
+  }) {
+    final pages = _allOverviewPages;
+    final pageHeight = MediaQuery.sizeOf(context).height;
+    final cardSize = _overviewCardSize();
+    final canvasSize = _overviewCanvasSize();
+    if (pages.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    return buildAblutionOverviewLayer(
+      context: context,
+      manifest: manifest,
+      title: title,
+      pages: pages,
+      pageHeight: pageHeight,
+      cardSize: cardSize,
+      canvasSize: canvasSize,
+      transformationController: _overviewTransformationController,
+      onInteractionStart: _handleOverviewInteractionStart,
+      onInteractionUpdate: _handleOverviewPanUpdate,
+      onInteractionEnd: _handleOverviewInteractionEnd,
+      overviewGestureLock: _overviewGestureLock,
+      overviewDragFriction: _overviewDragFriction,
+      overviewPreviewScale: _overviewPreviewScale,
+      cardPositionFor: _getCardPosition,
+      onPageTap: _handleOverviewCardTap,
+      pageBuilder: (page) => _buildOverviewPage(
+        page: page,
+        manifest: manifest,
+        title: title,
+        pageHeight: pageHeight,
+      ),
     );
   }
   Widget _buildPageContent({
@@ -720,29 +895,47 @@ class AblutionScreenState extends State<AblutionScreen>
     required VoidCallback onStage,
     required VoidCallback onPrev,
     required VoidCallback onNext,
-  }) => buildAblutionPageContent(
-    context: context,
-    step: step,
-    stepNumber: stepNumber,
-    totalSteps: totalSteps,
-    progress: progress,
-    title: title,
-    showTopControls: _showTopControls,
-    stageButtonKey: _stageButtonKey,
-    progressKey: _progressKey,
-    onboardingHighlightKey: _onboardingHighlightKey,
-    animateStepTransition: _animateStepTransition,
-    stepImageAsset: _stepImageAsset,
-    isStepAudioPlaying: _isStepAudioPlaying,
-    localizedStepTransliteration: _localizedStepTransliteration,
-    onBack: onBack,
-    onStage: onStage,
-    onPrev: onPrev,
-    onNext: onNext,
-    onOpenOverview: _openOverviewMode,
-    onToggleStepAudio: (step) => unawaited(_toggleStepAyahAudio(step)),
-    scrollController: scrollController,
-  );
+  }) {
+    final previousStep = stepNumber > 1
+        ? _manifest?.steps[stepNumber - 2]
+        : null;
+    final nextStepManifest = stepNumber < totalSteps
+        ? _manifest?.steps[stepNumber]
+        : null;
+
+    return buildAblutionPageContent(
+      context: context,
+      step: step,
+      stepNumber: stepNumber,
+      totalSteps: totalSteps,
+      progress: progress,
+      title: title,
+      showTopControls: _showTopControls,
+      stageButtonKey: _stageButtonKey,
+      progressKey: _progressKey,
+      onboardingHighlightKey: _onboardingHighlightKey,
+      animateStepTransition: _animateStepTransition,
+      stepImageAsset: _stepImageAsset,
+      isStepAudioPlaying: _isStepAudioPlaying,
+      localizedStepTransliteration: _localizedStepTransliteration,
+      onBack: onBack,
+      onStage: onStage,
+      onPrev: _prevStep,
+      onNext: _nextStep,
+      onProgrammaticPrev: _prevStepWithoutTransition,
+      onProgrammaticNext: _nextStepWithoutTransition,
+      onOpenOverview: _openOverviewMode,
+      onToggleStepAudio: (step) => unawaited(_toggleStepAyahAudio(step)),
+      prevGhostStep: previousStep,
+      nextGhostStep: nextStepManifest,
+      onCarouselDragStarted: () {
+        if (_scrollController.hasClients) {
+          _scrollController.jumpTo(0);
+        }
+      },
+      scrollController: scrollController,
+    );
+  }
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
@@ -794,28 +987,10 @@ class AblutionScreenState extends State<AblutionScreen>
             scrollController: scrollController,
             onBack: onBack,
             onStage: onStage,
-            onPrev: onPrev,
-            onNext: onNext,
+            onPrev: _prevStepWithoutTransition,
+            onNext: _nextStepWithoutTransition,
           ),
-      overviewTransformationController: _overviewTransformationController,
-      onOverviewInteractionStart: _handleOverviewInteractionStart,
-      onOverviewInteractionUpdate: _handleOverviewPanUpdate,
-      onOverviewInteractionEnd: _handleOverviewInteractionEnd,
-      overviewPanEnabled: !_overviewGestureLock,
-      overviewDragFriction: _overviewDragFriction,
-      overviewMinScale: _overviewPreviewScale,
-      overviewCanvasSize: _overviewCanvasSize(),
-      overviewPages: _allOverviewPages,
-      overviewCardSize: _overviewCardSize(),
-      pagePositionFor: (page) => _getCardPosition(page.stepIndex),
-      onPageTap: _handleOverviewCardTap,
-      pageBuilder: (page) {
-        final manifest = _manifest;
-        if (manifest == null) return const SizedBox.shrink();
-        final pageHeight = MediaQuery.sizeOf(context).height;
-        final title = context.t(manifest.titleKey);
-        return _buildOverviewPage(page, manifest, title, pageHeight);
-      },
+      buildOverviewLayer: _buildOverviewLayer,
       currentStep: () => _currentStep!,
       clampedStepIndex: _clampedStepIndex,
       totalSteps: _totalSteps,

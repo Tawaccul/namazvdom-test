@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:prayday/app/theme/app_radii.dart';
 
 import '../../../../app/l10n/app_localization.dart';
 import '../../../../app/theme/app_colors.dart';
-import '../../../../app/ui_kit/app_blurred_top_overlay.dart';
 import '../../../../app/ui_kit/app_card.dart';
 import '../../../../app/ui_kit/app_top_bar.dart';
 import '../../../../core/widgets/pressable.dart';
@@ -66,18 +66,13 @@ class _TextSizeScreenState extends State<TextSizeScreen> {
                     controller: _scrollController,
                     physics: const BouncingScrollPhysics(),
                     clipBehavior: Clip.none,
-                    padding: EdgeInsets.fromLTRB(
-                      20.w,
-                      MediaQuery.paddingOf(context).top + 12,
-                      20.w,
-                      30,
-                    ),
+                    padding: EdgeInsets.fromLTRB(14.w, 60.h, 14.w, 12),
                     children: [
                       AppTopBar(
                         title: context.t('theme.textSize'),
                         onBack: () => Navigator.of(context).maybePop(),
                       ),
-                      SizedBox(height: 24),
+                      SizedBox(height: 16.h),
                       _DescriptionCard(textSize: _textSize),
                       SizedBox(height: 12),
                       _PreviewCard(textSize: _textSize),
@@ -99,7 +94,6 @@ class _TextSizeScreenState extends State<TextSizeScreen> {
                 ),
               ],
             ),
-            
           ],
         ),
       ),
@@ -129,7 +123,7 @@ class _DescriptionCard extends StatelessWidget {
               color: colors.textPrimary,
             ),
           ),
-          SizedBox(height: 12),
+          SizedBox(height: 10.h),
           Text(
             context.t('theme.textSizeScreen.description'),
             style: TextStyle(
@@ -160,7 +154,7 @@ class _PreviewCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12),
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
             decoration: BoxDecoration(
               color: colors.soft,
               borderRadius: BorderRadius.circular(AppRadii.inner),
@@ -171,9 +165,9 @@ class _PreviewCard extends StatelessWidget {
                 'اللهُ أَكْبَرُ',
                 textAlign: TextAlign.right,
                 textScaler: TextScaler.noScaling,
-                style: TextStyle(
-                  fontSize: 24,
-                  height: 1.4,
+                style: GoogleFonts.notoNaskhArabic(
+                  fontSize: 22.sp,
+                  height: 2.2,
                   fontWeight: FontWeight.w400,
                   color: colors.textSecondary,
                 ),

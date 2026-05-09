@@ -49,18 +49,29 @@ class StageStepScreen extends StatefulWidget {
 class _StageStepScreenState extends State<StageStepScreen>
     with SingleTickerProviderStateMixin {
   static const bool _alwaysShowStageOnboarding = false;
-  static const double _horizontalSwipeVelocityThreshold = StageOverviewConstants.horizontalSwipeVelocityThreshold;
-  static const double _overviewOpenScaleThreshold = StageOverviewConstants.overviewOpenScaleThreshold;
-  static const double _overviewCloseScaleThreshold = StageOverviewConstants.overviewCloseScaleThreshold;
+  static const double _horizontalSwipeVelocityThreshold =
+      StageOverviewConstants.horizontalSwipeVelocityThreshold;
+  static const double _overviewOpenScaleThreshold =
+      StageOverviewConstants.overviewOpenScaleThreshold;
+  static const double _overviewCloseScaleThreshold =
+      StageOverviewConstants.overviewCloseScaleThreshold;
   static const double _overviewPageGap = StageOverviewConstants.overviewPageGap;
-  static const double _overviewPreviewScale = StageOverviewConstants.overviewPreviewScale;
-  static const double _overviewDragFriction = StageOverviewConstants.overviewDragFriction;
-  static const double _overviewPanSpeedMultiplier = StageOverviewConstants.overviewPanSpeedMultiplier;
-  static const double _overviewClosingTopInset = StageOverviewConstants.overviewClosingTopInset;
-  static const double _overviewPreviewTopShift = StageOverviewConstants.overviewPreviewTopShift;
-  static const double _overviewCanvasInset = StageOverviewConstants.overviewCanvasInset;
-  static const double _overviewFitPadding = StageOverviewConstants.overviewFitPadding;
-  static const Duration _overviewMatrixDuration = StageOverviewConstants.overviewMatrixDuration;
+  static const double _overviewPreviewScale =
+      StageOverviewConstants.overviewPreviewScale;
+  static const double _overviewDragFriction =
+      StageOverviewConstants.overviewDragFriction;
+  static const double _overviewPanSpeedMultiplier =
+      StageOverviewConstants.overviewPanSpeedMultiplier;
+  static const double _overviewClosingTopInset =
+      StageOverviewConstants.overviewClosingTopInset;
+  static const double _overviewPreviewTopShift =
+      StageOverviewConstants.overviewPreviewTopShift;
+  static const double _overviewCanvasInset =
+      StageOverviewConstants.overviewCanvasInset;
+  static const double _overviewFitPadding =
+      StageOverviewConstants.overviewFitPadding;
+  static const Duration _overviewMatrixDuration =
+      StageOverviewConstants.overviewMatrixDuration;
   static const _randomStageAudioAssets = <String>[
     'assets/audio/730cbdbfa3d664506abd7c2baf719491.mp3',
     'assets/audio/istiaza.mp3',
@@ -103,6 +114,7 @@ class _StageStepScreenState extends State<StageStepScreen>
   int? _overviewPendingCloseFlatIndex;
   int _stepTransitionToken = 0;
   int _stepTransitionDirection = 1;
+  int _stepAudioSyncToken = 0;
   bool _allowExitPop = false;
 
   @override
@@ -123,7 +135,9 @@ class _StageStepScreenState extends State<StageStepScreen>
       _audio.setAyah(_stepToAyah(_selectedAyahStep!, _stepKey));
     }
     _scrollState = StageScrollVisibilityState(
-      notify: (fn) { if (mounted) setState(fn); },
+      notify: (fn) {
+        if (mounted) setState(fn);
+      },
       isMounted: () => mounted,
       getContext: () => context,
       scrollController: ScrollController(keepScrollOffset: false),
@@ -132,7 +146,9 @@ class _StageStepScreenState extends State<StageStepScreen>
     );
     _scrollState.scrollController.addListener(_scrollState.onScroll);
     _surahState = StageAdditionalSurahState(
-      notify: (fn) { if (mounted) setState(fn); },
+      notify: (fn) {
+        if (mounted) setState(fn);
+      },
       isMounted: () => mounted,
       getContext: () => context,
       getRakaats: () => _rakaats,
@@ -147,10 +163,14 @@ class _StageStepScreenState extends State<StageStepScreen>
       ),
       cancelAutoplay: ({bool disableAutoplay = false}) =>
           _cancelAutoplaySequence(disableAutoplay: disableAutoplay),
-      setError: (msg) { if (mounted) setState(() => _error = msg); },
+      setError: (msg) {
+        if (mounted) setState(() => _error = msg);
+      },
     );
     _onboarding = StageOnboardingState(
-      notify: (fn) { if (mounted) setState(fn); },
+      notify: (fn) {
+        if (mounted) setState(fn);
+      },
       isMounted: () => mounted,
       getStepKey: (key) => _stepKeys[key],
       getOnboardingEntryKey: () => _entryKey(_clampedAyahIndex),
@@ -426,6 +446,7 @@ class _StageStepScreenState extends State<StageStepScreen>
   }) async {
     if (_rakaats.isEmpty || _isStageTransitioning) return;
     _isStageTransitioning = true;
+    _stepAudioSyncToken++;
     try {
       final nextRakaat = rakaatIndex.clamp(0, _rakaats.length - 1);
       final stepCount = _stepCountForRakaat(nextRakaat);
@@ -462,6 +483,72 @@ class _StageStepScreenState extends State<StageStepScreen>
       }
     } finally {
       _isStageTransitioning = false;
+    }
+  }
+
+  Future<void> _selectRakaatAndStepForCarousel(
+    int rakaatIndex,
+    int stepIndex, {
+    bool playIfAutoplay = false,
+    int direction = 1,
+    bool jumpToTop = true,
+  }) async {
+    if (_rakaats.isEmpty || _isStageTransitioning) return;
+    _isStageTransitioning = true;
+
+    final nextRakaat = rakaatIndex.clamp(0, _rakaats.length - 1);
+    final stepCount = _stepCountForRakaat(nextRakaat);
+    final nextStep = stepCount == 0 ? 0 : stepIndex.clamp(0, stepCount - 1);
+    final resumeAutoplay = playIfAutoplay && _autoplayEnabled;
+    final syncToken = ++_stepAudioSyncToken;
+
+    _cancelAutoplaySequence(disableAutoplay: true);
+    if (!mounted) {
+      _isStageTransitioning = false;
+      return;
+    }
+
+    setState(() {
+      _rakaatIndex = nextRakaat;
+      _stepIndex = nextStep;
+      _selectedAyahIndex = 0;
+      _playingStepKey = null;
+      _startedPlaybackStepKey = null;
+      _scrollState.showPinned = false;
+      _stepTransitionDirection = direction >= 0 ? 1 : -1;
+    });
+    if (jumpToTop) {
+      _jumpToTop();
+    }
+    _isStageTransitioning = false;
+    unawaited(
+      _syncSelectedStepAudioAfterCarousel(
+        syncToken,
+        resumeAutoplay: resumeAutoplay,
+      ),
+    );
+  }
+
+  Future<void> _syncSelectedStepAudioAfterCarousel(
+    int syncToken, {
+    required bool resumeAutoplay,
+  }) async {
+    try {
+      await _audio.pause();
+      if (!mounted || syncToken != _stepAudioSyncToken) return;
+
+      final step = _selectedAyahStep;
+      if (step == null) return;
+      if (step.hasAudio) {
+        await _audio.setAyah(_stepToAyah(step, _stepKey));
+      }
+      if (!mounted || syncToken != _stepAudioSyncToken) return;
+      if (resumeAutoplay && step.hasAudio) {
+        await _playCurrent();
+      }
+    } catch (error) {
+      if (!mounted || syncToken != _stepAudioSyncToken) return;
+      setState(() => _error = error.toString());
     }
   }
 
@@ -537,8 +624,7 @@ class _StageStepScreenState extends State<StageStepScreen>
     final stepTitle = (firstEntry?.title ?? '').trim().isEmpty
         ? context.t('stage.defaultStepTitle')
         : firstEntry!.title;
-    final movementDescription =
-        (firstEntry?.movementDescription ?? '').trim();
+    final movementDescription = (firstEntry?.movementDescription ?? '').trim();
     final fallbackImage = _rakaats[targetRakaat].imageAsset;
     final stepImageAsset = resolveStageStepImageAsset(
       explicitImageAsset: firstEntry?.imageAsset ?? '',
@@ -573,13 +659,18 @@ class _StageStepScreenState extends State<StageStepScreen>
 
   Size _overviewCardSize() => _overviewGeometry.cardSize(context);
 
-  Offset _getCardPosition(int rakaatIndex, int stepIndex) =>
-      _overviewGeometry.cardPosition(context, _allStagePages, rakaatIndex, stepIndex);
+  Offset _getCardPosition(int rakaatIndex, int stepIndex) => _overviewGeometry
+      .cardPosition(context, _allStagePages, rakaatIndex, stepIndex);
 
   Size _overviewCanvasSize() => _overviewGeometry.canvasSize(context);
 
   Matrix4 _overviewMatrixForPage(StagePageReference page, {double scale = 1}) =>
-      _overviewGeometry.matrixForPage(context, _allStagePages, page, scale: scale);
+      _overviewGeometry.matrixForPage(
+        context,
+        _allStagePages,
+        page,
+        scale: scale,
+      );
 
   void _setStateSafe(VoidCallback fn) {
     if (!mounted) return;
@@ -591,7 +682,7 @@ class _StageStepScreenState extends State<StageStepScreen>
         showOverviewLayer: _showOverviewLayer,
         isAnimatingOverviewMatrix: _isAnimatingOverviewMatrix,
         isClampingOverviewTransform: _isClampingOverviewTransform,
-        clampOverviewTransform: _clampOverviewTransform,
+        clampOverviewTransformYOnly: _clampOverviewTransformYOnly,
         transformationController: _transformationController,
         matricesAreEqual: _matricesAreEqual,
         setIsClampingOverviewTransform: (value) =>
@@ -646,6 +737,9 @@ class _StageStepScreenState extends State<StageStepScreen>
   Matrix4 _clampOverviewTransform(Matrix4 matrix) =>
       _overviewGeometry.clampTransform(context, matrix);
 
+  Matrix4 _clampOverviewTransformYOnly(Matrix4 matrix) =>
+      _overviewGeometry.clampTransformYOnly(context, matrix);
+
   bool _matricesAreEqual(Matrix4 a, Matrix4 b) =>
       _overviewGeometry.matricesAreEqual(a, b);
 
@@ -677,7 +771,8 @@ class _StageStepScreenState extends State<StageStepScreen>
     overviewMatrixForPage: _overviewMatrixForPage,
     overviewPreviewScale: _overviewPreviewScale,
     animateOverviewMatrix: _animateOverviewMatrix,
-    setTopControlsRevealToken: (value) => _scrollState.topControlsRevealToken = value,
+    setTopControlsRevealToken: (value) =>
+        _scrollState.topControlsRevealToken = value,
     topControlsRevealToken: _scrollState.topControlsRevealToken,
     setStateSafe: _setStateSafe,
     setOverviewOriginFlatIndex: (value) => _overviewOriginFlatIndex = value,
@@ -813,7 +908,11 @@ class _StageStepScreenState extends State<StageStepScreen>
   }
 
   void _onScreenDoubleTap() {
-    if (_showOverviewLayer || _isOverviewClosing || _onboarding.showOnboarding) return;
+    if (_showOverviewLayer ||
+        _isOverviewClosing ||
+        _onboarding.showOnboarding) {
+      return;
+    }
     unawaited(_openOverviewMode());
   }
 
@@ -894,6 +993,34 @@ class _StageStepScreenState extends State<StageStepScreen>
     selectRakaatAndStep: _selectRakaatAndStep,
   );
 
+  Future<void> _nextStepWithoutTransition() async {
+    if (_currentStepOrderIndexes.isEmpty || _isStageTransitioning) return;
+    if (_clampedStepIndex < _currentStepOrderIndexes.length - 1) {
+      await _selectRakaatAndStepForCarousel(
+        _rakaatIndex,
+        _clampedStepIndex + 1,
+        playIfAutoplay: false,
+        direction: 1,
+      );
+      return;
+    }
+    if (_rakaats.isEmpty) return;
+    final next = (_rakaatIndex + 1).clamp(0, _rakaats.length - 1);
+    if (next == _rakaatIndex) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.t('stage.prayerCompleted'))),
+      );
+      return;
+    }
+    await _selectRakaatAndStepForCarousel(
+      next,
+      0,
+      playIfAutoplay: false,
+      direction: 1,
+    );
+  }
+
   Future<void> _animateRakaatTransitionTo(
     int index, {
     required int stepIndex,
@@ -916,6 +1043,30 @@ class _StageStepScreenState extends State<StageStepScreen>
     animateStepTransitionTo: _animateStepTransitionTo,
     animateRakaatTransitionTo: _animateRakaatTransitionTo,
   );
+
+  Future<void> _prevStepWithoutTransition() async {
+    if (_currentStepOrderIndexes.isEmpty || _isStageTransitioning) return;
+    if (_clampedStepIndex > 0) {
+      await _selectRakaatAndStepForCarousel(
+        _rakaatIndex,
+        _clampedStepIndex - 1,
+        playIfAutoplay: false,
+        direction: -1,
+      );
+      return;
+    }
+    if (_rakaats.isEmpty) return;
+    final prev = (_rakaatIndex - 1).clamp(0, _rakaats.length - 1);
+    if (prev == _rakaatIndex) return;
+    final prevStepCount = _stepCountForRakaat(prev);
+    final prevStepIndex = prevStepCount == 0 ? 0 : prevStepCount - 1;
+    await _selectRakaatAndStepForCarousel(
+      prev,
+      prevStepIndex,
+      playIfAutoplay: false,
+      direction: -1,
+    );
+  }
 
   void _handleHorizontalDragEnd(DragEndDetails details) =>
       StageStepScreenFlowHelper.handleHorizontalDragEnd(
@@ -1101,6 +1252,8 @@ class _StageStepScreenState extends State<StageStepScreen>
       canGoNext: canGoNext,
       onPrevStep: _prevStep,
       onNextStep: _nextStep,
+      onPrevStepProgrammatic: _prevStepWithoutTransition,
+      onNextStepProgrammatic: _nextStepWithoutTransition,
       onboardingStepIndex: _onboarding.stepIndex,
       onOnboardingNext: _onboarding.onNext,
       selectedAyahCardKey: selectedAyahCardKey,

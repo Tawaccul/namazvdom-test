@@ -4,12 +4,12 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 
 import '../../app/l10n/app_localization.dart';
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_radii.dart';
+import '../../app/ui_kit/app_top_bar.dart';
 import '../../core/widgets/pressable.dart';
 import 'data/support_billing_service.dart';
 import 'domain/entities/support_plan.dart';
@@ -151,10 +151,10 @@ class _HelpProjectScreenState extends State<HelpProjectScreen> {
               child: Column(
                 children: [
                   Padding(
-                    padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 0),
+                    padding: EdgeInsets.fromLTRB(14.w, 5.h, 14.w, 0),
                     child: Row(
                       children: [
-                        _CircleBackButton(
+                        CircleBackButton(
                           onTap: () => Navigator.of(context).maybePop(),
                         ),
                       ],
@@ -483,34 +483,6 @@ class _SubscribeButton extends StatelessWidget {
                     height: 1.2,
                   ),
                 ),
-        ),
-      ),
-    );
-  }
-}
-
-class _CircleBackButton extends StatelessWidget {
-  const _CircleBackButton({required this.onTap});
-
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    final radius = 22.r;
-    return Pressable(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(radius),
-      child: Container(
-        width: radius * 2,
-        height: radius * 2,
-        decoration: BoxDecoration(color: colors.card, shape: BoxShape.circle),
-        child: SvgPicture.asset(
-          'assets/icons/back.svg',
-          width: 7.r,
-          height: 15.r,
-          fit: BoxFit.none,
-          colorFilter: ColorFilter.mode(colors.textPrimary, BlendMode.srcIn),
         ),
       ),
     );
