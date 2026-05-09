@@ -42,7 +42,7 @@ Widget buildAblutionPageContent({
   final hasNextStep = stepNumber < totalSteps;
   return Builder(
     builder: (context) {
-  final layout = AblutionLayoutData.of(context);
+  final layout = StageLayoutData.of(context);
   final topContentPadding = layout.topInset;
   final bottomInset = layout.bottomInset;
   final cardTextSize = layout.cardTextSize;
@@ -89,7 +89,7 @@ Widget buildAblutionPageContent({
           ),
         ),
       ),
-      SizedBox(height: 14.h),
+      SizedBox(height: 12.h),
       animateStepTransition(
         Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -97,8 +97,8 @@ Widget buildAblutionPageContent({
             Builder(builder: (context) {
               final image = SvgPicture.asset(
                 stepImageAsset(step),
-                width: MediaQuery.sizeOf(context).width * 0.64,
-                fit: BoxFit.contain,
+                width: 244.w,
+                fit: BoxFit.none,
                 placeholderBuilder: (_) => const SizedBox(width: 220, height: 220),
               );
               final card = StageStepCard(
@@ -167,70 +167,6 @@ Widget buildAblutionPageContent({
   );
 }
 
-class _AblutionStepCard extends StatelessWidget {
-  const _AblutionStepCard({
-    required this.step,
-    required this.cardTextSize,
-    required this.imageAsset,
-    this.highlightKey,
-  });
-
-  final AblutionStepManifest step;
-  final double cardTextSize;
-  final String imageAsset;
-  final GlobalKey? highlightKey;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    final child = StageCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            height: 244.h,
-            decoration: BoxDecoration(
-              color: colors.soft,
-              borderRadius: BorderRadius.circular(AppRadii.inner),
-            ),
-            child: Center(
-              child: SvgPicture.asset(
-                imageAsset,
-                width: 220.h,
-                fit: BoxFit.contain,
-                placeholderBuilder: (_) =>
-                    SizedBox(width: 250, height: 250),
-              ),
-            ),
-          ),
-          SizedBox(height: 22.h),
-          Text(
-            context.t(step.titleKey),
-            style: TextStyle(
-              fontSize: cardTextSize.sp,
-              fontWeight: FontWeight.w500,
-              color: colors.textPrimary,
-            ),
-          ),
-          SizedBox(height:6.h),
-          Text(
-            context.t(step.descriptionKey),
-            style: TextStyle(
-              fontSize: cardTextSize.sp,
-              height: 1.45,
-              fontWeight: FontWeight.w500,
-              color: colors.textSecondary,
-            ),
-          ),
-        ],
-      ),
-    );
-    final key = highlightKey;
-    return key == null ? child : KeyedSubtree(key: key, child: child);
-  }
-}
-
 class _AblutionTextCard extends StatelessWidget {
   const _AblutionTextCard({
     required this.step,
@@ -292,7 +228,7 @@ class _AblutionTextCard extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(height: 20.h),
+          SizedBox(height: 17.h),
           Text(
             transliteration,
             style: TextStyle(

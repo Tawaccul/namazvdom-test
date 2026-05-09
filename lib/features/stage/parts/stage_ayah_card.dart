@@ -69,7 +69,7 @@ class StageAyahCard extends StatelessWidget {
               isPlaying: isPlaying,
               onPlayPause: onPlayPause,
             ),
-            SizedBox(height: 16),
+            SizedBox(height: 12.h),
             Text(
               ayah.transliteration,
               style: TextStyle(

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../app/theme/app_radii.dart';
 import '../models/rakaat_models.dart';
 import 'stage_ayah_card.dart';
 import 'stage_bottom_button.dart';
@@ -144,47 +143,11 @@ class StageStepContentSection extends StatelessWidget {
             children: [
               animateRakaat(
                 animateAppear(
-                  StageCard(
-                    child: Column(
-                      children: [
-                        Container(
-                          height: 244.h,
-                          decoration: BoxDecoration(
-                            color: softColor,
-                            borderRadius: BorderRadius.circular(
-                              AppRadii.inner,
-                            ),
-                          ),
-                          child: Center(child: stepImage),
-                        ),
-                        SizedBox(height: 22.h),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Text(
-                              stepTitle,
-                              style: TextStyle(
-                                fontSize: cardTextSize.sp,
-                                height: 1.45,
-                                fontWeight: FontWeight.w500,
-                                color: textPrimaryColor,
-                              ),
-                            ),
-                            SizedBox(height: 6.h),
-                            if (movementDescription.isNotEmpty)
-                              Text(
-                                movementDescription,
-                                style: TextStyle(
-                                  fontSize: cardTextSize.sp,
-                                  height: 1.45,
-                                  fontWeight: FontWeight.w500,
-                                  color: textSecondaryColor,
-                                ),
-                              ),
-                          ],
-                        ),
-                      ],
-                    ),
+                  StageStepCard(
+                    imageWidget: stepImage,
+                    title: stepTitle,
+                    description: movementDescription,
+                    textSize: cardTextSize,
                   ),
                 ),
               ),

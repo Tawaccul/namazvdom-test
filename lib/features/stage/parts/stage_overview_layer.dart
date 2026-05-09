@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../app/theme/app_colors.dart';
-import '../models/stage_step_screen_models.dart';
 
-class StageOverviewLayer extends StatelessWidget {
+class StageOverviewLayer<T> extends StatelessWidget {
   const StageOverviewLayer({
     super.key,
     required this.transformationController,
@@ -31,11 +30,11 @@ class StageOverviewLayer extends StatelessWidget {
   final double minScale;
   final double maxScale;
   final Size canvasSize;
-  final List<StagePageReference> pages;
+  final List<T> pages;
   final Size cardSize;
-  final Offset Function(StagePageReference page) pagePositionFor;
-  final ValueChanged<StagePageReference> onPageTap;
-  final Widget Function(StagePageReference page) pageBuilder;
+  final Offset Function(T page) pagePositionFor;
+  final ValueChanged<T> onPageTap;
+  final Widget Function(T page) pageBuilder;
 
   @override
   Widget build(BuildContext context) {

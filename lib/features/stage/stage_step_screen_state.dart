@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 
 import '../../app/l10n/app_localization.dart';
 import '../../app/theme/app_colors.dart';
+import 'stage_overview_constants.dart';
 import '../../core/audio/ayah_audio.dart';
 import '../../core/audio/ayah_audio_controller.dart';
 import '../settings/gender/data/gender_repository_memory.dart';
@@ -48,18 +49,18 @@ class StageStepScreen extends StatefulWidget {
 class _StageStepScreenState extends State<StageStepScreen>
     with SingleTickerProviderStateMixin {
   static const bool _alwaysShowStageOnboarding = false;
-  static const double _horizontalSwipeVelocityThreshold = 220;
-  static const double _overviewOpenScaleThreshold = 0.99;
-  static const double _overviewCloseScaleThreshold = 0.985;
-  static const double _overviewPageGap = -10;
-  static const double _overviewPreviewScale = 0.50;
-  static const double _overviewDragFriction = 0.0000035;
-  static const double _overviewPanSpeedMultiplier = 3.0;
-  static const double _overviewClosingTopInset = 50;
-  static const double _overviewPreviewTopShift = 10;
-  static const double _overviewCanvasInset = 280;
-  static const double _overviewFitPadding = 24;
-  static const Duration _overviewMatrixDuration = Duration(milliseconds: 320);
+  static const double _horizontalSwipeVelocityThreshold = StageOverviewConstants.horizontalSwipeVelocityThreshold;
+  static const double _overviewOpenScaleThreshold = StageOverviewConstants.overviewOpenScaleThreshold;
+  static const double _overviewCloseScaleThreshold = StageOverviewConstants.overviewCloseScaleThreshold;
+  static const double _overviewPageGap = StageOverviewConstants.overviewPageGap;
+  static const double _overviewPreviewScale = StageOverviewConstants.overviewPreviewScale;
+  static const double _overviewDragFriction = StageOverviewConstants.overviewDragFriction;
+  static const double _overviewPanSpeedMultiplier = StageOverviewConstants.overviewPanSpeedMultiplier;
+  static const double _overviewClosingTopInset = StageOverviewConstants.overviewClosingTopInset;
+  static const double _overviewPreviewTopShift = StageOverviewConstants.overviewPreviewTopShift;
+  static const double _overviewCanvasInset = StageOverviewConstants.overviewCanvasInset;
+  static const double _overviewFitPadding = StageOverviewConstants.overviewFitPadding;
+  static const Duration _overviewMatrixDuration = StageOverviewConstants.overviewMatrixDuration;
   static const _randomStageAudioAssets = <String>[
     'assets/audio/730cbdbfa3d664506abd7c2baf719491.mp3',
     'assets/audio/istiaza.mp3',
@@ -558,7 +559,7 @@ class _StageStepScreenState extends State<StageStepScreen>
   }
 
   StageOverviewGeometry get _overviewGeometry => StageOverviewGeometry(
-    pages: _allStagePages,
+    pageCount: _allStagePages.length,
     previewScale: _overviewPreviewScale,
     pageGap: _overviewPageGap,
     canvasInset: _overviewCanvasInset,
@@ -573,12 +574,12 @@ class _StageStepScreenState extends State<StageStepScreen>
   Size _overviewCardSize() => _overviewGeometry.cardSize(context);
 
   Offset _getCardPosition(int rakaatIndex, int stepIndex) =>
-      _overviewGeometry.cardPosition(context, rakaatIndex, stepIndex);
+      _overviewGeometry.cardPosition(context, _allStagePages, rakaatIndex, stepIndex);
 
   Size _overviewCanvasSize() => _overviewGeometry.canvasSize(context);
 
   Matrix4 _overviewMatrixForPage(StagePageReference page, {double scale = 1}) =>
-      _overviewGeometry.matrixForPage(context, page, scale: scale);
+      _overviewGeometry.matrixForPage(context, _allStagePages, page, scale: scale);
 
   void _setStateSafe(VoidCallback fn) {
     if (!mounted) return;
@@ -831,12 +832,14 @@ class _StageStepScreenState extends State<StageStepScreen>
     required StagePageReference page,
     required String prayerTitle,
     required double cardTextSize,
+    required double topInset,
   }) => buildStageOverviewPage(
     context: context,
     rakaats: _rakaats,
     page: page,
     prayerTitle: prayerTitle,
     cardTextSize: cardTextSize,
+    topInset: topInset,
     stepOrderIndexesForRakaatIndex: _stepOrderIndexesForRakaatIndex,
     displayStepProgressFor: _displayStepProgressFor,
     entriesForPage: _entriesForPage,
@@ -1039,6 +1042,7 @@ class _StageStepScreenState extends State<StageStepScreen>
         page: page,
         prayerTitle: prayerTitle,
         cardTextSize: cardTextSize,
+        topInset: topContentPadding,
       ),
       topContentPadding: topContentPadding,
       onBack: () => unawaited(_popToHome()),

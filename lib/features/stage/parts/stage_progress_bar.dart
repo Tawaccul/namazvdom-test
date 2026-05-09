@@ -34,21 +34,23 @@ class StageProgressBlock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final resolvedTitleFontSize = titleFontSize ?? 18;
+    final resolvedTitleFontSize = titleFontSize ?? 16;
     final resolvedMetaFontSize = metaFontSize ?? 12;
     return StageCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          SizedBox(height: 2.h),
           Text(
             title,
             style: TextStyle(
               fontSize: resolvedTitleFontSize.sp,
               fontWeight: FontWeight.w500,
+              height: 1,
               color: colors.textPrimary,
             ),
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: 18.h),
           if (showRakaats)
             Row(
               children: [
@@ -64,6 +66,7 @@ class StageProgressBlock extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
+                      height: 1,
                       fontSize: resolvedMetaFontSize.sp,
                       fontWeight: FontWeight.w500,
                       color: colors.secondary,
@@ -107,7 +110,7 @@ class StageProgressBlock extends StatelessWidget {
                 color: colors.secondary,
               ),
             ),
-          SizedBox(height: 10.h),
+          SizedBox(height: 9.h),
           StageProgressBar(value: progress, animate: animateProgress),
         ],
       ),
@@ -127,7 +130,7 @@ class StageProgressBar extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(999),
       child: SizedBox(
-        height: 12,
+        height: 12.h,
         child: LayoutBuilder(
           builder: (context, constraints) {
             final width = constraints.maxWidth;
@@ -144,12 +147,12 @@ class StageProgressBar extends StatelessWidget {
                         duration: const Duration(milliseconds: 300),
                         curve: Curves.easeOut,
                         width: filled,
-                        height: 12,
+                        height: 12.h,
                         decoration: BoxDecoration(color: colors.secondary),
                       )
                     : Container(
                         width: filled,
-                        height: 12,
+                        height: 12.h,
                         decoration: BoxDecoration(color: colors.secondary),
                       ),
               ],

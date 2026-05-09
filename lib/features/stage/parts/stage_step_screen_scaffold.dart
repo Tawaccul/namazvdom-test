@@ -140,8 +140,7 @@ class StageStepScreenScaffold extends StatelessWidget {
           bottom: false,
           child: GestureDetector(
             behavior: HitTestBehavior.translucent,
-            // Горизонтальный свайп шагов теперь обрабатывает StageDragCarousel
-            // внутри stepContentSection — там палец «тянет» контент.
+
             onDoubleTap: showOverviewLayer ? null : onDoubleTap,
             onScaleStart: showOverviewLayer ? null : onScaleStart,
             onScaleUpdate: showOverviewLayer ? null : onScaleUpdate,
@@ -159,7 +158,7 @@ class StageStepScreenScaffold extends StatelessWidget {
                         height: MediaQuery.paddingOf(context).top + 40,
                         maxBlurSigma: 6,
                         child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16.w),
+                          padding: EdgeInsets.symmetric(horizontal: 14.w),
                           child: SingleChildScrollView(
                             controller: mainScrollController,
                             physics: const BouncingScrollPhysics(),
@@ -190,9 +189,9 @@ class StageStepScreenScaffold extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                SizedBox(height: 20),
+                                SizedBox(height: 16.h),
                                 progressCard,
-                                SizedBox(height: 12),
+                                SizedBox(height: 12.h),
                                 stepContentSection,
                               ],
                             ),
@@ -227,8 +226,8 @@ class StageStepScreenScaffold extends StatelessWidget {
                 ),
                 if (!showOverviewLayer)
                   Positioned(
-                    left: 16.w,
-                    right: 16.w,
+                    left: 14.w,
+                    right: 14.w,
                     top: MediaQuery.paddingOf(context).top + 12,
                     child: IgnorePointer(
                       ignoring: !showPinned || isOverviewMode,
@@ -262,8 +261,8 @@ class StageStepScreenScaffold extends StatelessWidget {
                   ),
                 if (showOverviewExitButton)
                   Positioned(
-                    left: 16.w,
-                    right: 16.w,
+                    left: 14.w,
+                    right: 14.w,
                     bottom: MediaQuery.paddingOf(context).bottom + 24,
                     child: IgnorePointer(
                       ignoring: false,
@@ -307,8 +306,8 @@ class StageStepScreenScaffold extends StatelessWidget {
                   ),
                 if (showTopBarPlaceholder)
                   Positioned(
-                    left: 16.w,
-                    right: 16.w,
+                    left: 14.w,
+                    right: 14.w,
                     top: topControlInset,
                     child: IgnorePointer(
                       ignoring: true,

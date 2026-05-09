@@ -8,7 +8,7 @@ import 'models/stage_step_screen_models.dart';
 
 class StageOverviewGeometry {
   const StageOverviewGeometry({
-    required this.pages,
+    required this.pageCount,
     required this.previewScale,
     required this.pageGap,
     required this.canvasInset,
@@ -17,7 +17,7 @@ class StageOverviewGeometry {
     required this.previewTopShift,
   });
 
-  final List<StagePageReference> pages;
+  final int pageCount;
   final double previewScale;
   final double pageGap;
   final double canvasInset;
@@ -56,24 +56,16 @@ class StageOverviewGeometry {
 
   Size cardSize(BuildContext context) => viewportSize(context);
 
-  int flatIndexForPageReference(int rakaatIndex, int stepIndex) {
-    final index = pages.indexWhere(
-      (page) => page.rakaatIndex == rakaatIndex && page.stepIndex == stepIndex,
-    );
-    return index < 0 ? 0 : index;
-  }
-
-  Offset cardPosition(BuildContext context, int rakaatIndex, int stepIndex) {
+  Offset cardPositionForFlatIndex(BuildContext context, int flatIndex) {
     final size = cardSize(context);
-    final flatIndex = flatIndexForPageReference(rakaatIndex, stepIndex);
     final x = canvasInset + flatIndex * (size.width + pageGap);
     return Offset(x, canvasInset);
   }
 
   Rect contentRect(BuildContext context) {
     final size = cardSize(context);
-    final pageCount = math.max(pages.length, 1);
-    final width = pageCount * size.width + (pageCount - 1) * pageGap;
+    final count = math.max(pageCount, 1);
+    final width = count * size.width + (count - 1) * pageGap;
     return Rect.fromLTWH(canvasInset, canvasInset, width, size.height);
   }
 
@@ -82,19 +74,19 @@ class StageOverviewGeometry {
     return Size(rect.right + canvasInset, rect.bottom + canvasInset);
   }
 
-  Rect cardRect(BuildContext context, StagePageReference page) {
+  Rect cardRectForFlatIndex(BuildContext context, int flatIndex) {
     final size = cardSize(context);
-    final position = cardPosition(context, page.rakaatIndex, page.stepIndex);
+    final position = cardPositionForFlatIndex(context, flatIndex);
     return Rect.fromLTWH(position.dx, position.dy, size.width, size.height);
   }
 
-  Matrix4 matrixForPage(
+  Matrix4 matrixForFlatIndex(
     BuildContext context,
-    StagePageReference page, {
+    int flatIndex, {
     double scale = 1,
   }) {
     final viewport = viewportSize(context);
-    final rect = cardRect(context, page);
+    final rect = cardRectForFlatIndex(context, flatIndex);
     final dx =
         (viewport.width - (rect.width * scale)) / 2 - (rect.left * scale);
     final dy = topInsetForScale(context, scale) - (rect.top * scale);
@@ -130,11 +122,11 @@ class StageOverviewGeometry {
         return false;
       }
     }
-    return true;
+    return false;
   }
 
   int nearestFlatIndexFromTransform(BuildContext context, Matrix4 matrix) {
-    if (pages.isEmpty) return 0;
+    if (pageCount == 0) return 0;
     final viewport = viewportSize(context);
     final scale = matrix.storage[0].clamp(previewScale, 1.0).toDouble();
     final dx = matrix.storage[12];
@@ -144,7 +136,7 @@ class StageOverviewGeometry {
 
     var bestIndex = 0;
     var bestDistance = double.infinity;
-    for (var i = 0; i < pages.length; i++) {
+    for (var i = 0; i < pageCount; i++) {
       final pageCenterX =
           canvasInset + i * (cardWidth + pageGap) + cardWidth / 2;
       final distance = (pageCenterX - contentCenterX).abs();
@@ -161,6 +153,97 @@ class StageOverviewGeometry {
     Offset viewportPoint,
     Matrix4 matrix,
   ) {
+    if (pageCount == 0) return 0;
+    final scale = matrix.storage[0].clamp(previewScale, 1.0).toDouble();
+    final dx = matrix.storage[12];
+    final dy = matrix.storage[13];
+    final contentPoint = Offset(
+      (viewportPoint.dx - dx) / scale,
+      (viewportPoint.dy - dy) / scale,
+    );
+    for (var i = 0; i < pageCount; i++) {
+      if (cardRectForFlatIndex(context, i).contains(contentPoint)) {
+        return i;
+      }
+    }
+    return nearestFlatIndexFromTransform(context, matrix);
+  }
+}
+
+// Namaz-specific extension that maps rakaat+step to flat index.
+extension StageOverviewGeometryForPages on StageOverviewGeometry {
+  static StageOverviewGeometry forPages({
+    required List<StagePageReference> pages,
+    required double previewScale,
+    required double pageGap,
+    required double canvasInset,
+    required double fitPadding,
+    required double closingTopInset,
+    required double previewTopShift,
+  }) => StageOverviewGeometry(
+    pageCount: pages.length,
+    previewScale: previewScale,
+    pageGap: pageGap,
+    canvasInset: canvasInset,
+    fitPadding: fitPadding,
+    closingTopInset: closingTopInset,
+    previewTopShift: previewTopShift,
+  );
+
+  int flatIndexForPageReference(
+    List<StagePageReference> pages,
+    int rakaatIndex,
+    int stepIndex,
+  ) {
+    final index = pages.indexWhere(
+      (p) => p.rakaatIndex == rakaatIndex && p.stepIndex == stepIndex,
+    );
+    return index < 0 ? 0 : index;
+  }
+
+  Offset cardPosition(
+    BuildContext context,
+    List<StagePageReference> pages,
+    int rakaatIndex,
+    int stepIndex,
+  ) {
+    final flat = flatIndexForPageReference(pages, rakaatIndex, stepIndex);
+    return cardPositionForFlatIndex(context, flat);
+  }
+
+  Rect cardRect(
+    BuildContext context,
+    List<StagePageReference> pages,
+    StagePageReference page,
+  ) {
+    final flat = flatIndexForPageReference(
+      pages,
+      page.rakaatIndex,
+      page.stepIndex,
+    );
+    return cardRectForFlatIndex(context, flat);
+  }
+
+  Matrix4 matrixForPage(
+    BuildContext context,
+    List<StagePageReference> pages,
+    StagePageReference page, {
+    double scale = 1,
+  }) {
+    final flat = flatIndexForPageReference(
+      pages,
+      page.rakaatIndex,
+      page.stepIndex,
+    );
+    return matrixForFlatIndex(context, flat, scale: scale);
+  }
+
+  int flatIndexForViewportPointWithPages(
+    BuildContext context,
+    List<StagePageReference> pages,
+    Offset viewportPoint,
+    Matrix4 matrix,
+  ) {
     if (pages.isEmpty) return 0;
     final scale = matrix.storage[0].clamp(previewScale, 1.0).toDouble();
     final dx = matrix.storage[12];
@@ -170,7 +253,7 @@ class StageOverviewGeometry {
       (viewportPoint.dy - dy) / scale,
     );
     for (var i = 0; i < pages.length; i++) {
-      if (cardRect(context, pages[i]).contains(contentPoint)) {
+      if (cardRectForFlatIndex(context, i).contains(contentPoint)) {
         return i;
       }
     }

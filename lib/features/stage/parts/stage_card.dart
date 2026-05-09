@@ -13,7 +13,7 @@ class StageCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 16.h),
+      padding: EdgeInsets.only(right: 18.w, left: 18.w, top: 18.h, bottom: 18.h),
       decoration: BoxDecoration(
         color: colors.card,
         borderRadius: BorderRadius.circular(AppRadii.card),
@@ -52,7 +52,7 @@ class StageStepCard extends StatelessWidget {
             ),
             child: Center(child: imageWidget),
           ),
-          SizedBox(height: 22.h),
+          SizedBox(height: 19.h),
           Text(
             title,
             style: TextStyle(
@@ -66,7 +66,7 @@ class StageStepCard extends StatelessWidget {
             description,
             style: TextStyle(
               fontSize: textSize.sp,
-              height: 1.45,
+              height: 1.42,
               fontWeight: FontWeight.w500,
               color: colors.textSecondary,
             ),

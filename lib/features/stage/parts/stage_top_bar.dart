@@ -30,8 +30,8 @@ class StageTopBar extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                width: 44,
-                height: 44,
+                width: 41.w,
+                height: 41.h,
                 decoration: BoxDecoration(
                   color: colors.card,
                   borderRadius: BorderRadius.circular(AppRadii.circle),
@@ -50,7 +50,7 @@ class StageTopBar extends StatelessWidget {
               Text(
                 context.t('common.back'),
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w500,
                   color: colors.textPrimary,
                 ),
@@ -66,7 +66,7 @@ class StageTopBar extends StatelessWidget {
               borderRadius: BorderRadius.circular(AppRadii.pill),
               child: Container(
                 key: stageButtonKey,
-                padding: EdgeInsets.symmetric(vertical: 10.h),
+                padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -76,7 +76,7 @@ class StageTopBar extends StatelessWidget {
                         colors.textPrimary,
                         BlendMode.srcIn,
                       ),
-                      width: 23.w,
+                      width: 24.w,
                     ),
                     SizedBox(width: 8.w),
                     Flexible(
@@ -85,7 +85,7 @@ class StageTopBar extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 14.sp,
                           fontWeight: FontWeight.w500,
                           color: colors.textPrimary,
                         ),
