@@ -43,6 +43,7 @@ class StageStepContentSection extends StatelessWidget {
     required this.onPrevStep,
     required this.onNextStep,
     this.navButtonsOpacity = 1.0,
+    this.navButtonsAnimationKey,
     this.isGhost = false,
   });
 
@@ -79,6 +80,7 @@ class StageStepContentSection extends StatelessWidget {
   final VoidCallback? onPrevStep;
   final VoidCallback? onNextStep;
   final double navButtonsOpacity;
+  final Key? navButtonsAnimationKey;
   final bool isGhost;
 
   @override
@@ -95,8 +97,8 @@ class StageStepContentSection extends StatelessWidget {
               key: isGhost
                   ? ValueKey('ghost-ayah-$i')
                   : hasAdditionalSurahSelector
-                      ? ValueKey('additional-surah-$i-${entry.surahCode}')
-                      : keyForEntry(i),
+                  ? ValueKey('additional-surah-$i-${entry.surahCode}')
+                  : keyForEntry(i),
               child: StageAyahCard(
                 ayahIndex: i,
                 ayah: entry,
@@ -185,8 +187,25 @@ class StageStepContentSection extends StatelessWidget {
           SizedBox(height: 26.h),
           IgnorePointer(
             ignoring: navButtonsOpacity < 0.5,
-            child: Opacity(
-              opacity: navButtonsOpacity.clamp(0.0, 1.0),
+            child: TweenAnimationBuilder<double>(
+              key:
+                  navButtonsAnimationKey ??
+                  ValueKey<String>(
+                    'stage-nav-$stepTitle-$movementDescription-${currentStepEntries.length}',
+                  ),
+              tween: Tween<double>(begin: 0, end: 1),
+              duration: const Duration(milliseconds: 360),
+              curve: Curves.easeOutCubic,
+              builder: (context, value, child) {
+                return Opacity(
+                  opacity: value * navButtonsOpacity.clamp(0.0, 1.0),
+                  child: Transform.scale(
+                    scale: 0.96 + (0.04 * value),
+                    alignment: Alignment.center,
+                    child: child,
+                  ),
+                );
+              },
               child: Row(
                 children: [
                   Expanded(

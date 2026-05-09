@@ -105,7 +105,7 @@ Widget buildAblutionOverviewPage({
         maxHeight: double.infinity,
         child: Builder(
           builder: (context) {
-            final topInset = AblutionLayoutData.of(context).topInset + 5.h;
+            final topInset = AblutionLayoutData.of(context).topInset;
             return NotificationListener<ScrollMetricsNotification>(
               onNotification: (notification) {
                 setOverviewOverflow(
@@ -216,7 +216,7 @@ class _AblutionOverviewStepCard extends StatelessWidget {
             child: Center(
               child: SvgPicture.asset(
                 imageAsset,
-                width: 250,
+                width: 220.w,
                 fit: BoxFit.contain,
                 placeholderBuilder: (_) =>
                     SizedBox(width: 250, height: 250),

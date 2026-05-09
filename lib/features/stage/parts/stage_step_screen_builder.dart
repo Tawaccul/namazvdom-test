@@ -170,6 +170,9 @@ Widget buildStageStepScreenBody({
           ? () => unawaited(carouselController.animateNext())
           : null,
       navButtonsOpacity: navOpacity,
+      navButtonsAnimationKey: ValueKey<String>(
+        'stage-nav-$rakaatIndex-$stepIndex',
+      ),
     );
   }
 

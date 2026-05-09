@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class StageDragCarouselController {
   Future<void> Function()? _animateNext;
@@ -180,6 +181,7 @@ class _StageDragCarouselState extends State<StageDragCarousel>
     if (next && !widget.canGoNext) return;
     if (!next && !widget.canGoPrev) return;
     final width = _currentCarouselWidth();
+    final travelDistance = width + 14.w;
     final callback = next
         ? (widget.onProgrammaticNext ?? widget.onNext)
         : (widget.onProgrammaticPrev ?? widget.onPrev);
@@ -191,18 +193,9 @@ class _StageDragCarouselState extends State<StageDragCarousel>
     _committing = true;
     try {
       _settleController.stop();
+      await _animateOffsetTo(next ? -travelDistance : travelDistance);
+      if (!mounted) return;
       await callback();
-      if (!mounted) return;
-      setState(() => _dragOffset = next ? width : -width);
-      await WidgetsBinding.instance.endOfFrame;
-      if (!mounted) return;
-      _settleAnimation = Tween<double>(begin: _dragOffset, end: 0).animate(
-        CurvedAnimation(parent: _settleController, curve: Curves.easeOutCubic),
-      );
-      _settleController
-        ..duration = const Duration(milliseconds: 260)
-        ..value = 0;
-      await _settleController.forward(from: 0);
     } finally {
       if (mounted) {
         setState(() => _dragOffset = 0);
@@ -232,7 +225,7 @@ class _StageDragCarouselState extends State<StageDragCarousel>
 
   @override
   Widget build(BuildContext context) {
-    const gap = 0;
+    final gap = 14.w;
 
     return LayoutBuilder(
       builder: (context, constraints) {

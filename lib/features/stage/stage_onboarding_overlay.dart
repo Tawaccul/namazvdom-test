@@ -40,7 +40,7 @@ class _StageOnboardingOverlayState extends State<StageOnboardingOverlay> {
 
   List<_Step> get _steps => const [
     _Step(
-      bubbleAlignment: Alignment(-0.82, -0.08),
+      bubbleAlignment: Alignment(-0.82, -0.2),
       notch: _BubbleNotch.topLeft,
       icon: _BubbleIcon.stage,
       highlightStageButton: false,
@@ -56,7 +56,7 @@ class _StageOnboardingOverlayState extends State<StageOnboardingOverlay> {
       highlightAyahCard: false,
     ),
     _Step(
-      bubbleAlignment: Alignment(-0.8, -0.09),
+      bubbleAlignment: Alignment(-0.8, 0),
       notch: _BubbleNotch.bottomLeft,
       icon: _BubbleIcon.audio,
       highlightStageButton: false,

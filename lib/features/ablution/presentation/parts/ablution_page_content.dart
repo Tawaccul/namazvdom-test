@@ -88,40 +88,56 @@ Widget buildAblutionPageContent({
           ),
         ],
         SizedBox(height: 26.h),
-        Row(
-          children: [
-            Expanded(
-              child: AnimatedOpacity(
-                duration: const Duration(milliseconds: 360),
-                curve: Curves.easeOutCubic,
-                opacity: (hasPrevStep ? 1.0 : 0.5) * navButtonsOpacity,
-                child: StageBottomButton(
-                  variant: StageBottomButtonVariant.secondary,
-                  label: context.t('common.back'),
-                  icon: 'assets/icons/arrow-left.svg',
-                  onTap: interactive && hasPrevStep
-                      ? () => unawaited(carouselController.animatePrev())
-                      : null,
+        TweenAnimationBuilder<double>(
+          key: ValueKey<String>('ablution-nav-${contentStep.id}'),
+          tween: Tween<double>(begin: 0, end: 1),
+          duration: const Duration(milliseconds: 360),
+          curve: Curves.easeOutCubic,
+          builder: (context, value, child) {
+            return Opacity(
+              opacity: value * navButtonsOpacity.clamp(0.0, 1.0),
+              child: Transform.scale(
+                scale: 0.96 + (0.04 * value),
+                alignment: Alignment.center,
+                child: child,
+              ),
+            );
+          },
+          child: Row(
+            children: [
+              Expanded(
+                child: AnimatedOpacity(
+                  duration: const Duration(milliseconds: 360),
+                  curve: Curves.easeOutCubic,
+                  opacity: hasPrevStep ? 1.0 : 0.5,
+                  child: StageBottomButton(
+                    variant: StageBottomButtonVariant.secondary,
+                    label: context.t('common.back'),
+                    icon: 'assets/icons/arrow-left.svg',
+                    onTap: interactive && hasPrevStep
+                        ? () => unawaited(carouselController.animatePrev())
+                        : null,
+                  ),
                 ),
               ),
-            ),
-            SizedBox(width: 12.w),
-            Expanded(
-              child: AnimatedOpacity(
-                duration: const Duration(milliseconds: 360),
-                curve: Curves.easeOutCubic,
-                opacity: (hasNextStep ? 1.0 : 0.5) * navButtonsOpacity,
-                child: StageBottomButton(
-                  variant: StageBottomButtonVariant.primary,
-                  label: context.t('common.next'),
-                  icon: 'assets/icons/arrow-right.svg',
-                  onTap: interactive && hasNextStep
-                      ? () => unawaited(carouselController.animateNext())
-                      : null,
+              SizedBox(width: 12.w),
+              Expanded(
+                child: AnimatedOpacity(
+                  duration: const Duration(milliseconds: 360),
+                  curve: Curves.easeOutCubic,
+                  opacity: hasNextStep ? 1.0 : 0.5,
+                  child: StageBottomButton(
+                    variant: StageBottomButtonVariant.primary,
+                    label: context.t('common.next'),
+                    icon: 'assets/icons/arrow-right.svg',
+                    onTap: interactive && hasNextStep
+                        ? () => unawaited(carouselController.animateNext())
+                        : null,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );
