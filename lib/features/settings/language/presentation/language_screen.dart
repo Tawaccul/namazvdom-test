@@ -116,7 +116,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
                   },
                 ),
                 if (widget.mode == LanguageScreenMode.onboarding) ...[
-                  SizedBox(height: 18),
+                  SizedBox(height: 16.h),
                   AppButton.iconRight(
                     label: context.t('common.next'),
                     iconAsset: 'assets/icons/arrow-right.svg',
