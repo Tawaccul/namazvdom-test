@@ -58,7 +58,7 @@ class StagePinnedProgressCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w500,
-                    color: colors.secondary,
+                    color: colors.primary,
                   ),
                 ),
               ),
@@ -75,7 +75,7 @@ class StagePinnedProgressCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w500,
-                    color: colors.secondary,
+                    color: colors.primary,
                   ),
                 ),
               ),

@@ -316,7 +316,7 @@ class _CircleIconButton extends StatelessWidget {
         width: radius * 2,
         height: radius * 2,
         decoration: BoxDecoration(
-          color: isDark ? colors.card.withAlpha(160) : colors.card,
+          color: colors.card,
           shape: BoxShape.circle,
         ),
         child: Center(

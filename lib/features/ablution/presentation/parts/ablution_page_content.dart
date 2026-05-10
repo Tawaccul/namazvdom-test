@@ -151,10 +151,10 @@ Widget buildAblutionPageContent({
       return ListView(
         controller: scrollController,
         clipBehavior: Clip.none,
-        physics: const BouncingScrollPhysics(),
+        physics: const ClampingScrollPhysics(),
         padding: EdgeInsets.only(
           top: topContentPadding,
-          bottom: 24 + bottomInset,
+          bottom: 28.h + bottomInset,
         ),
         children: [
           IgnorePointer(

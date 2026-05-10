@@ -69,7 +69,7 @@ class StageProgressBlock extends StatelessWidget {
                       height: 1,
                       fontSize: resolvedMetaFontSize.sp,
                       fontWeight: FontWeight.w500,
-                      color: colors.secondary,
+                      color: colors.primary,
                     ),
                   ),
                 ),
@@ -89,7 +89,7 @@ class StageProgressBlock extends StatelessWidget {
                     style: TextStyle(
                       fontSize: resolvedMetaFontSize.sp,
                       fontWeight: FontWeight.w500,
-                      color: colors.secondary,
+                      color: colors.primary,
                     ),
                   ),
                 ),
@@ -148,12 +148,12 @@ class StageProgressBar extends StatelessWidget {
                         curve: Curves.easeOut,
                         width: filled,
                         height: 12.h,
-                        decoration: BoxDecoration(color: colors.secondary),
+                        decoration: BoxDecoration(color: colors.primary),
                       )
                     : Container(
                         width: filled,
                         height: 12.h,
-                        decoration: BoxDecoration(color: colors.secondary),
+                        decoration: BoxDecoration(color: colors.primary),
                       ),
               ],
             );

@@ -1,4 +1,3 @@
- import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -10,6 +9,7 @@ import '../../../../app/l10n/app_localization.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_radii.dart';
 import '../../../stage/parts/stage_card.dart';
+import '../../../stage/parts/stage_overview_layer.dart';
 import '../../../stage/parts/stage_progress_bar.dart';
 import '../models/ablution_manifest_models.dart';
 import 'ablution_layout_data.dart';
@@ -22,6 +22,7 @@ Widget buildAblutionOverviewLayer({
   required double pageHeight,
   required Size cardSize,
   required Size canvasSize,
+  required double canvasInset,
   required TransformationController transformationController,
   required GestureScaleStartCallback onInteractionStart,
   required GestureScaleUpdateCallback onInteractionUpdate,
@@ -34,38 +35,22 @@ Widget buildAblutionOverviewLayer({
   required Widget Function(AblutionOverviewPageReference page) pageBuilder,
 }) {
   if (pages.isEmpty) return const SizedBox.shrink();
-  return ColoredBox(
-    color: context.colors.background,
-    child: InteractiveViewer(
-      transformationController: transformationController,
-      onInteractionStart: onInteractionStart,
-      onInteractionUpdate: onInteractionUpdate,
-      onInteractionEnd: onInteractionEnd,
-      boundaryMargin: const EdgeInsets.all(double.infinity),
-      constrained: false,
-      panEnabled: !overviewGestureLock,
-      scaleEnabled: !overviewGestureLock,
-      panAxis: PanAxis.horizontal,
-      interactionEndFrictionCoefficient: overviewDragFriction,
-      minScale: overviewPreviewScale,
-      maxScale: 1,
-      child: SizedBox(
-        width: canvasSize.width,
-        height: canvasSize.height,
-        child: Stack(
-          children: [
-            for (final page in pages)
-              _AblutionOverviewCardSlot(
-                page: page,
-                position: cardPositionFor(page.stepIndex),
-                cardSize: cardSize,
-                onTap: onPageTap,
-                child: pageBuilder(page),
-              ),
-          ],
-        ),
-      ),
-    ),
+  return StageOverviewLayer<AblutionOverviewPageReference>(
+    transformationController: transformationController,
+    onInteractionStart: onInteractionStart,
+    onInteractionUpdate: onInteractionUpdate,
+    onInteractionEnd: onInteractionEnd,
+    panEnabled: !overviewGestureLock,
+    interactionEndFrictionCoefficient: overviewDragFriction,
+    minScale: overviewPreviewScale,
+    maxScale: 1,
+    canvasSize: canvasSize,
+    canvasInset: canvasInset,
+    pages: pages,
+    cardSize: cardSize,
+    pagePositionFor: (page) => cardPositionFor(page.stepIndex),
+    onPageTap: (page) => onPageTap(page),
+    pageBuilder: pageBuilder,
   );
 }
 
@@ -118,7 +103,7 @@ Widget buildAblutionOverviewPage({
                 controller: pageScrollController,
                 physics: const NeverScrollableScrollPhysics(),
                 padding: EdgeInsets.only(
-                  top: topInset,
+                  top: topInset + 17.h,
                   bottom: 20,
                 ),
                 child: Column(
@@ -154,39 +139,6 @@ Widget buildAblutionOverviewPage({
       ),
     ),
   );
-}
-
-class _AblutionOverviewCardSlot extends StatelessWidget {
-  const _AblutionOverviewCardSlot({
-    required this.page,
-    required this.position,
-    required this.cardSize,
-    required this.onTap,
-    required this.child,
-  });
-
-  final AblutionOverviewPageReference page;
-  final Offset position;
-  final Size cardSize;
-  final Future<void> Function(AblutionOverviewPageReference page) onTap;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      left: position.dx,
-      top: position.dy,
-      width: cardSize.width,
-      height: cardSize.height,
-      child: RepaintBoundary(
-        child: GestureDetector(
-          behavior: HitTestBehavior.translucent,
-          onTap: () => unawaited(onTap(page)),
-          child: IgnorePointer(ignoring: true, child: child),
-        ),
-      ),
-    );
-  }
 }
 
 class _AblutionOverviewStepCard extends StatelessWidget {

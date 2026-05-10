@@ -5,9 +5,11 @@ import '../../../app/l10n/app_localization.dart';
 import '../../settings/gender/data/gender_repository_memory.dart';
 import '../models/rakaat_models.dart';
 import '../models/stage_step_screen_models.dart';
+import 'stage_additional_surah_helper.dart';
 import 'stage_ayah_card.dart';
 import 'stage_card.dart';
 import 'stage_progress_bar.dart';
+import 'stage_surah_selector.dart';
 import 'stage_step_image.dart';
 
 class StageOverviewPage extends StatelessWidget {
@@ -38,28 +40,24 @@ class StageOverviewPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = scrollController;
     final onOverflow = setOverviewOverflow;
-    if (shouldScheduleOverflowCheck && controller != null && onOverflow != null) {
+    if (shouldScheduleOverflowCheck &&
+        controller != null &&
+        onOverflow != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!controller.hasClients) return;
-        onOverflow(
-          pageId,
-          controller.position.maxScrollExtent > 0.5,
-        );
+        onOverflow(pageId, controller.position.maxScrollExtent > 0.5);
       });
     }
 
     final scrollView = NotificationListener<ScrollMetricsNotification>(
       onNotification: (notification) {
-        onOverflow?.call(
-          pageId,
-          notification.metrics.maxScrollExtent > 0.5,
-        );
+        onOverflow?.call(pageId, notification.metrics.maxScrollExtent > 0.5);
         return false;
       },
       child: SingleChildScrollView(
         controller: scrollController,
         physics: const NeverScrollableScrollPhysics(),
-        padding: EdgeInsets.only(top: topInset, bottom: 20),
+        padding: EdgeInsets.only(top: topInset + 17.h, bottom: 20),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -67,10 +65,7 @@ class StageOverviewPage extends StatelessWidget {
             progressBlock,
             SizedBox(height: 12.h),
             stepCard,
-            for (final card in extraCards) ...[
-              SizedBox(height: 12.h),
-              card,
-            ],
+            for (final card in extraCards) ...[SizedBox(height: 12.h), card],
           ],
         ),
       ),
@@ -112,15 +107,19 @@ Widget buildStageOverviewPage({
   required DisplayedStepProgress Function({
     required int rakaatIndex,
     required int stepIndex,
-  }) displayStepProgressFor,
+  })
+  displayStepProgressFor,
   required List<RakaatStep> Function({
     required int rakaatIndex,
     required int stepIndex,
-  }) entriesForPage,
+  })
+  entriesForPage,
   required List<RakaatStep> Function({
     required int rakaatIndex,
     required int stepIndex,
-  }) recitationEntriesForPage,
+  })
+  recitationEntriesForPage,
+  String? selectedAdditionalSurahCode,
 }) {
   final totalRakaats = rakaats.isEmpty ? 2 : rakaats.length;
   final rakaatIndex = page.rakaatIndex.clamp(0, rakaats.length - 1);
@@ -130,9 +129,25 @@ Widget buildStageOverviewPage({
     rakaatIndex: rakaatIndex,
     stepIndex: stepIndex,
   );
-  final stepEntries = entriesForPage(rakaatIndex: rakaatIndex, stepIndex: stepIndex);
-  final recitationEntries = recitationEntriesForPage(rakaatIndex: rakaatIndex, stepIndex: stepIndex);
+  final stepEntries = entriesForPage(
+    rakaatIndex: rakaatIndex,
+    stepIndex: stepIndex,
+  );
+  final recitationEntries = recitationEntriesForPage(
+    rakaatIndex: rakaatIndex,
+    stepIndex: stepIndex,
+  );
   final step = stepEntries.firstOrNull;
+  final additionalSurahOptions = rakaats[rakaatIndex].additionalSurahOptions;
+  final hasAdditionalSurahSelector =
+      additionalSurahOptions.isNotEmpty &&
+      StageAdditionalSurahHelper.isAdditionalSurahStep(step);
+  final selectedAdditionalSurahIndex =
+      StageAdditionalSurahHelper.selectedIndexForStep(
+        options: additionalSurahOptions,
+        selectedAdditionalSurahCode: selectedAdditionalSurahCode,
+        step: step,
+      );
   final title = (step?.title ?? '').trim().isEmpty
       ? context.t('stage.defaultStepTitle')
       : step!.title;
@@ -176,6 +191,14 @@ Widget buildStageOverviewPage({
   );
 
   final extraCards = [
+    if (hasAdditionalSurahSelector)
+      StageSurahSelector(
+        labels: additionalSurahOptions
+            .map((option) => option.label)
+            .toList(growable: false),
+        selectedIndex: selectedAdditionalSurahIndex,
+        onSelect: (_) {},
+      ),
     if (recitationEntries.isNotEmpty)
       Column(
         mainAxisAlignment: MainAxisAlignment.start,

@@ -22,7 +22,7 @@ class StageScrollVisibilityState {
 
   final ScrollController scrollController;
 
-  static const double _topBlurShowOffset = 80;
+  static const double _topBlurShowOffset = 10;
 
   bool showPinned = false;
   bool showTopBlur = false;

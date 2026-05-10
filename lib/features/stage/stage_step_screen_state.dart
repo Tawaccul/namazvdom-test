@@ -115,7 +115,7 @@ class _StageStepScreenState extends State<StageStepScreen>
   int _stepTransitionToken = 0;
   int _stepTransitionDirection = 1;
   int _stepAudioSyncToken = 0;
-  bool _allowExitPop = false;
+  final bool _allowExitPop = false;
 
   @override
   void initState() {
@@ -463,7 +463,9 @@ class _StageStepScreenState extends State<StageStepScreen>
         _rakaatIndex = nextRakaat;
         _stepIndex = nextStep;
         _selectedAyahIndex = 0;
-        _scrollState.showPinned = false;
+        if (jumpToTop) {
+          _scrollState.showPinned = false;
+        }
         if (animateStepTransition) {
           _stepTransitionToken++;
           _stepTransitionDirection = direction >= 0 ? 1 : -1;
@@ -471,6 +473,11 @@ class _StageStepScreenState extends State<StageStepScreen>
       });
       if (jumpToTop) {
         _jumpToTop();
+      } else {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) return;
+          _scrollState.updatePinned();
+        });
       }
 
       final step = _selectedAyahStep;
@@ -514,11 +521,18 @@ class _StageStepScreenState extends State<StageStepScreen>
       _selectedAyahIndex = 0;
       _playingStepKey = null;
       _startedPlaybackStepKey = null;
-      _scrollState.showPinned = false;
+      if (jumpToTop) {
+        _scrollState.showPinned = false;
+      }
       _stepTransitionDirection = direction >= 0 ? 1 : -1;
     });
     if (jumpToTop) {
       _jumpToTop();
+    } else {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        _scrollState.updatePinned();
+      });
     }
     _isStageTransitioning = false;
     unawaited(
@@ -943,6 +957,7 @@ class _StageStepScreenState extends State<StageStepScreen>
     displayStepProgressFor: _displayStepProgressFor,
     entriesForPage: _entriesForPage,
     recitationEntriesForPage: _recitationEntriesForPage,
+    selectedAdditionalSurahCode: _surahState.selectedAdditionalSurahCode,
   );
 
   Widget _animateAppear(Widget child) =>
@@ -975,10 +990,9 @@ class _StageStepScreenState extends State<StageStepScreen>
 
   Future<void> _popToHome() async {
     if (!mounted) return;
-    setState(() => _allowExitPop = true);
-    final popped = await Navigator.of(context).maybePop();
-    if (!popped && mounted) {
-      setState(() => _allowExitPop = false);
+    final navigator = Navigator.of(context);
+    if (navigator.canPop()) {
+      navigator.pop();
     }
   }
 

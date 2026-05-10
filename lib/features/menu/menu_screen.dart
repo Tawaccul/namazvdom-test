@@ -78,6 +78,12 @@ class _MenuScreenState extends State<MenuScreen> {
     _showActionUnavailable();
   }
 
+  Future<void> _openExternalUrl(String url) async {
+    final uri = Uri.parse(url);
+    if (await launchUrl(uri, mode: LaunchMode.externalApplication)) return;
+    _showActionUnavailable();
+  }
+
   Future<void> _tellFriends() async {
     final text = context.t('menu.shareText') == 'menu.shareText'
         ? 'PrayDay'
@@ -251,15 +257,10 @@ class _MenuScreenState extends State<MenuScreen> {
               _MenuCard(
                 children: [
                   _MenuRow(
-                    leading: const _ExternalPlaceholder(),
-                    title: 'Quranapp.com',
-                    onTap: () {},
-                  ),
-                  _Divider(),
-                  _MenuRow(
-                    leading: const _ExternalPlaceholder(),
-                    title: 'Azkar.ru',
-                    onTap: () {},
+                    leading: const _AyahAppIcon(),
+                    title: context.t('menu.ayahApp.title'),
+                    subtitle: context.t('menu.ayahApp.subtitle'),
+                    onTap: () => _openExternalUrl('https://ayahapp.com'),
                   ),
                 ],
               ),
@@ -296,6 +297,7 @@ class _MenuRow extends StatelessWidget {
     required this.onTap,
     this.icon,
     this.leading,
+    this.subtitle,
     this.trailingValue,
   });
 
@@ -303,6 +305,7 @@ class _MenuRow extends StatelessWidget {
   final VoidCallback onTap;
   final String? icon;
   final Widget? leading;
+  final String? subtitle;
   final String? trailingValue;
 
   @override
@@ -320,14 +323,31 @@ class _MenuRow extends StatelessWidget {
             SizedBox(width: 32, height: 32, child: left),
             SizedBox(width: 16.w),
             Expanded(
-              child: Text(
-                title,
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w500,
-                  color: colors.textPrimary,
-                  height: 1.36,
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                      color: colors.textPrimary,
+                      height: 1.36,
+                    ),
+                  ),
+                  if (subtitle != null) ...[
+                    SizedBox(height: 2.h),
+                    Text(
+                      subtitle!,
+                      style: TextStyle(
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w400,
+                        color: colors.textSecondary,
+                        height: 1.3,
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ),
             if (trailingValue != null) ...[
@@ -387,16 +407,18 @@ class _BlueIcon extends StatelessWidget {
   }
 }
 
-class _ExternalPlaceholder extends StatelessWidget {
-  const _ExternalPlaceholder();
+class _AyahAppIcon extends StatelessWidget {
+  const _AyahAppIcon();
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFC5C5),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.redAccent, width: 2),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(10),
+      child: Image.asset(
+        'assets/icons/ayahapp.png',
+        width: 32,
+        height: 32,
+        fit: BoxFit.cover,
       ),
     );
   }

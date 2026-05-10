@@ -120,6 +120,10 @@
     "contactUs": "Contact us",
     "rateApp": "Rate the app",
     "tellFriends": "Tell your friends",
+    "ayahApp": {
+      "title": "Ayah",
+      "subtitle": "Quran reading"
+    },
     "shareText": "PrayDay - an app for learning prayer step by step.",
     "actionUnavailable": "Action is currently unavailable"
   },

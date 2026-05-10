@@ -24,14 +24,14 @@ import 'parts/ablution_step_selector_sheet.dart';
 
 class AblutionScreenState extends State<AblutionScreen>
     with SingleTickerProviderStateMixin {
-  static const double _topBlurShowOffset = 38;
+  static const double _topBlurShowOffset = 10;
   static const double _horizontalSwipeVelocityThreshold = 520;
   static const double _overviewOpenScaleThreshold = 0.99;
   static const double _overviewCloseScaleThreshold = 0.985;
   static const double _overviewPageGap = -10;
   static const double _overviewPreviewScale = 0.50;
-  static const double _overviewDragFriction = 0.0000012;
-  static const double _overviewPanSpeedMultiplier = 7.0;
+  static const double _overviewDragFriction = 0.00001;
+  static const double _overviewPanSpeedMultiplier = 1.0;
   static const double _overviewClosingTopInset = 30;
   static const double _overviewPreviewTopShift = 10;
   static const double _overviewCanvasInset = 280;
@@ -69,7 +69,7 @@ class AblutionScreenState extends State<AblutionScreen>
   int? _overviewPendingCloseFlatIndex;
   bool _showTopControls = true;
   int _topControlsRevealToken = 0;
-  bool _allowExitPop = false;
+  final bool _allowExitPop = false;
   bool _showTopBlur = false;
   bool _showOnboarding = false;
   int _onboardingStepIndex = 0;
@@ -154,6 +154,9 @@ class AblutionScreenState extends State<AblutionScreen>
   void _handleOnboardingStepChanged(int stepIndex) {
     if (stepIndex != 2) return;
     _scrollOnboardingStepIntoView();
+  }
+  void _triggerLightHaptic() {
+    HapticFeedback.lightImpact();
   }
   void _onOnboardingNext() {
     if (!_showOnboarding || _onboardingStepAdvancing) return;
@@ -321,10 +324,9 @@ class AblutionScreenState extends State<AblutionScreen>
   }
   Future<void> _popToHome() async {
     if (!mounted) return;
-    setState(() => _allowExitPop = true);
-    final popped = await Navigator.of(context).maybePop();
-    if (!popped && mounted) {
-      setState(() => _allowExitPop = false);
+    final navigator = Navigator.of(context);
+    if (navigator.canPop()) {
+      navigator.pop();
     }
   }
 
@@ -367,6 +369,7 @@ class AblutionScreenState extends State<AblutionScreen>
     if (_totalSteps == 0) return;
     final nextStep = stepIndex.clamp(0, _totalSteps - 1);
     if (nextStep == _clampedStepIndex) return;
+    _triggerLightHaptic();
     _stopAudioSilently();
     if (!mounted) return;
     setState(() {
@@ -519,7 +522,7 @@ class AblutionScreenState extends State<AblutionScreen>
         _isClampingOverviewTransform) {
       return;
     }
-    final clamped = _clampOverviewTransform(
+    final clamped = _clampOverviewTransformYOnly(
       _overviewTransformationController.value,
     );
     final current = _overviewTransformationController.value;
@@ -542,6 +545,18 @@ class AblutionScreenState extends State<AblutionScreen>
     next.storage[5] = scale;
     next.storage[10] = 1;
     next.storage[12] = clampedDx;
+    next.storage[13] = clampedDy;
+    next.storage[14] = 0;
+    return next;
+  }
+  Matrix4 _clampOverviewTransformYOnly(Matrix4 matrix) {
+    final rect = _overviewContentRect();
+    final next = Matrix4.copy(matrix);
+    final scale = next.storage[0].clamp(_overviewPreviewScale, 1.0).toDouble();
+    final clampedDy = _overviewTopInsetForScale(scale) - (rect.top * scale);
+    next.storage[0] = scale;
+    next.storage[5] = scale;
+    next.storage[10] = 1;
     next.storage[13] = clampedDy;
     next.storage[14] = 0;
     return next;
@@ -867,6 +882,7 @@ class AblutionScreenState extends State<AblutionScreen>
       pageHeight: pageHeight,
       cardSize: cardSize,
       canvasSize: canvasSize,
+      canvasInset: _overviewCanvasInset,
       transformationController: _overviewTransformationController,
       onInteractionStart: _handleOverviewInteractionStart,
       onInteractionUpdate: _handleOverviewPanUpdate,

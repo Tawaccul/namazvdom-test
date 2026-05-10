@@ -161,10 +161,11 @@ class StageStepScreenScaffold extends StatelessWidget {
                           padding: EdgeInsets.symmetric(horizontal: 14.w),
                           child: SingleChildScrollView(
                             controller: mainScrollController,
-                            physics: const BouncingScrollPhysics(),
+                            physics: const ClampingScrollPhysics(),
                             clipBehavior: Clip.none,
                             padding: EdgeInsets.only(
-                              bottom: 34,
+                              bottom:
+                                  28.h + MediaQuery.paddingOf(context).bottom,
                               top: topContentPadding,
                             ),
                             child: Column(

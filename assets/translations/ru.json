@@ -116,6 +116,10 @@
     "contactUs": "Связаться с нами",
     "rateApp": "Оценить приложение",
     "tellFriends": "Рассказать друзьям",
+    "ayahApp": {
+      "title": "Ayah",
+      "subtitle": "Чтение Корана"
+    },
     "shareText": "PrayDay - приложение для изучения намаза шаг за шагом.",
     "actionUnavailable": "Действие пока недоступно"
   },
