@@ -172,6 +172,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   subtitle: context.t('home.additional.subtitle'),
                   trailing: const _Badge.dome(count: 3),
                   onTap: () {},
+                  disabled: true,
+                  overlayBadge: Positioned(
+                    top: 8.h,
+                    right: 0,
+                    child: _SoonBadge(label: context.t('common.soon')),
+                  ),
                 ),
               ],
             ),
@@ -235,12 +241,16 @@ class _HomeMenuCard extends StatelessWidget {
     required this.subtitle,
     required this.trailing,
     required this.onTap,
+    this.disabled = false,
+    this.overlayBadge,
   });
 
   final String title;
   final String subtitle;
   final Widget trailing;
   final VoidCallback onTap;
+  final bool disabled;
+  final Widget? overlayBadge;
 
   @override
   Widget build(BuildContext context) {
@@ -249,7 +259,7 @@ class _HomeMenuCard extends StatelessWidget {
     final borderRadius = BorderRadius.circular(AppRadii.inner.r);
 
     return Pressable(
-      onTap: onTap,
+      onTap: disabled ? null : onTap,
       borderRadius: borderRadius,
       child: Container(
         height: 71.h,
@@ -258,40 +268,76 @@ class _HomeMenuCard extends StatelessWidget {
           color: colors.card,
           borderRadius: borderRadius,
         ),
-        child: Row(
+        child: Stack(
+          alignment: Alignment.center,
           children: [
-            Expanded(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
+            Opacity(
+              opacity: disabled ? 0.3 : 1,
+              child: Row(
                 children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 17.sp,
-                      fontWeight: FontWeight.w500,
-                        letterSpacing: 0,
-                      height: 1,
-                      color: isDark ? colors.textPrimary : colors.secondary,
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: TextStyle(
+                            fontSize: 17.sp,
+                            fontWeight: FontWeight.w500,
+                            letterSpacing: 0,
+                            height: 1,
+                            color: isDark ? colors.textPrimary : colors.secondary,
+                          ),
+                        ),
+                        SizedBox(height: 7.h),
+                        Text(
+                          subtitle,
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            letterSpacing: 0,
+                            fontWeight: FontWeight.w400,
+                            height: 1,
+                            color: isDark ? colors.textMuted : colors.textPrimary,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  SizedBox(height: 7.h),
-                  Text(
-                    subtitle,
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      letterSpacing: 0,
-                      fontWeight: FontWeight.w400,
-                      height: 1,
-                      color: isDark ? colors.textMuted : colors.textPrimary,
-                    ),
-                  ),
+                  SizedBox(width: 16.w),
+                  SizedBox(height: 42.h, child: trailing),
                 ],
               ),
             ),
-            SizedBox(width: 16.w),
-            SizedBox( height: 42.h, child: trailing),
+            if (overlayBadge != null) overlayBadge!,
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SoonBadge extends StatelessWidget {
+  const _SoonBadge({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+      decoration: BoxDecoration(
+        color: colors.primary,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          fontSize: 10.sp,
+          fontWeight: FontWeight.w600,
+          height: 1,
+          color: Colors.white,
         ),
       ),
     );
@@ -345,9 +391,6 @@ class _Badge extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final stroke = isDark
-        ? colors.divider.withAlpha(220)
-        : colors.primary.withAlpha(48);
     final textColor = isDark ? colors.textPrimary : colors.textPrimary;
 
     return LayoutBuilder(
@@ -362,7 +405,10 @@ class _Badge extends StatelessWidget {
                   : 'assets/icons/additional-prayers.svg',
               width: size,
               height: size,
-              color: context.colors.accentColor,
+              colorFilter: ColorFilter.mode(
+                context.colors.accentColor,
+                BlendMode.srcIn,
+              ),
             ),
             if (count != null)
               Text(

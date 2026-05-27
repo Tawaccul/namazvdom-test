@@ -10,6 +10,7 @@ class AppColorPalette {
     required this.soft,
     required this.primary,
     required this.secondary,
+    required this.secondBlue,
     required this.textPrimary,
     required this.textSecondary,
     required this.textMuted,
@@ -26,7 +27,7 @@ class AppColorPalette {
   final Color accentColor;
   final Color primary;
   final Color secondary;
-
+  final Color secondBlue;
   final Color textPrimary;
   final Color textSecondary;
   final Color textMuted;
@@ -47,6 +48,7 @@ class AppColors {
     soft: Color(0xFFF7F9FF),
     primary: Color(0xFF497FFF),
     secondary: Color(0xFF1054FF),
+    secondBlue: Color(0xFF7FA5FF),
     textPrimary: Color(0xFF02186C),
     textSecondary: Color(0xFF6572A4),
     textMuted: Color(0xFFA7AFCF),
@@ -64,8 +66,9 @@ class AppColors {
     soft: Color(0xFF25252F),
     primary: Color(0xFF497FFF),
     secondary: Color(0xFF2B4CFF),
+    secondBlue: Color(0xFF7FA5FF),
     textPrimary: Color(0xFFF4F6FF),
-    textSecondary: Color(0xFFB9BCD0),
+    textSecondary: Color(0xFF9292A4),
     textMuted: Color(0xFF8A8D9F),
     divider: Color(0xFF3A3C48),
     darkButton: Color(0xFF2B2C33),

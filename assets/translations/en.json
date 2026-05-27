@@ -11,14 +11,14 @@
     "retry": "Retry",
     "cancel": "Cancel",
     "save": "Save",
-    "exit": "Exit"
+    "exit": "Exit",
+    "soon": "Soon"
   },
   "errors": {
     "prayerNotFound": "No data for the selected prayer",
     "failedLoadPrayer": "Failed to load prayer. Please retry.",
     "failedLoadAblution": "Failed to load ablution. Please retry."
   },
-
   "language": {
     "title": "Language",
     "chooseLanguage": "Choose language",
@@ -61,7 +61,6 @@
       }
     }
   },
-
   "onboarding": {
     "start": {
       "title": "Choose your gender\nand language",
@@ -77,7 +76,6 @@
       "recommendedBadge": "Recommended"
     }
   },
-
   "home": {
     "ablution": {
       "title": "Ablution",
@@ -107,10 +105,9 @@
     },
     "additional": {
       "title": "Additional prayers",
-      "subtitle": "Sunnah prayer, tahajjud, etc."
+      "subtitle": "Tahajjud, witr, janazah, etc."
     }
   },
-
   "menu": {
     "aboutProject": "About the project",
     "helpProject": "Help the project",
@@ -127,7 +124,6 @@
     "shareText": "PrayDay - an app for learning prayer step by step.",
     "actionUnavailable": "Action is currently unavailable"
   },
-
   "theme": {
     "title": "Appearance",
     "theme": "Theme",
@@ -153,33 +149,31 @@
       "large": "Large"
     }
   },
-
   "about": {
     "title": "About the project",
     "version": "version {value}",
-    "paragraph1": "Prayer is the most important precept of religion.",
-    "paragraph2": "This guide helps you learn step by step."
+    "paragraph1": "Prayer is the most important precept of religion. This application contains everything that will help you learn prayer easily and quickly.",
+    "paragraph2": "Dear brothers and sisters, this guide is intended for informational purposes and helps you master the material. Be sure to confirm the steps you have learned with the competent persons."
   },
   "support": {
-    "thankYouTitle": "Thank you for your support",
-    "description": "Your subscription helps us improve the app and ship new updates.",
+    "thankYouTitle": "Thank you for helping PRAYDAY",
+    "description": "Thanks to your support, the app continues to teach siblings for free and without ads.",
     "privacyPolicy": "Privacy Policy",
     "termsOfService": "Terms of Service",
     "subscribe": "Subscribe",
-    "disclaimer": "Subscription renews automatically unless cancelled in advance.",
+    "disclaimer": "You can cancel your subscription at any time in your account settings (Apple Store/Google Play). By tapping the button, you accept our Terms of Service and acknowledge the Privacy Policy.",
     "months": {
       "one": "{} month",
       "other": "{} months"
     }
   },
-
   "stage": {
     "selectStage": "Select a stage",
     "selectSection": "Select the appropriate section",
     "rakaatLabel": "{count} rakaat",
     "progress": {
       "rakaats": "{current} of {total} rakats",
-      "steps": "{current} of {total} steps"
+      "steps": "{current}/{total} steps"
     },
     "defaultStepTitle": "Step",
     "prayerCompleted": "Prayer completed",
@@ -187,7 +181,10 @@
     "prayerTitleWithRakaats": "{title} - {count} rakats",
     "stepNames": {
       "takbir": "Takbir",
-      "protectionFromDevil": "A prayer for protection from the devil",
+      "duaIstiftah": "Dua'a Isftitah",
+      "duaIstiftahDescription": "Place your hands on your chest, with your right hand over your left, then say the opening prayer:",
+      "duaIstiftahText": "Glory be to You, O Allah, and praise be to You; blessed is Your name, exalted is Your greatness, and there is no god but You",
+      "protectionFromDevil": "Dua'a istighfar",
       "readingAlFatiha": "Reading Surah Al-Fatiha",
       "ameen": "Ameen",
       "readingAdditionalSurahs": "Reading additional Surahs",
@@ -225,20 +222,6 @@
       }
     }
   },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   "ablution": {
     "title": "Ablution",
     "description": "Step-by-step guide to performing ablution before prayer",
@@ -247,45 +230,43 @@
     "steps": {
       "1": {
         "title": "Intention",
-        "description": "Before wudu, make intention in your heart, then say:",
+        "description": "Before wudu' intention of making wudu' should be done in the heart, then say:",
         "text": "In the name of Allah"
       },
       "2": {
         "title": "Washing your wrists",
-        "description": "Wash both hands including the wrists and between the fingers (3 times)"
+        "description": "Completely washing the hands including the wrists and between the fingers (3 times)."
       },
       "3": {
         "title": "Mouth rinsing",
-        "description": "Rinse the mouth using the right hand (3 times)"
+        "description": "Rinse the mouth (3 times). Using the right hand, put a small amount of water into the mouth, swirl around, then expel."
       },
       "4": {
         "title": "Nose flushing",
-        "description": "Sniff water into the nostrils and expel it (3 times)"
+        "description": "Sniff water into the nostrils as far as possible with the right hand, and then sniff it out with left hand (3 times)."
       },
       "5": {
         "title": "Face washing",
-        "description": "Wash the entire face from forehead to chin and ear to ear (3 times)"
+        "description": "Wash the face from forehead to chin, left earlobe to the right earlobe making sure the whole face is washed (3 times)."
       },
       "6": {
         "title": "Hand washing",
-        "description": "Wash both arms up to and including the elbows, starting with the right (3 times each)"
+        "description": "Wash the two arms up to and including the elbows, hand and between the fingers. Begin with the right arm (3 times for each arm)."
       },
       "7": {
         "title": "Head wiping",
-        "description": "Wipe the head with wet hands from front to back and back again (once)"
+        "description": "Wipe the head with wet fingers starting at the fringe to the back hairline and back the same way all in one movement. (once only)"
       },
       "8": {
-        "title": "Wiping the ears",
-        "description": "Wipe the inside and back of both ears (once)"
+        "title": "Wiping the ears and neck",
+        "description": "Simultaneously wipe the insides of both ears with the index fingers, and the back of the ears with the thumbs (once only)."
       },
       "9": {
         "title": "Foot washing",
-        "description": "Wash both feet including the ankles and between the toes, starting with the right (3 times each)"
+        "description": "Wash the feet including the ankles and between the toes. Begin with the right foot. (3 times for each foot)."
       }
     }
   },
-  
-
   "surah": {
     "names": {
       "al_ikhlas": "Al-Ikhlas",
@@ -293,31 +274,31 @@
       "an_nas": "An-Nas"
     },
     "al_fatiha": {
-      "1": "In the name of Allah, the Most Gracious, the Most Merciful",
-      "2": "All praise is due to Allah, Lord of the worlds",
-      "3": "The Most Gracious, the Most Merciful",
+      "1": "In the name of Allah, the most Gracious, the most Merciful",
+      "2": "All praise be to Allah, Lord of the worlds",
+      "3": "The most Gracious, the most Merciful",
       "4": "Master of the Day of Judgment",
-      "5": "You alone we worship and You alone we ask for help",
-      "6": "Guide us to the straight path",
-      "7": "The path of those You have blessed"
+      "5": "You alone we worship, from You alone we seek help",
+      "6": "Guide us along the straight path",
+      "7": "The path of those whom You favored, not of those who earned Your anger or went astray"
     },
     "al_ikhlas": {
-      "0": "In the name of Allah, the Most Gracious, the Most Merciful",
-      "1": "Say: He is Allah, the One",
-      "2": "Allah, the Eternal Refuge",
-      "3": "He neither begets nor is born",
-      "4": "Nor is there to Him any equivalent"
+      "0": "In the name of Allah, the most Gracious, the most Merciful",
+      "1": "Say: \"He is Allah, the One",
+      "2": "Allah is Eternal and Absolute.",
+      "3": "He begets not, nor was He begotten.",
+      "4": "And there is none co-equal unto Him."
     },
     "al_falaq": {
-      "0": "In the name of Allah, the Most Gracious, the Most Merciful",
-      "1": "Say: I seek refuge in the Lord of daybreak",
-      "2": "From the evil of what He created",
-      "3": "From the evil of darkness when it settles",
-      "4": "From the evil of those who blow on knots",
-      "5": "From the evil of an envier when he envies"
+      "0": "In the name of Allah, the most Gracious, the most Merciful",
+      "1": "Say: I seek refuge with the Lord of the daybreak",
+      "2": "From the evil of what He has created",
+      "3": "And from the evil of the darkening (night) as it comes with its darkness",
+      "4": "And from the evil of the witchcraft when they blow in the knots",
+      "5": "And from the evil of the envier when he envies"
     },
     "an_nas": {
-      "0": "In the name of Allah, the Most Gracious, the Most Merciful",
+      "0": "In the name of Allah, the most Gracious, the most Merciful",
       "1": "Say: I seek refuge with the Lord of Mankind",
       "2": "The King of Mankind",
       "3": "The God of Mankind",
@@ -348,13 +329,13 @@
         "text": "Allah is the Greatest"
       },
       "s2": {
-        "title": "A prayer for protection from the devil",
-        "description": "He places his hands on his chest, laying his right hand over his left, and says:",
+        "title": "Dua'a istighfar",
+        "description": "After the opening prayer, while standing in the same position, say the following:",
         "text": "I seek Allah's protection from the cursed devil"
       },
       "s3": {
         "title": "Reading Surah Al-Fatiha",
-        "description": "Standing, recite Surah Al-Fatiha:"
+        "description": "Standing, he directs his gaze to the spot where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:"
       },
       "s4": {
         "title": "Ameen",
@@ -363,11 +344,11 @@
       },
       "s5": {
         "title": "Reading additional Surahs",
-        "description": "Reciting additional Surahs is not obligatory. Any of the listed Surahs can be recited after Al-Fatiha."
+        "description": "Reciting additional Surahs is not an obligatory act. Any of the Surahs listed below can be recited after \"Al-Fatiha\" in the first and second Rak'ahs of the prayer."
       },
       "s6": {
         "title": "Takbir",
-        "description": "Standing, raise your hands and say:",
+        "description": "Standing, he directs his gaze to the place where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:",
         "text": "Allah is Great"
       },
       "s7": {
@@ -387,12 +368,12 @@
       },
       "s10": {
         "title": "Takbir",
-        "description": "As you go into the prostration (sujood) position, say:",
+        "description": "Next you go into the prostration (sujood) position as described below. As you go into this position say:",
         "text": "Allah is the Greatest"
       },
       "s11": {
         "title": "Prostration (sajda)",
-        "description": "In the sujood position say the following 3 times:",
+        "description": "Important: In the prostration position (sujood), ensure:\nThe nose and forehead are touching the ground\nThe two palms are on the floor with fingers together\nThe two knees are on the floor\nThe toes of both feet are upright and not laying flat on the floor\nIn the sujood position say the following 3 times:",
         "text": "Glory be to my Lord Most High"
       },
       "s12": {
@@ -401,13 +382,13 @@
         "text": "Allah is the Greatest"
       },
       "s13": {
-        "title": "Sitting",
-        "description": "In the sitting position say the following (3 times):",
+        "title": "Straightening",
+        "description": "In this position, sit on the left thigh, with the left foot along the ground and the right foot upright. The toes of the right foot should be facing the Qiblah and the hands should be placed of the knees. In the sitting position say the following (3 times):",
         "text": "Allah, forgive me"
       },
       "s14": {
         "title": "Takbir",
-        "description": "Next you come up into the standing position, saying:",
+        "description": "Next you go into the prostration (sujood) position as described below. As you go into this position say:",
         "text": "Allah is the Greatest"
       },
       "s15": {
@@ -423,84 +404,84 @@
     },
     "r2": {
       "s1": {
-        "title": "Takbir",
-        "description": "Standing, he directs his gaze to the spot where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:",
-        "text": "Allah is the Greatest"
+        "title": "Reading Surah Al-Fatiha",
+        "description": "Standing, he directs his gaze to the spot where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:"
       },
       "s2": {
-        "title": "Reading Surah Al-Fatiha",
-        "description": "Standing recitation after Takbir:"
-      },
-      "s3": {
         "title": "Ameen",
         "description": "After this, he says:",
         "text": "O Allah, answer our prayers!"
       },
-      "s4": {
+      "s3": {
         "title": "Reading additional Surahs",
-        "description": "Any of these Surahs can be recited after Al-Fatiha in the second Rak'ah as well."
+        "description": "Reciting additional Surahs is not an obligatory act. Any of the Surahs listed below can be recited after \"Al-Fatiha\" in the first and second Rak'ahs of the prayer."
+      },
+      "s4": {
+        "title": "Takbir",
+        "description": "Standing, he directs his gaze to the place where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:",
+        "text": "Allah is Great"
       },
       "s5": {
-        "title": "Takbir",
-        "description": "Move toward bowing and say:",
-        "text": "Allah is the Greatest"
-      },
-      "s6": {
-        "title": "Waist bow (ruku)",
-        "description": "In rukoo' say this 3 times:",
+        "title": "Waist bow (hand)",
+        "description": "You should now be in the bowing (rukoo') position. Say this 3 times:",
         "text": "Glory be to my Lord the Supreme"
       },
-      "s7": {
+      "s6": {
         "title": "Straightening",
-        "description": "As you rise from bowing say:",
+        "description": "Next, come up from the bowing position into the standing position. As you are coming up say:",
         "text": "Allah listens to the one who praises him"
       },
-      "s8": {
+      "s7": {
         "title": "Standing",
-        "description": "In standing say:",
+        "description": "Now you should be in the standing position with your hands by your sides. In this position say:",
         "text": "Our Lord, and to You belongs the praise"
       },
-      "s9": {
+      "s8": {
         "title": "Takbir",
-        "description": "As you go into prostration say:",
+        "description": "Next you go into the prostration (sujood) position as described below. As you go into this position say:",
         "text": "Allah is the Greatest"
       },
-      "s10": {
+      "s9": {
         "title": "Prostration (sajda)",
-        "description": "In sujood say this 3 times:",
+        "description": "Important: In the prostration position (sujood), ensure:\nThe nose and forehead are touching the ground\nThe two palms are on the floor with fingers together\nThe two knees are on the floor\nThe toes of both feet are upright and not laying flat on the floor\nIn the sujood position say the following 3 times:",
         "text": "Glory be to my Lord Most High"
       },
-      "s11": {
+      "s10": {
         "title": "Takbir",
-        "description": "Come to the sitting position, saying:",
+        "description": "Next you come up into the sitting position, saying:",
         "text": "Allah is the Greatest"
       },
-      "s12": {
-        "title": "Sitting",
-        "description": "In the sitting position say the following (3 times):",
+      "s11": {
+        "title": "Straightening",
+        "description": "In this position, sit on the left thigh, with the left foot along the ground and the right foot upright. The toes of the right foot should be facing the Qiblah and the hands should be placed of the knees. In the sitting position say the following (3 times):",
         "text": "Allah, forgive me"
       },
-      "s13": {
+      "s12": {
         "title": "Takbir",
-        "description": "Go into prostration again, saying:",
+        "description": "Next you go into the prostration (sujood) position as described below. As you go into this position say:",
         "text": "Allah is the Greatest"
+      },
+      "s13": {
+        "title": "Dua in prostration",
+        "description": "In the sujood position say the following 3 times:",
+        "text": "Glory be to my Lord Most High"
       },
       "s14": {
         "title": "Takbir",
-        "description": "Next you come up into the standing position, saying:",
+        "description": "Next you come up into the sitting position, saying:",
         "text": "Allah is the Greatest"
       },
       "s15": {
         "title": "Reading at-tahiyat",
-        "description": "Then go into the sitting position. Raise your index finger on the right hand and recite:"
+        "description": "Then go into the sitting position. At this point raise your index finger on your right hand. Now recite the following:"
       },
       "s16": {
         "title": "The end of prayer",
-        "description": "Then recite salawat:"
+        "description": "Then you should say:"
       },
       "s17": {
         "title": "Turn your head to the right",
-        "description": "After completion, turn your head to the right and say:",
+        "description": "Upon completion of the Tashahhud and the words that follow, the prayer is finished with the Tasleem by doing the following. Turn your head to the right and say:",
         "text": "May Allah's peace and mercy be upon you"
       },
       "s18": {
@@ -512,6 +493,1211 @@
     "common": {
       "allahu_akbar": "Allah is the Greatest"
     }
+  },
+  "dhuhr": {
+    "r1": {
+      "s1": {
+        "title": "Takbir",
+        "description": "Standing, he directs his gaze to the spot where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:",
+        "text": "Allah is the Greatest"
+      },
+      "s2": {
+        "title": "Dua'a istighfar",
+        "description": "After the opening prayer, while standing in the same position, say the following:",
+        "text": "I seek Allah's protection from the cursed devil"
+      },
+      "s3": {
+        "title": "Reading Surah Al-Fatiha",
+        "description": "Standing, he directs his gaze to the spot where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:"
+      },
+      "s4": {
+        "title": "Ameen",
+        "description": "After this, he says:",
+        "text": "O Allah, answer our prayers!"
+      },
+      "s5": {
+        "title": "Reading additional Surahs",
+        "description": "Reciting additional Surahs is not an obligatory act. Any of the Surahs listed below can be recited after \"Al-Fatiha\" in the first and second Rak'ahs of the prayer."
+      },
+      "s6": {
+        "title": "Takbir",
+        "description": "Standing, he directs his gaze to the place where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:",
+        "text": "Allah is Great"
+      },
+      "s7": {
+        "title": "Waist bow (hand)",
+        "description": "You should now be in the bowing (rukoo') position. Say this 3 times:",
+        "text": "Glory be to my Lord the Supreme"
+      },
+      "s8": {
+        "title": "Straightening",
+        "description": "Next, come up from the bowing position into the standing position. As you are coming up say:",
+        "text": "Allah listens to the one who praises him"
+      },
+      "s9": {
+        "title": "Standing",
+        "description": "Now you should be in the standing position with your hands by your sides. In this position say:",
+        "text": "Our Lord, and to You belongs the praise"
+      },
+      "s10": {
+        "title": "Takbir",
+        "description": "Next you go into the prostration (sujood) position as described below. As you go into this position say:",
+        "text": "Allah is the Greatest"
+      },
+      "s11": {
+        "title": "Prostration (sajda)",
+        "description": "Important: In the prostration position (sujood), ensure:\nThe nose and forehead are touching the ground\nThe two palms are on the floor with fingers together\nThe two knees are on the floor\nThe toes of both feet are upright and not laying flat on the floor\nIn the sujood position say the following 3 times:",
+        "text": "Glory be to my Lord Most High"
+      },
+      "s12": {
+        "title": "Takbir",
+        "description": "Next you come up into the sitting position, saying:",
+        "text": "Allah is the Greatest"
+      },
+      "s13": {
+        "title": "Straightening",
+        "description": "In this position, sit on the left thigh, with the left foot along the ground and the right foot upright. The toes of the right foot should be facing the Qiblah and the hands should be placed of the knees. In the sitting position say the following (3 times):",
+        "text": "Allah, forgive me"
+      },
+      "s14": {
+        "title": "Takbir",
+        "description": "Next you go into the prostration (sujood) position as described below. As you go into this position say:",
+        "text": "Allah is the Greatest"
+      },
+      "s15": {
+        "title": "Dua in prostration",
+        "description": "In the sujood position say the following 3 times:",
+        "text": "Glory be to my Lord Most High"
+      },
+      "s16": {
+        "title": "Takbir",
+        "description": "Next you come up into the standing position, saying:",
+        "text": "Allah is the Greatest"
+      }
+    },
+    "r2": {
+      "s1": {
+        "title": "Reading Surah Al-Fatiha",
+        "description": "Standing, he directs his gaze to the spot where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:"
+      },
+      "s2": {
+        "title": "Ameen",
+        "description": "After this, he says:",
+        "text": "O Allah, answer our prayers!"
+      },
+      "s3": {
+        "title": "Reading additional Surahs",
+        "description": "Reciting additional Surahs is not an obligatory act. Any of the Surahs listed below can be recited after \"Al-Fatiha\" in the first and second Rak'ahs of the prayer."
+      },
+      "s4": {
+        "title": "Takbir",
+        "description": "Standing, he directs his gaze to the place where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:",
+        "text": "Allah is Great"
+      },
+      "s5": {
+        "title": "Waist bow (hand)",
+        "description": "You should now be in the bowing (rukoo') position. Say this 3 times:",
+        "text": "Glory be to my Lord the Supreme"
+      },
+      "s6": {
+        "title": "Straightening",
+        "description": "Next, come up from the bowing position into the standing position. As you are coming up say:",
+        "text": "Allah listens to the one who praises him"
+      },
+      "s7": {
+        "title": "Standing",
+        "description": "Now you should be in the standing position with your hands by your sides. In this position say:",
+        "text": "Our Lord, and to You belongs the praise"
+      },
+      "s8": {
+        "title": "Takbir",
+        "description": "Next you go into the prostration (sujood) position as described below. As you go into this position say:",
+        "text": "Allah is the Greatest"
+      },
+      "s9": {
+        "title": "Prostration (sajda)",
+        "description": "Important: In the prostration position (sujood), ensure:\nThe nose and forehead are touching the ground\nThe two palms are on the floor with fingers together\nThe two knees are on the floor\nThe toes of both feet are upright and not laying flat on the floor\nIn the sujood position say the following 3 times:",
+        "text": "Glory be to my Lord Most High"
+      },
+      "s10": {
+        "title": "Takbir",
+        "description": "Next you come up into the sitting position, saying:",
+        "text": "Allah is the Greatest"
+      },
+      "s11": {
+        "title": "Straightening",
+        "description": "In this position, sit on the left thigh, with the left foot along the ground and the right foot upright. The toes of the right foot should be facing the Qiblah and the hands should be placed of the knees. In the sitting position say the following (3 times):",
+        "text": "Allah, forgive me"
+      },
+      "s12": {
+        "title": "Takbir",
+        "description": "Next you go into the prostration (sujood) position as described below. As you go into this position say:",
+        "text": "Allah is the Greatest"
+      },
+      "s13": {
+        "title": "Dua in prostration",
+        "description": "In the sujood position say the following 3 times:",
+        "text": "Glory be to my Lord Most High"
+      },
+      "s14": {
+        "title": "Takbir",
+        "description": "Next you come up into the sitting position, saying:",
+        "text": "Allah is the Greatest"
+      },
+      "s15": {
+        "title": "Reading at-tahiyat",
+        "description": "Then go into the sitting position. At this point raise your index finger on your right hand. Now recite the following:"
+      },
+      "s16": {
+        "title": "Takbir",
+        "description": "Next you come up into the standing position, saying:",
+        "text": "Allah is the Greatest"
+      }
+    },
+    "r3": {
+      "s1": {
+        "title": "Reading Surah Al-Fatiha",
+        "description": "Standing, he directs his gaze to the spot where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:"
+      },
+      "s2": {
+        "title": "Ameen",
+        "description": "After this, he says:",
+        "text": "O Allah, answer our prayers!"
+      },
+      "s3": {
+        "title": "Reading additional Surahs",
+        "description": "Reciting additional Surahs is not an obligatory act. Any of the Surahs listed below can be recited after \"Al-Fatiha\" in the first and second Rak'ahs of the prayer."
+      },
+      "s4": {
+        "title": "Takbir",
+        "description": "Standing, he directs his gaze to the place where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:",
+        "text": "Allah is Great"
+      },
+      "s5": {
+        "title": "Waist bow (hand)",
+        "description": "You should now be in the bowing (rukoo') position. Say this 3 times:",
+        "text": "Glory be to my Lord the Supreme"
+      },
+      "s6": {
+        "title": "Straightening",
+        "description": "Next, come up from the bowing position into the standing position. As you are coming up say:",
+        "text": "Allah listens to the one who praises him"
+      },
+      "s7": {
+        "title": "Standing",
+        "description": "Now you should be in the standing position with your hands by your sides. In this position say:",
+        "text": "Our Lord, and to You belongs the praise"
+      },
+      "s8": {
+        "title": "Takbir",
+        "description": "Next you go into the prostration (sujood) position as described below. As you go into this position say:",
+        "text": "Allah is the Greatest"
+      },
+      "s9": {
+        "title": "Prostration (sajda)",
+        "description": "Important: In the prostration position (sujood), ensure:\nThe nose and forehead are touching the ground\nThe two palms are on the floor with fingers together\nThe two knees are on the floor\nThe toes of both feet are upright and not laying flat on the floor\nIn the sujood position say the following 3 times:",
+        "text": "Glory be to my Lord Most High"
+      },
+      "s10": {
+        "title": "Takbir",
+        "description": "Next you come up into the sitting position, saying:",
+        "text": "Allah is the Greatest"
+      },
+      "s11": {
+        "title": "Straightening",
+        "description": "In this position, sit on the left thigh, with the left foot along the ground and the right foot upright. The toes of the right foot should be facing the Qiblah and the hands should be placed of the knees. In the sitting position say the following (3 times):",
+        "text": "Allah, forgive me"
+      },
+      "s12": {
+        "title": "Takbir",
+        "description": "Next you go into the prostration (sujood) position as described below. As you go into this position say:",
+        "text": "Allah is the Greatest"
+      },
+      "s13": {
+        "title": "Dua in prostration",
+        "description": "In the sujood position say the following 3 times:",
+        "text": "Glory be to my Lord Most High"
+      },
+      "s14": {
+        "title": "Takbir",
+        "description": "Next you come up into the sitting position, saying:",
+        "text": "Allah is the Greatest"
+      }
+    },
+    "r4": {
+      "s1": {
+        "title": "Reading Surah Al-Fatiha",
+        "description": "Standing, he directs his gaze to the spot where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:"
+      },
+      "s2": {
+        "title": "Ameen",
+        "description": "After this, he says:",
+        "text": "O Allah, answer our prayers!"
+      },
+      "s3": {
+        "title": "Reading additional Surahs",
+        "description": "Reciting additional Surahs is not an obligatory act. Any of the Surahs listed below can be recited after \"Al-Fatiha\" in the first and second Rak'ahs of the prayer."
+      },
+      "s4": {
+        "title": "Takbir",
+        "description": "Standing, he directs his gaze to the place where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:",
+        "text": "Allah is Great"
+      },
+      "s5": {
+        "title": "Waist bow (hand)",
+        "description": "You should now be in the bowing (rukoo') position. Say this 3 times:",
+        "text": "Glory be to my Lord the Supreme"
+      },
+      "s6": {
+        "title": "Straightening",
+        "description": "Next, come up from the bowing position into the standing position. As you are coming up say:",
+        "text": "Allah listens to the one who praises him"
+      },
+      "s7": {
+        "title": "Standing",
+        "description": "Now you should be in the standing position with your hands by your sides. In this position say:",
+        "text": "Our Lord, and to You belongs the praise"
+      },
+      "s8": {
+        "title": "Takbir",
+        "description": "Next you go into the prostration (sujood) position as described below. As you go into this position say:",
+        "text": "Allah is the Greatest"
+      },
+      "s9": {
+        "title": "Prostration (sajda)",
+        "description": "Important: In the prostration position (sujood), ensure:\nThe nose and forehead are touching the ground\nThe two palms are on the floor with fingers together\nThe two knees are on the floor\nThe toes of both feet are upright and not laying flat on the floor\nIn the sujood position say the following 3 times:",
+        "text": "Glory be to my Lord Most High"
+      },
+      "s10": {
+        "title": "Takbir",
+        "description": "Next you come up into the sitting position, saying:",
+        "text": "Allah is the Greatest"
+      },
+      "s11": {
+        "title": "Straightening",
+        "description": "In this position, sit on the left thigh, with the left foot along the ground and the right foot upright. The toes of the right foot should be facing the Qiblah and the hands should be placed of the knees. In the sitting position say the following (3 times):",
+        "text": "Allah, forgive me"
+      },
+      "s12": {
+        "title": "Takbir",
+        "description": "Next you go into the prostration (sujood) position as described below. As you go into this position say:",
+        "text": "Allah is the Greatest"
+      },
+      "s13": {
+        "title": "Dua in prostration",
+        "description": "In the sujood position say the following 3 times:",
+        "text": "Glory be to my Lord Most High"
+      },
+      "s14": {
+        "title": "Takbir",
+        "description": "Next you come up into the sitting position, saying:",
+        "text": "Allah is the Greatest"
+      },
+      "s15": {
+        "title": "Reading at-tahiyat",
+        "description": "Then go into the sitting position. At this point raise your index finger on your right hand. Now recite the following:"
+      },
+      "s16": {
+        "title": "The end of prayer",
+        "description": "Then you should say:"
+      },
+      "s17": {
+        "title": "Turn your head to the right",
+        "description": "Upon completion of the Tashahhud and the words that follow, the prayer is finished with the Tasleem by doing the following. Turn your head to the right and say:",
+        "text": "May Allah's peace and mercy be upon you"
+      },
+      "s18": {
+        "title": "Turn your head to the left",
+        "description": "Turn your head to the left and say:",
+        "text": "May Allah's peace and mercy be upon you"
+      }
+    }
+  },
+  "asr": {
+    "r1": {
+      "s1": {
+        "title": "Takbir",
+        "description": "Standing, he directs his gaze to the spot where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:",
+        "text": "Allah is the Greatest"
+      },
+      "s2": {
+        "title": "Dua'a istighfar",
+        "description": "After the opening prayer, while standing in the same position, say the following:",
+        "text": "I seek Allah's protection from the cursed devil"
+      },
+      "s3": {
+        "title": "Reading Surah Al-Fatiha",
+        "description": "Standing, he directs his gaze to the spot where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:"
+      },
+      "s4": {
+        "title": "Ameen",
+        "description": "After this, he says:",
+        "text": "O Allah, answer our prayers!"
+      },
+      "s5": {
+        "title": "Reading additional Surahs",
+        "description": "Reciting additional Surahs is not an obligatory act. Any of the Surahs listed below can be recited after \"Al-Fatiha\" in the first and second Rak'ahs of the prayer."
+      },
+      "s6": {
+        "title": "Takbir",
+        "description": "Standing, he directs his gaze to the place where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:",
+        "text": "Allah is Great"
+      },
+      "s7": {
+        "title": "Waist bow (hand)",
+        "description": "You should now be in the bowing (rukoo') position. Say this 3 times:",
+        "text": "Glory be to my Lord the Supreme"
+      },
+      "s8": {
+        "title": "Straightening",
+        "description": "Next, come up from the bowing position into the standing position. As you are coming up say:",
+        "text": "Allah listens to the one who praises him"
+      },
+      "s9": {
+        "title": "Standing",
+        "description": "Now you should be in the standing position with your hands by your sides. In this position say:",
+        "text": "Our Lord, and to You belongs the praise"
+      },
+      "s10": {
+        "title": "Takbir",
+        "description": "Next you go into the prostration (sujood) position as described below. As you go into this position say:",
+        "text": "Allah is the Greatest"
+      },
+      "s11": {
+        "title": "Prostration (sajda)",
+        "description": "Important: In the prostration position (sujood), ensure:\nThe nose and forehead are touching the ground\nThe two palms are on the floor with fingers together\nThe two knees are on the floor\nThe toes of both feet are upright and not laying flat on the floor\nIn the sujood position say the following 3 times:",
+        "text": "Glory be to my Lord Most High"
+      },
+      "s12": {
+        "title": "Takbir",
+        "description": "Next you come up into the sitting position, saying:",
+        "text": "Allah is the Greatest"
+      },
+      "s13": {
+        "title": "Straightening",
+        "description": "In this position, sit on the left thigh, with the left foot along the ground and the right foot upright. The toes of the right foot should be facing the Qiblah and the hands should be placed of the knees. In the sitting position say the following (3 times):",
+        "text": "Allah, forgive me"
+      },
+      "s14": {
+        "title": "Takbir",
+        "description": "Next you go into the prostration (sujood) position as described below. As you go into this position say:",
+        "text": "Allah is the Greatest"
+      },
+      "s15": {
+        "title": "Dua in prostration",
+        "description": "In the sujood position say the following 3 times:",
+        "text": "Glory be to my Lord Most High"
+      },
+      "s16": {
+        "title": "Takbir",
+        "description": "Next you come up into the standing position, saying:",
+        "text": "Allah is the Greatest"
+      }
+    },
+    "r2": {
+      "s1": {
+        "title": "Reading Surah Al-Fatiha",
+        "description": "Standing, he directs his gaze to the spot where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:"
+      },
+      "s2": {
+        "title": "Ameen",
+        "description": "After this, he says:",
+        "text": "O Allah, answer our prayers!"
+      },
+      "s3": {
+        "title": "Reading additional Surahs",
+        "description": "Reciting additional Surahs is not an obligatory act. Any of the Surahs listed below can be recited after \"Al-Fatiha\" in the first and second Rak'ahs of the prayer."
+      },
+      "s4": {
+        "title": "Takbir",
+        "description": "Standing, he directs his gaze to the place where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:",
+        "text": "Allah is Great"
+      },
+      "s5": {
+        "title": "Waist bow (hand)",
+        "description": "You should now be in the bowing (rukoo') position. Say this 3 times:",
+        "text": "Glory be to my Lord the Supreme"
+      },
+      "s6": {
+        "title": "Straightening",
+        "description": "Next, come up from the bowing position into the standing position. As you are coming up say:",
+        "text": "Allah listens to the one who praises him"
+      },
+      "s7": {
+        "title": "Standing",
+        "description": "Now you should be in the standing position with your hands by your sides. In this position say:",
+        "text": "Our Lord, and to You belongs the praise"
+      },
+      "s8": {
+        "title": "Takbir",
+        "description": "Next you go into the prostration (sujood) position as described below. As you go into this position say:",
+        "text": "Allah is the Greatest"
+      },
+      "s9": {
+        "title": "Prostration (sajda)",
+        "description": "Important: In the prostration position (sujood), ensure:\nThe nose and forehead are touching the ground\nThe two palms are on the floor with fingers together\nThe two knees are on the floor\nThe toes of both feet are upright and not laying flat on the floor\nIn the sujood position say the following 3 times:",
+        "text": "Glory be to my Lord Most High"
+      },
+      "s10": {
+        "title": "Takbir",
+        "description": "Next you come up into the sitting position, saying:",
+        "text": "Allah is the Greatest"
+      },
+      "s11": {
+        "title": "Straightening",
+        "description": "In this position, sit on the left thigh, with the left foot along the ground and the right foot upright. The toes of the right foot should be facing the Qiblah and the hands should be placed of the knees. In the sitting position say the following (3 times):",
+        "text": "Allah, forgive me"
+      },
+      "s12": {
+        "title": "Takbir",
+        "description": "Next you go into the prostration (sujood) position as described below. As you go into this position say:",
+        "text": "Allah is the Greatest"
+      },
+      "s13": {
+        "title": "Dua in prostration",
+        "description": "In the sujood position say the following 3 times:",
+        "text": "Glory be to my Lord Most High"
+      },
+      "s14": {
+        "title": "Takbir",
+        "description": "Next you come up into the sitting position, saying:",
+        "text": "Allah is the Greatest"
+      },
+      "s15": {
+        "title": "Reading at-tahiyat",
+        "description": "Then go into the sitting position. At this point raise your index finger on your right hand. Now recite the following:"
+      },
+      "s16": {
+        "title": "Takbir",
+        "description": "Next you come up into the standing position, saying:",
+        "text": "Allah is the Greatest"
+      }
+    },
+    "r3": {
+      "s1": {
+        "title": "Reading Surah Al-Fatiha",
+        "description": "Standing, he directs his gaze to the spot where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:"
+      },
+      "s2": {
+        "title": "Ameen",
+        "description": "After this, he says:",
+        "text": "O Allah, answer our prayers!"
+      },
+      "s3": {
+        "title": "Reading additional Surahs",
+        "description": "Reciting additional Surahs is not an obligatory act. Any of the Surahs listed below can be recited after \"Al-Fatiha\" in the first and second Rak'ahs of the prayer."
+      },
+      "s4": {
+        "title": "Takbir",
+        "description": "Standing, he directs his gaze to the place where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:",
+        "text": "Allah is Great"
+      },
+      "s5": {
+        "title": "Waist bow (hand)",
+        "description": "You should now be in the bowing (rukoo') position. Say this 3 times:",
+        "text": "Glory be to my Lord the Supreme"
+      },
+      "s6": {
+        "title": "Straightening",
+        "description": "Next, come up from the bowing position into the standing position. As you are coming up say:",
+        "text": "Allah listens to the one who praises him"
+      },
+      "s7": {
+        "title": "Standing",
+        "description": "Now you should be in the standing position with your hands by your sides. In this position say:",
+        "text": "Our Lord, and to You belongs the praise"
+      },
+      "s8": {
+        "title": "Takbir",
+        "description": "Next you go into the prostration (sujood) position as described below. As you go into this position say:",
+        "text": "Allah is the Greatest"
+      },
+      "s9": {
+        "title": "Prostration (sajda)",
+        "description": "Important: In the prostration position (sujood), ensure:\nThe nose and forehead are touching the ground\nThe two palms are on the floor with fingers together\nThe two knees are on the floor\nThe toes of both feet are upright and not laying flat on the floor\nIn the sujood position say the following 3 times:",
+        "text": "Glory be to my Lord Most High"
+      },
+      "s10": {
+        "title": "Takbir",
+        "description": "Next you come up into the sitting position, saying:",
+        "text": "Allah is the Greatest"
+      },
+      "s11": {
+        "title": "Straightening",
+        "description": "In this position, sit on the left thigh, with the left foot along the ground and the right foot upright. The toes of the right foot should be facing the Qiblah and the hands should be placed of the knees. In the sitting position say the following (3 times):",
+        "text": "Allah, forgive me"
+      },
+      "s12": {
+        "title": "Takbir",
+        "description": "Next you go into the prostration (sujood) position as described below. As you go into this position say:",
+        "text": "Allah is the Greatest"
+      },
+      "s13": {
+        "title": "Dua in prostration",
+        "description": "In the sujood position say the following 3 times:",
+        "text": "Glory be to my Lord Most High"
+      },
+      "s14": {
+        "title": "Takbir",
+        "description": "Next you come up into the sitting position, saying:",
+        "text": "Allah is the Greatest"
+      }
+    },
+    "r4": {
+      "s1": {
+        "title": "Reading Surah Al-Fatiha",
+        "description": "Standing, he directs his gaze to the spot where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:"
+      },
+      "s2": {
+        "title": "Ameen",
+        "description": "After this, he says:",
+        "text": "O Allah, answer our prayers!"
+      },
+      "s3": {
+        "title": "Reading additional Surahs",
+        "description": "Reciting additional Surahs is not an obligatory act. Any of the Surahs listed below can be recited after \"Al-Fatiha\" in the first and second Rak'ahs of the prayer."
+      },
+      "s4": {
+        "title": "Takbir",
+        "description": "Standing, he directs his gaze to the place where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:",
+        "text": "Allah is Great"
+      },
+      "s5": {
+        "title": "Waist bow (hand)",
+        "description": "You should now be in the bowing (rukoo') position. Say this 3 times:",
+        "text": "Glory be to my Lord the Supreme"
+      },
+      "s6": {
+        "title": "Straightening",
+        "description": "Next, come up from the bowing position into the standing position. As you are coming up say:",
+        "text": "Allah listens to the one who praises him"
+      },
+      "s7": {
+        "title": "Standing",
+        "description": "Now you should be in the standing position with your hands by your sides. In this position say:",
+        "text": "Our Lord, and to You belongs the praise"
+      },
+      "s8": {
+        "title": "Takbir",
+        "description": "Next you go into the prostration (sujood) position as described below. As you go into this position say:",
+        "text": "Allah is the Greatest"
+      },
+      "s9": {
+        "title": "Prostration (sajda)",
+        "description": "Important: In the prostration position (sujood), ensure:\nThe nose and forehead are touching the ground\nThe two palms are on the floor with fingers together\nThe two knees are on the floor\nThe toes of both feet are upright and not laying flat on the floor\nIn the sujood position say the following 3 times:",
+        "text": "Glory be to my Lord Most High"
+      },
+      "s10": {
+        "title": "Takbir",
+        "description": "Next you come up into the sitting position, saying:",
+        "text": "Allah is the Greatest"
+      },
+      "s11": {
+        "title": "Straightening",
+        "description": "In this position, sit on the left thigh, with the left foot along the ground and the right foot upright. The toes of the right foot should be facing the Qiblah and the hands should be placed of the knees. In the sitting position say the following (3 times):",
+        "text": "Allah, forgive me"
+      },
+      "s12": {
+        "title": "Takbir",
+        "description": "Next you go into the prostration (sujood) position as described below. As you go into this position say:",
+        "text": "Allah is the Greatest"
+      },
+      "s13": {
+        "title": "Dua in prostration",
+        "description": "In the sujood position say the following 3 times:",
+        "text": "Glory be to my Lord Most High"
+      },
+      "s14": {
+        "title": "Takbir",
+        "description": "Next you come up into the sitting position, saying:",
+        "text": "Allah is the Greatest"
+      },
+      "s15": {
+        "title": "Reading at-tahiyat",
+        "description": "Then go into the sitting position. At this point raise your index finger on your right hand. Now recite the following:"
+      },
+      "s16": {
+        "title": "The end of prayer",
+        "description": "Then you should say:"
+      },
+      "s17": {
+        "title": "Turn your head to the right",
+        "description": "Upon completion of the Tashahhud and the words that follow, the prayer is finished with the Tasleem by doing the following. Turn your head to the right and say:",
+        "text": "May Allah's peace and mercy be upon you"
+      },
+      "s18": {
+        "title": "Turn your head to the left",
+        "description": "Turn your head to the left and say:",
+        "text": "May Allah's peace and mercy be upon you"
+      }
+    }
+  },
+  "isha": {
+    "r1": {
+      "s1": {
+        "title": "Takbir",
+        "description": "Standing, he directs his gaze to the spot where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:",
+        "text": "Allah is the Greatest"
+      },
+      "s2": {
+        "title": "Dua'a istighfar",
+        "description": "After the opening prayer, while standing in the same position, say the following:",
+        "text": "I seek Allah's protection from the cursed devil"
+      },
+      "s3": {
+        "title": "Reading Surah Al-Fatiha",
+        "description": "Standing, he directs his gaze to the spot where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:"
+      },
+      "s4": {
+        "title": "Ameen",
+        "description": "After this, he says:",
+        "text": "O Allah, answer our prayers!"
+      },
+      "s5": {
+        "title": "Reading additional Surahs",
+        "description": "Reciting additional Surahs is not an obligatory act. Any of the Surahs listed below can be recited after \"Al-Fatiha\" in the first and second Rak'ahs of the prayer."
+      },
+      "s6": {
+        "title": "Takbir",
+        "description": "Standing, he directs his gaze to the place where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:",
+        "text": "Allah is Great"
+      },
+      "s7": {
+        "title": "Waist bow (hand)",
+        "description": "You should now be in the bowing (rukoo') position. Say this 3 times:",
+        "text": "Glory be to my Lord the Supreme"
+      },
+      "s8": {
+        "title": "Straightening",
+        "description": "Next, come up from the bowing position into the standing position. As you are coming up say:",
+        "text": "Allah listens to the one who praises him"
+      },
+      "s9": {
+        "title": "Standing",
+        "description": "Now you should be in the standing position with your hands by your sides. In this position say:",
+        "text": "Our Lord, and to You belongs the praise"
+      },
+      "s10": {
+        "title": "Takbir",
+        "description": "Next you go into the prostration (sujood) position as described below. As you go into this position say:",
+        "text": "Allah is the Greatest"
+      },
+      "s11": {
+        "title": "Prostration (sajda)",
+        "description": "Important: In the prostration position (sujood), ensure:\nThe nose and forehead are touching the ground\nThe two palms are on the floor with fingers together\nThe two knees are on the floor\nThe toes of both feet are upright and not laying flat on the floor\nIn the sujood position say the following 3 times:",
+        "text": "Glory be to my Lord Most High"
+      },
+      "s12": {
+        "title": "Takbir",
+        "description": "Next you come up into the sitting position, saying:",
+        "text": "Allah is the Greatest"
+      },
+      "s13": {
+        "title": "Straightening",
+        "description": "In this position, sit on the left thigh, with the left foot along the ground and the right foot upright. The toes of the right foot should be facing the Qiblah and the hands should be placed of the knees. In the sitting position say the following (3 times):",
+        "text": "Allah, forgive me"
+      },
+      "s14": {
+        "title": "Takbir",
+        "description": "Next you go into the prostration (sujood) position as described below. As you go into this position say:",
+        "text": "Allah is the Greatest"
+      },
+      "s15": {
+        "title": "Dua in prostration",
+        "description": "In the sujood position say the following 3 times:",
+        "text": "Glory be to my Lord Most High"
+      },
+      "s16": {
+        "title": "Takbir",
+        "description": "Next you come up into the standing position, saying:",
+        "text": "Allah is the Greatest"
+      }
+    },
+    "r2": {
+      "s1": {
+        "title": "Reading Surah Al-Fatiha",
+        "description": "Standing, he directs his gaze to the spot where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:"
+      },
+      "s2": {
+        "title": "Ameen",
+        "description": "After this, he says:",
+        "text": "O Allah, answer our prayers!"
+      },
+      "s3": {
+        "title": "Reading additional Surahs",
+        "description": "Reciting additional Surahs is not an obligatory act. Any of the Surahs listed below can be recited after \"Al-Fatiha\" in the first and second Rak'ahs of the prayer."
+      },
+      "s4": {
+        "title": "Takbir",
+        "description": "Standing, he directs his gaze to the place where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:",
+        "text": "Allah is Great"
+      },
+      "s5": {
+        "title": "Waist bow (hand)",
+        "description": "You should now be in the bowing (rukoo') position. Say this 3 times:",
+        "text": "Glory be to my Lord the Supreme"
+      },
+      "s6": {
+        "title": "Straightening",
+        "description": "Next, come up from the bowing position into the standing position. As you are coming up say:",
+        "text": "Allah listens to the one who praises him"
+      },
+      "s7": {
+        "title": "Standing",
+        "description": "Now you should be in the standing position with your hands by your sides. In this position say:",
+        "text": "Our Lord, and to You belongs the praise"
+      },
+      "s8": {
+        "title": "Takbir",
+        "description": "Next you go into the prostration (sujood) position as described below. As you go into this position say:",
+        "text": "Allah is the Greatest"
+      },
+      "s9": {
+        "title": "Prostration (sajda)",
+        "description": "Important: In the prostration position (sujood), ensure:\nThe nose and forehead are touching the ground\nThe two palms are on the floor with fingers together\nThe two knees are on the floor\nThe toes of both feet are upright and not laying flat on the floor\nIn the sujood position say the following 3 times:",
+        "text": "Glory be to my Lord Most High"
+      },
+      "s10": {
+        "title": "Takbir",
+        "description": "Next you come up into the sitting position, saying:",
+        "text": "Allah is the Greatest"
+      },
+      "s11": {
+        "title": "Straightening",
+        "description": "In this position, sit on the left thigh, with the left foot along the ground and the right foot upright. The toes of the right foot should be facing the Qiblah and the hands should be placed of the knees. In the sitting position say the following (3 times):",
+        "text": "Allah, forgive me"
+      },
+      "s12": {
+        "title": "Takbir",
+        "description": "Next you go into the prostration (sujood) position as described below. As you go into this position say:",
+        "text": "Allah is the Greatest"
+      },
+      "s13": {
+        "title": "Dua in prostration",
+        "description": "In the sujood position say the following 3 times:",
+        "text": "Glory be to my Lord Most High"
+      },
+      "s14": {
+        "title": "Takbir",
+        "description": "Next you come up into the sitting position, saying:",
+        "text": "Allah is the Greatest"
+      },
+      "s15": {
+        "title": "Reading at-tahiyat",
+        "description": "Then go into the sitting position. At this point raise your index finger on your right hand. Now recite the following:"
+      },
+      "s16": {
+        "title": "Takbir",
+        "description": "Next you come up into the standing position, saying:",
+        "text": "Allah is the Greatest"
+      }
+    },
+    "r3": {
+      "s1": {
+        "title": "Reading Surah Al-Fatiha",
+        "description": "Standing, he directs his gaze to the spot where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:"
+      },
+      "s2": {
+        "title": "Ameen",
+        "description": "After this, he says:",
+        "text": "O Allah, answer our prayers!"
+      },
+      "s3": {
+        "title": "Reading additional Surahs",
+        "description": "Reciting additional Surahs is not an obligatory act. Any of the Surahs listed below can be recited after \"Al-Fatiha\" in the first and second Rak'ahs of the prayer."
+      },
+      "s4": {
+        "title": "Takbir",
+        "description": "Standing, he directs his gaze to the place where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:",
+        "text": "Allah is Great"
+      },
+      "s5": {
+        "title": "Waist bow (hand)",
+        "description": "You should now be in the bowing (rukoo') position. Say this 3 times:",
+        "text": "Glory be to my Lord the Supreme"
+      },
+      "s6": {
+        "title": "Straightening",
+        "description": "Next, come up from the bowing position into the standing position. As you are coming up say:",
+        "text": "Allah listens to the one who praises him"
+      },
+      "s7": {
+        "title": "Standing",
+        "description": "Now you should be in the standing position with your hands by your sides. In this position say:",
+        "text": "Our Lord, and to You belongs the praise"
+      },
+      "s8": {
+        "title": "Takbir",
+        "description": "Next you go into the prostration (sujood) position as described below. As you go into this position say:",
+        "text": "Allah is the Greatest"
+      },
+      "s9": {
+        "title": "Prostration (sajda)",
+        "description": "Important: In the prostration position (sujood), ensure:\nThe nose and forehead are touching the ground\nThe two palms are on the floor with fingers together\nThe two knees are on the floor\nThe toes of both feet are upright and not laying flat on the floor\nIn the sujood position say the following 3 times:",
+        "text": "Glory be to my Lord Most High"
+      },
+      "s10": {
+        "title": "Takbir",
+        "description": "Next you come up into the sitting position, saying:",
+        "text": "Allah is the Greatest"
+      },
+      "s11": {
+        "title": "Straightening",
+        "description": "In this position, sit on the left thigh, with the left foot along the ground and the right foot upright. The toes of the right foot should be facing the Qiblah and the hands should be placed of the knees. In the sitting position say the following (3 times):",
+        "text": "Allah, forgive me"
+      },
+      "s12": {
+        "title": "Takbir",
+        "description": "Next you go into the prostration (sujood) position as described below. As you go into this position say:",
+        "text": "Allah is the Greatest"
+      },
+      "s13": {
+        "title": "Dua in prostration",
+        "description": "In the sujood position say the following 3 times:",
+        "text": "Glory be to my Lord Most High"
+      },
+      "s14": {
+        "title": "Takbir",
+        "description": "Next you come up into the sitting position, saying:",
+        "text": "Allah is the Greatest"
+      }
+    },
+    "r4": {
+      "s1": {
+        "title": "Reading Surah Al-Fatiha",
+        "description": "Standing, he directs his gaze to the spot where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:"
+      },
+      "s2": {
+        "title": "Ameen",
+        "description": "After this, he says:",
+        "text": "O Allah, answer our prayers!"
+      },
+      "s3": {
+        "title": "Reading additional Surahs",
+        "description": "Reciting additional Surahs is not an obligatory act. Any of the Surahs listed below can be recited after \"Al-Fatiha\" in the first and second Rak'ahs of the prayer."
+      },
+      "s4": {
+        "title": "Takbir",
+        "description": "Standing, he directs his gaze to the place where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:",
+        "text": "Allah is Great"
+      },
+      "s5": {
+        "title": "Waist bow (hand)",
+        "description": "You should now be in the bowing (rukoo') position. Say this 3 times:",
+        "text": "Glory be to my Lord the Supreme"
+      },
+      "s6": {
+        "title": "Straightening",
+        "description": "Next, come up from the bowing position into the standing position. As you are coming up say:",
+        "text": "Allah listens to the one who praises him"
+      },
+      "s7": {
+        "title": "Standing",
+        "description": "Now you should be in the standing position with your hands by your sides. In this position say:",
+        "text": "Our Lord, and to You belongs the praise"
+      },
+      "s8": {
+        "title": "Takbir",
+        "description": "Next you go into the prostration (sujood) position as described below. As you go into this position say:",
+        "text": "Allah is the Greatest"
+      },
+      "s9": {
+        "title": "Prostration (sajda)",
+        "description": "Important: In the prostration position (sujood), ensure:\nThe nose and forehead are touching the ground\nThe two palms are on the floor with fingers together\nThe two knees are on the floor\nThe toes of both feet are upright and not laying flat on the floor\nIn the sujood position say the following 3 times:",
+        "text": "Glory be to my Lord Most High"
+      },
+      "s10": {
+        "title": "Takbir",
+        "description": "Next you come up into the sitting position, saying:",
+        "text": "Allah is the Greatest"
+      },
+      "s11": {
+        "title": "Straightening",
+        "description": "In this position, sit on the left thigh, with the left foot along the ground and the right foot upright. The toes of the right foot should be facing the Qiblah and the hands should be placed of the knees. In the sitting position say the following (3 times):",
+        "text": "Allah, forgive me"
+      },
+      "s12": {
+        "title": "Takbir",
+        "description": "Next you go into the prostration (sujood) position as described below. As you go into this position say:",
+        "text": "Allah is the Greatest"
+      },
+      "s13": {
+        "title": "Dua in prostration",
+        "description": "In the sujood position say the following 3 times:",
+        "text": "Glory be to my Lord Most High"
+      },
+      "s14": {
+        "title": "Takbir",
+        "description": "Next you come up into the sitting position, saying:",
+        "text": "Allah is the Greatest"
+      },
+      "s15": {
+        "title": "Reading at-tahiyat",
+        "description": "Then go into the sitting position. At this point raise your index finger on your right hand. Now recite the following:"
+      },
+      "s16": {
+        "title": "The end of prayer",
+        "description": "Then you should say:"
+      },
+      "s17": {
+        "title": "Turn your head to the right",
+        "description": "Upon completion of the Tashahhud and the words that follow, the prayer is finished with the Tasleem by doing the following. Turn your head to the right and say:",
+        "text": "May Allah's peace and mercy be upon you"
+      },
+      "s18": {
+        "title": "Turn your head to the left",
+        "description": "Turn your head to the left and say:",
+        "text": "May Allah's peace and mercy be upon you"
+      }
+    }
+  },
+  "maghrib": {
+    "r1": {
+      "s1": {
+        "title": "Takbir",
+        "description": "Standing, he directs his gaze to the spot where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:",
+        "text": "Allah is the Greatest"
+      },
+      "s2": {
+        "title": "Dua'a istighfar",
+        "description": "After the opening prayer, while standing in the same position, say the following:",
+        "text": "I seek Allah's protection from the cursed devil"
+      },
+      "s3": {
+        "title": "Reading Surah Al-Fatiha",
+        "description": "Standing, he directs his gaze to the spot where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:"
+      },
+      "s4": {
+        "title": "Ameen",
+        "description": "After this, he says:",
+        "text": "O Allah, answer our prayers!"
+      },
+      "s5": {
+        "title": "Reading additional Surahs",
+        "description": "Reciting additional Surahs is not an obligatory act. Any of the Surahs listed below can be recited after \"Al-Fatiha\" in the first and second Rak'ahs of the prayer."
+      },
+      "s6": {
+        "title": "Takbir",
+        "description": "Standing, he directs his gaze to the place where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:",
+        "text": "Allah is Great"
+      },
+      "s7": {
+        "title": "Waist bow (hand)",
+        "description": "You should now be in the bowing (rukoo') position. Say this 3 times:",
+        "text": "Glory be to my Lord the Supreme"
+      },
+      "s8": {
+        "title": "Straightening",
+        "description": "Next, come up from the bowing position into the standing position. As you are coming up say:",
+        "text": "Allah listens to the one who praises him"
+      },
+      "s9": {
+        "title": "Standing",
+        "description": "Now you should be in the standing position with your hands by your sides. In this position say:",
+        "text": "Our Lord, and to You belongs the praise"
+      },
+      "s10": {
+        "title": "Takbir",
+        "description": "Next you go into the prostration (sujood) position as described below. As you go into this position say:",
+        "text": "Allah is the Greatest"
+      },
+      "s11": {
+        "title": "Prostration (sajda)",
+        "description": "Important: In the prostration position (sujood), ensure:\nThe nose and forehead are touching the ground\nThe two palms are on the floor with fingers together\nThe two knees are on the floor\nThe toes of both feet are upright and not laying flat on the floor\nIn the sujood position say the following 3 times:",
+        "text": "Glory be to my Lord Most High"
+      },
+      "s12": {
+        "title": "Takbir",
+        "description": "Next you come up into the sitting position, saying:",
+        "text": "Allah is the Greatest"
+      },
+      "s13": {
+        "title": "Straightening",
+        "description": "In this position, sit on the left thigh, with the left foot along the ground and the right foot upright. The toes of the right foot should be facing the Qiblah and the hands should be placed of the knees. In the sitting position say the following (3 times):",
+        "text": "Allah, forgive me"
+      },
+      "s14": {
+        "title": "Takbir",
+        "description": "Next you go into the prostration (sujood) position as described below. As you go into this position say:",
+        "text": "Allah is the Greatest"
+      },
+      "s15": {
+        "title": "Dua in prostration",
+        "description": "In the sujood position say the following 3 times:",
+        "text": "Glory be to my Lord Most High"
+      },
+      "s16": {
+        "title": "Takbir",
+        "description": "Next you come up into the standing position, saying:",
+        "text": "Allah is the Greatest"
+      }
+    },
+    "r2": {
+      "s1": {
+        "title": "Reading Surah Al-Fatiha",
+        "description": "Standing, he directs his gaze to the spot where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:"
+      },
+      "s2": {
+        "title": "Ameen",
+        "description": "After this, he says:",
+        "text": "O Allah, answer our prayers!"
+      },
+      "s3": {
+        "title": "Reading additional Surahs",
+        "description": "Reciting additional Surahs is not an obligatory act. Any of the Surahs listed below can be recited after \"Al-Fatiha\" in the first and second Rak'ahs of the prayer."
+      },
+      "s4": {
+        "title": "Takbir",
+        "description": "Standing, he directs his gaze to the place where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:",
+        "text": "Allah is Great"
+      },
+      "s5": {
+        "title": "Waist bow (hand)",
+        "description": "You should now be in the bowing (rukoo') position. Say this 3 times:",
+        "text": "Glory be to my Lord the Supreme"
+      },
+      "s6": {
+        "title": "Straightening",
+        "description": "Next, come up from the bowing position into the standing position. As you are coming up say:",
+        "text": "Allah listens to the one who praises him"
+      },
+      "s7": {
+        "title": "Standing",
+        "description": "Now you should be in the standing position with your hands by your sides. In this position say:",
+        "text": "Our Lord, and to You belongs the praise"
+      },
+      "s8": {
+        "title": "Takbir",
+        "description": "Next you go into the prostration (sujood) position as described below. As you go into this position say:",
+        "text": "Allah is the Greatest"
+      },
+      "s9": {
+        "title": "Prostration (sajda)",
+        "description": "Important: In the prostration position (sujood), ensure:\nThe nose and forehead are touching the ground\nThe two palms are on the floor with fingers together\nThe two knees are on the floor\nThe toes of both feet are upright and not laying flat on the floor\nIn the sujood position say the following 3 times:",
+        "text": "Glory be to my Lord Most High"
+      },
+      "s10": {
+        "title": "Takbir",
+        "description": "Next you come up into the sitting position, saying:",
+        "text": "Allah is the Greatest"
+      },
+      "s11": {
+        "title": "Straightening",
+        "description": "In this position, sit on the left thigh, with the left foot along the ground and the right foot upright. The toes of the right foot should be facing the Qiblah and the hands should be placed of the knees. In the sitting position say the following (3 times):",
+        "text": "Allah, forgive me"
+      },
+      "s12": {
+        "title": "Takbir",
+        "description": "Next you go into the prostration (sujood) position as described below. As you go into this position say:",
+        "text": "Allah is the Greatest"
+      },
+      "s13": {
+        "title": "Dua in prostration",
+        "description": "In the sujood position say the following 3 times:",
+        "text": "Glory be to my Lord Most High"
+      },
+      "s14": {
+        "title": "Takbir",
+        "description": "Next you come up into the sitting position, saying:",
+        "text": "Allah is the Greatest"
+      },
+      "s15": {
+        "title": "Reading at-tahiyat",
+        "description": "Then go into the sitting position. At this point raise your index finger on your right hand. Now recite the following:"
+      },
+      "s16": {
+        "title": "Takbir",
+        "description": "Next you come up into the standing position, saying:",
+        "text": "Allah is the Greatest"
+      }
+    },
+    "r3": {
+      "s1": {
+        "title": "Reading Surah Al-Fatiha",
+        "description": "Standing, he directs his gaze to the spot where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:"
+      },
+      "s2": {
+        "title": "Ameen",
+        "description": "After this, he says:",
+        "text": "O Allah, answer our prayers!"
+      },
+      "s3": {
+        "title": "Reading additional Surahs",
+        "description": "Reciting additional Surahs is not an obligatory act. Any of the Surahs listed below can be recited after \"Al-Fatiha\" in the first and second Rak'ahs of the prayer."
+      },
+      "s4": {
+        "title": "Takbir",
+        "description": "Standing, he directs his gaze to the place where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:",
+        "text": "Allah is Great"
+      },
+      "s5": {
+        "title": "Waist bow (hand)",
+        "description": "You should now be in the bowing (rukoo') position. Say this 3 times:",
+        "text": "Glory be to my Lord the Supreme"
+      },
+      "s6": {
+        "title": "Straightening",
+        "description": "Next, come up from the bowing position into the standing position. As you are coming up say:",
+        "text": "Allah listens to the one who praises him"
+      },
+      "s7": {
+        "title": "Standing",
+        "description": "Now you should be in the standing position with your hands by your sides. In this position say:",
+        "text": "Our Lord, and to You belongs the praise"
+      },
+      "s8": {
+        "title": "Takbir",
+        "description": "Next you go into the prostration (sujood) position as described below. As you go into this position say:",
+        "text": "Allah is the Greatest"
+      },
+      "s9": {
+        "title": "Prostration (sajda)",
+        "description": "Important: In the prostration position (sujood), ensure:\nThe nose and forehead are touching the ground\nThe two palms are on the floor with fingers together\nThe two knees are on the floor\nThe toes of both feet are upright and not laying flat on the floor\nIn the sujood position say the following 3 times:",
+        "text": "Glory be to my Lord Most High"
+      },
+      "s10": {
+        "title": "Takbir",
+        "description": "Next you come up into the sitting position, saying:",
+        "text": "Allah is the Greatest"
+      },
+      "s11": {
+        "title": "Straightening",
+        "description": "In this position, sit on the left thigh, with the left foot along the ground and the right foot upright. The toes of the right foot should be facing the Qiblah and the hands should be placed of the knees. In the sitting position say the following (3 times):",
+        "text": "Allah, forgive me"
+      },
+      "s12": {
+        "title": "Takbir",
+        "description": "Next you go into the prostration (sujood) position as described below. As you go into this position say:",
+        "text": "Allah is the Greatest"
+      },
+      "s13": {
+        "title": "Dua in prostration",
+        "description": "In the sujood position say the following 3 times:",
+        "text": "Glory be to my Lord Most High"
+      },
+      "s14": {
+        "title": "Takbir",
+        "description": "Next you come up into the sitting position, saying:",
+        "text": "Allah is the Greatest"
+      },
+      "s15": {
+        "title": "Reading at-tahiyat",
+        "description": "Then go into the sitting position. At this point raise your index finger on your right hand. Now recite the following:"
+      },
+      "s16": {
+        "title": "The end of prayer",
+        "description": "Then you should say:"
+      },
+      "s17": {
+        "title": "Turn your head to the right",
+        "description": "Upon completion of the Tashahhud and the words that follow, the prayer is finished with the Tasleem by doing the following. Turn your head to the right and say:",
+        "text": "May Allah's peace and mercy be upon you"
+      },
+      "s18": {
+        "title": "Turn your head to the left",
+        "description": "Turn your head to the left and say:",
+        "text": "May Allah's peace and mercy be upon you"
+      }
+    }
   }
-
 }

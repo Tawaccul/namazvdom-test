@@ -50,7 +50,7 @@ class _StageOnboardingOverlayState extends State<StageOnboardingOverlay> {
     _Step(
       bubbleAlignment: Alignment(0.8, -0.57),
       notch: _BubbleNotch.topRight,
-      icon: _BubbleIcon.stage,
+      icon: _BubbleIcon.stageRotated,
       highlightStageButton: true,
       highlightProgressCard: false,
       highlightAyahCard: false,
@@ -266,7 +266,7 @@ class _Step {
 
 enum _BubbleNotch { topLeft, topRight, bottomLeft, bottomRight }
 
-enum _BubbleIcon { stage, audio }
+enum _BubbleIcon { stage, stageRotated, audio }
 
 class _BubbleCard extends StatelessWidget {
   const _BubbleCard({
@@ -356,6 +356,20 @@ class _BubbleCard extends StatelessWidget {
                       colorFilter: ColorFilter.mode(
                         colors.primary,
                         BlendMode.srcIn,
+                      ),
+                    ),
+                  ),
+                  _BubbleIcon.stageRotated => Center(
+                    child: Transform.rotate(
+                      angle: 1.5707963267948966, // 90° = pi/2
+                      child: SvgPicture.asset(
+                        'assets/icons/slider-horizontal.svg',
+                        width: 30,
+                        height: 30,
+                        colorFilter: ColorFilter.mode(
+                          colors.primary,
+                          BlendMode.srcIn,
+                        ),
                       ),
                     ),
                   ),

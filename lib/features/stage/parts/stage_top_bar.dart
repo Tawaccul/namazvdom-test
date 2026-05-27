@@ -13,11 +13,13 @@ class StageTopBar extends StatelessWidget {
     required this.onBack,
     required this.onStage,
     this.stageButtonKey,
+    this.stageButtonRightPadding = 0,
   });
 
   final VoidCallback onBack;
   final VoidCallback onStage;
   final GlobalKey? stageButtonKey;
+  final double stageButtonRightPadding;
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +58,7 @@ class StageTopBar extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 14.sp,
                     height: 2,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w600,
                     color: colors.textPrimary,
                   ),
                 ),
@@ -73,7 +75,15 @@ class StageTopBar extends StatelessWidget {
               child: Container(
                 key: stageButtonKey,
                 padding: EdgeInsets.only(left: 14.w, top: 10.h, bottom: 10.h),
-                child: Row(
+                // Внутреннее содержимое (иконка + текст) можем визуально
+                // сдвинуть влево от правого края, не двигая внешний Container
+                // (его GlobalKey используется для подсветки в онбординге —
+                // позиция должна оставаться той же).
+                child: AnimatedPadding(
+                  duration: const Duration(milliseconds: 220),
+                  curve: Curves.easeOutCubic,
+                  padding: EdgeInsets.only(right: stageButtonRightPadding),
+                  child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     SvgPicture.asset(
@@ -92,12 +102,13 @@ class StageTopBar extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           fontSize: 14.sp,
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.w600,
                           color: colors.textPrimary,
                         ),
                       ),
                     ),
                   ],
+                ),
                 ),
               ),
             ),

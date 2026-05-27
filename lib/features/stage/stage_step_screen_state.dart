@@ -406,7 +406,10 @@ class _StageStepScreenState extends State<StageStepScreen>
     ayahIndex: ayahIndex,
     playIfAutoplay: playIfAutoplay,
     currentRecitationEntries: _currentRecitationEntries,
-    setSelectedAyahIndex: (next) => setState(() => _selectedAyahIndex = next),
+    setSelectedAyahIndex: (next) {
+      setState(() => _selectedAyahIndex = next);
+      _scrollSelectedAyahIntoView();
+    },
     getSelectedAyahStep: () => _selectedAyahStep,
     getStepKey: () => _stepKey,
     isAutoplayEnabled: () => _autoplayEnabled,
@@ -416,6 +419,27 @@ class _StageStepScreenState extends State<StageStepScreen>
     setStartedPlaybackStepKey: (value) => _startedPlaybackStepKey = value,
     playCurrent: _playCurrent,
   );
+
+  void _scrollSelectedAyahIntoView({int attempt = 0}) {
+    if (_showOverviewLayer || _isOverviewClosing) return;
+    final key = _stepKeys[_entryKey(_clampedAyahIndex)];
+    if (key == null) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final ctx = key.currentContext;
+      if (ctx == null) {
+        if (attempt < 4) _scrollSelectedAyahIntoView(attempt: attempt + 1);
+        return;
+      }
+      Scrollable.ensureVisible(
+        ctx,
+        duration: const Duration(milliseconds: 360),
+        curve: Curves.easeOutCubic,
+        alignment: 0.5,
+        alignmentPolicy: ScrollPositionAlignmentPolicy.explicit,
+      );
+    });
+  }
 
   Future<void> _selectStep(
     int index, {

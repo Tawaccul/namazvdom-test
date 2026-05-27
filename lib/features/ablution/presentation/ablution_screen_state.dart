@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../app/theme/app_colors.dart';
+import '../../../core/audio/audio_asset_resolver.dart';
 import '../../../core/audio/ayah_audio.dart';
 import '../../../core/audio/ayah_audio_controller.dart';
 import '../../../core/text/transliteration_localizer.dart';
@@ -110,6 +111,12 @@ class AblutionScreenState extends State<AblutionScreen>
   }
   void _onAudioTick() {
     if (!mounted) return;
+    // Когда аудио доиграло до конца — сбрасываем состояние, чтобы карточка
+    // вернулась к исходному виду (без рамки, прогресс-бар пустой).
+    if (_playingStepAudioKey != null && _audio.isCompleted) {
+      _playingStepAudioKey = null;
+      unawaited(_audio.stop());
+    }
     setState(() {});
   }
   void _onScroll() {
@@ -205,6 +212,8 @@ class AblutionScreenState extends State<AblutionScreen>
   String _audioStepKey(AblutionStepManifest step) => 'ablution-step-${step.id}';
   bool _isStepAudioPlaying(AblutionStepManifest step) =>
       _playingStepAudioKey == _audioStepKey(step) && _audio.isPlaying;
+  double _stepAudioProgress(AblutionStepManifest step) =>
+      _playingStepAudioKey == _audioStepKey(step) ? _audio.progress : 0.0;
   Future<bool> _assetExists(String assetPath) async {
     final memoized = _assetExistsMemo[assetPath];
     if (memoized != null) return memoized;
@@ -222,6 +231,8 @@ class AblutionScreenState extends State<AblutionScreen>
     if (explicit.isNotEmpty && await _assetExists(explicit)) {
       return explicit;
     }
+    final fromResolver = AudioAssetResolver.forAblutionStep(step.id);
+    if (fromResolver.isNotEmpty) return fromResolver;
     if (step.id > 0) {
       final byId = 'assets/audio/ablution/${step.id}.mp3';
       if (await _assetExists(byId)) return byId;
@@ -275,16 +286,22 @@ class AblutionScreenState extends State<AblutionScreen>
     if (audioUrl.isEmpty) return;
     final key = _audioStepKey(step);
     final isCurrentAudio = _playingStepAudioKey == key;
+    final willPause = isCurrentAudio && _audio.isPlaying;
     try {
-      if (!isCurrentAudio) {
-        _playingStepAudioKey = key;
-        await _audio.setAyah(_stepToAyah(step, key, audioUrl));
-      }
-      if (_audio.isPlaying && isCurrentAudio) {
+      if (willPause) {
+        // Сначала визуально гасим карточку, потом ставим плеер на паузу,
+        // чтобы рамка не успевала "помигать" до следующего audio-tick.
+        setState(() => _playingStepAudioKey = null);
         await _audio.pause();
-      } else {
-        await _audio.play();
+        return;
       }
+      if (!isCurrentAudio) {
+        setState(() => _playingStepAudioKey = key);
+        await _audio.setAyah(_stepToAyah(step, key, audioUrl));
+      } else {
+        setState(() => _playingStepAudioKey = key);
+      }
+      await _audio.play();
     } catch (_) {
       _playingStepAudioKey = null;
       await _audio.stop();
@@ -933,6 +950,7 @@ class AblutionScreenState extends State<AblutionScreen>
       animateStepTransition: _animateStepTransition,
       stepImageAsset: _stepImageAsset,
       isStepAudioPlaying: _isStepAudioPlaying,
+      stepAudioProgress: _stepAudioProgress,
       localizedStepTransliteration: _localizedStepTransliteration,
       onBack: onBack,
       onStage: onStage,

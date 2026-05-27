@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../../app/l10n/app_localization.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_radii.dart';
+import '../../../../core/text/capitalize.dart';
 import '../../../../core/widgets/pressable.dart';
 import '../../../stage/animations/stage_drag_carousel.dart';
 import '../../../stage/parts/stage_bottom_button.dart';
@@ -31,6 +32,7 @@ Widget buildAblutionPageContent({
   required Widget Function(Widget child) animateStepTransition,
   required String Function(AblutionStepManifest step) stepImageAsset,
   required bool Function(AblutionStepManifest step) isStepAudioPlaying,
+  required double Function(AblutionStepManifest step) stepAudioProgress,
   required String Function(AblutionStepManifest step)
   localizedStepTransliteration,
   required VoidCallback onBack,
@@ -57,88 +59,96 @@ Widget buildAblutionPageContent({
     required GlobalKey? textCardKey,
     required bool interactive,
   }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Builder(
-          builder: (context) {
-            final card = _AblutionStepCard(
-              step: contentStep,
-              cardTextSize: AblutionLayoutData.of(context).cardTextSize,
-              imageAsset: stepImageAsset(contentStep),
-              highlightKey: stepCardKey,
-            );
-            return card;
-          },
-        ),
-        if (contentStep.text != null) ...[
-          SizedBox(height: 12.h),
-          Pressable(
-            onTap: interactive ? () => onToggleStepAudio(contentStep) : null,
-            borderRadius: BorderRadius.circular(AppRadii.card),
-            child: KeyedSubtree(
-              key: textCardKey,
-              child: _AblutionTextCard(
-                step: contentStep,
-                cardTextSize: AblutionLayoutData.of(context).cardTextSize,
-                isPlaying: interactive && isStepAudioPlaying(contentStep),
-                transliteration: localizedStepTransliteration(contentStep),
+    final hasTextCard = contentStep.text != null;
+    final stepCard = Builder(
+      builder: (context) {
+        final card = _AblutionStepCard(
+          step: contentStep,
+          cardTextSize: AblutionLayoutData.of(context).cardTextSize,
+          imageAsset: stepImageAsset(contentStep),
+          highlightKey: stepCardKey,
+        );
+        return card;
+      },
+    );
+    final textCard = hasTextCard
+        ? Padding(
+            padding: EdgeInsets.only(top: 12.h),
+            child: Pressable(
+              onTap: interactive ? () => onToggleStepAudio(contentStep) : null,
+              borderRadius: BorderRadius.circular(AppRadii.card),
+              child: KeyedSubtree(
+                key: textCardKey,
+                child: _AblutionTextCard(
+                  step: contentStep,
+                  cardTextSize: AblutionLayoutData.of(context).cardTextSize,
+                  isPlaying: interactive && isStepAudioPlaying(contentStep),
+                  progress: interactive ? stepAudioProgress(contentStep) : 0,
+                  transliteration: localizedStepTransliteration(contentStep),
+                ),
+              ),
+            ),
+          )
+        : const SizedBox.shrink();
+    final navButtons = TweenAnimationBuilder<double>(
+      key: ValueKey<String>('ablution-nav-${contentStep.id}'),
+      tween: Tween<double>(begin: 0, end: 1),
+      duration: const Duration(milliseconds: 360),
+      curve: Curves.easeOutCubic,
+      builder: (context, value, child) {
+        return Opacity(
+          opacity: value * navButtonsOpacity.clamp(0.0, 1.0),
+          child: Transform.scale(
+            scale: 0.96 + (0.04 * value),
+            alignment: Alignment.center,
+            child: child,
+          ),
+        );
+      },
+      child: Row(
+        children: [
+          Expanded(
+            child: AnimatedOpacity(
+              duration: const Duration(milliseconds: 360),
+              curve: Curves.easeOutCubic,
+              opacity: hasPrevStep ? 1.0 : 0.5,
+              child: StageBottomButton(
+                variant: StageBottomButtonVariant.secondary,
+                label: context.t('common.back'),
+                icon: 'assets/icons/arrow-left.svg',
+                onTap: interactive && hasPrevStep
+                    ? () => unawaited(carouselController.animatePrev())
+                    : null,
+              ),
+            ),
+          ),
+          SizedBox(width: 12.w),
+          Expanded(
+            child: AnimatedOpacity(
+              duration: const Duration(milliseconds: 360),
+              curve: Curves.easeOutCubic,
+              opacity: hasNextStep ? 1.0 : 0.5,
+              child: StageBottomButton(
+                variant: StageBottomButtonVariant.primary,
+                label: context.t('common.next'),
+                icon: 'assets/icons/arrow-right.svg',
+                onTap: interactive && hasNextStep
+                    ? () => unawaited(carouselController.animateNext())
+                    : null,
               ),
             ),
           ),
         ],
+      ),
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        stepCard,
+        if (hasTextCard) textCard,
         SizedBox(height: 26.h),
-        TweenAnimationBuilder<double>(
-          key: ValueKey<String>('ablution-nav-${contentStep.id}'),
-          tween: Tween<double>(begin: 0, end: 1),
-          duration: const Duration(milliseconds: 360),
-          curve: Curves.easeOutCubic,
-          builder: (context, value, child) {
-            return Opacity(
-              opacity: value * navButtonsOpacity.clamp(0.0, 1.0),
-              child: Transform.scale(
-                scale: 0.96 + (0.04 * value),
-                alignment: Alignment.center,
-                child: child,
-              ),
-            );
-          },
-          child: Row(
-            children: [
-              Expanded(
-                child: AnimatedOpacity(
-                  duration: const Duration(milliseconds: 360),
-                  curve: Curves.easeOutCubic,
-                  opacity: hasPrevStep ? 1.0 : 0.5,
-                  child: StageBottomButton(
-                    variant: StageBottomButtonVariant.secondary,
-                    label: context.t('common.back'),
-                    icon: 'assets/icons/arrow-left.svg',
-                    onTap: interactive && hasPrevStep
-                        ? () => unawaited(carouselController.animatePrev())
-                        : null,
-                  ),
-                ),
-              ),
-              SizedBox(width: 12.w),
-              Expanded(
-                child: AnimatedOpacity(
-                  duration: const Duration(milliseconds: 360),
-                  curve: Curves.easeOutCubic,
-                  opacity: hasNextStep ? 1.0 : 0.5,
-                  child: StageBottomButton(
-                    variant: StageBottomButtonVariant.primary,
-                    label: context.t('common.next'),
-                    icon: 'assets/icons/arrow-right.svg',
-                    onTap: interactive && hasNextStep
-                        ? () => unawaited(carouselController.animateNext())
-                        : null,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+        navButtons,
       ],
     );
   }
@@ -291,7 +301,7 @@ class _AblutionStepCard extends StatelessWidget {
             context.t(step.titleKey),
             style: TextStyle(
               fontSize: cardTextSize.sp,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w600,
               color: colors.textPrimary,
             ),
           ),
@@ -318,38 +328,135 @@ class _AblutionTextCard extends StatelessWidget {
     required this.step,
     required this.cardTextSize,
     required this.isPlaying,
+    required this.progress,
     required this.transliteration,
   });
 
   final AblutionStepManifest step;
   final double cardTextSize;
   final bool isPlaying;
+  final double progress;
   final String transliteration;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
     final text = step.text!;
-    return StageCard(
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 260),
+      curve: Curves.easeOut,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(AppRadii.card),
+        // Бордер постоянной толщины 2px — прозрачный в неактивном состоянии,
+        // чтобы размер карточки не менялся при выделении.
+        border: Border.all(
+          color: isPlaying ? colors.primary : Colors.transparent,
+          width: 2.0,
+        ),
+        boxShadow: isPlaying
+            ? [
+                BoxShadow(
+                  color: colors.primary.withAlpha(26),
+                  blurRadius: 18,
+                  offset: const Offset(0, 10),
+                ),
+              ]
+            : null,
+      ),
+      child: StageCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-            decoration: BoxDecoration(
-              color: colors.soft,
-              borderRadius: BorderRadius.circular(AppRadii.inner),
+          _AblutionAudioPill(
+            arabic: text.arabic,
+            isPlaying: isPlaying,
+            progress: progress,
+          ),
+          SizedBox(height: 20.h),
+          Text(
+            capitalizeFirst(transliteration),
+            style: TextStyle(
+              fontSize: cardTextSize.sp,
+              fontStyle: FontStyle.italic,
+              fontWeight: FontWeight.w600,
+              color: colors.textPrimary,
             ),
-            child: Row(
-              children: [
-                SizedBox(
-                  width: 26.w,
-                  height: 26.w,
-                  child: Center(
+          ),
+          SizedBox(height: 4.h),
+          Text(
+            capitalizeFirst(context.t(text.translationKey)),
+            style: TextStyle(
+              fontSize: cardTextSize.sp,
+              fontWeight: FontWeight.w500,
+              color: colors.textSecondary,
+            ),
+          ),
+        ],
+      ),
+      ),
+    );
+  }
+}
+
+class _AblutionAudioPill extends StatelessWidget {
+  const _AblutionAudioPill({
+    required this.arabic,
+    required this.isPlaying,
+    required this.progress,
+  });
+
+  final String arabic;
+  final bool isPlaying;
+  final double progress;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final height = 58.h;
+    final iconAreaWidth = 24.w;
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(AppRadii.inner),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: DecoratedBox(decoration: BoxDecoration(color: colors.soft)),
+          ),
+          Positioned.fill(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final filledWidth =
+                    constraints.maxWidth * progress.clamp(0.0, 1.0);
+                return Align(
+                  alignment: Alignment.centerLeft,
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 180),
+                    curve: Curves.easeOut,
+                    width: filledWidth,
+                    decoration: BoxDecoration(
+                      color: colors.backgroundLightBlue,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          Row(
+            children: [
+              Container(
+                margin: EdgeInsets.only(left: 16.w),
+                width: iconAreaWidth,
+                height: height,
+                child: Center(
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 180),
+                    transitionBuilder: (child, anim) =>
+                        ScaleTransition(scale: anim, child: child),
                     child: SvgPicture.asset(
                       isPlaying
                           ? 'assets/icons/pause.svg'
                           : 'assets/icons/play.svg',
+                      key: ValueKey(isPlaying),
                       colorFilter: ColorFilter.mode(
                         colors.primary,
                         BlendMode.srcIn,
@@ -357,41 +464,28 @@ class _AblutionTextCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(width: 10.w),
-                Expanded(
+              ),
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 16.w,
+                    vertical: 12,
+                  ),
                   child: Text(
-                    text.arabic,
+                    arabic,
                     textAlign: TextAlign.right,
                     textDirection: TextDirection.rtl,
                     textScaler: TextScaler.noScaling,
                     style: GoogleFonts.notoNaskhArabic(
-                      fontSize: 24,
+                      fontSize: 24.sp,
+                      height: 1.4,
                       fontWeight: FontWeight.w400,
                       color: colors.textSecondary,
                     ),
                   ),
                 ),
-              ],
-            ),
-          ),
-          SizedBox(height: 20.h),
-          Text(
-            transliteration,
-            style: TextStyle(
-              fontSize: cardTextSize.sp,
-              fontStyle: FontStyle.italic,
-              fontWeight: FontWeight.w500,
-              color: colors.textPrimary,
-            ),
-          ),
-          SizedBox(height: 4.h),
-          Text(
-            context.t(text.translationKey),
-            style: TextStyle(
-              fontSize: cardTextSize.sp,
-              fontWeight: FontWeight.w500,
-              color: colors.textSecondary,
-            ),
+              ),
+            ],
           ),
         ],
       ),

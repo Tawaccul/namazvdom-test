@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../app/app_dependencies_scope.dart';
+import '../../core/audio/audio_asset_resolver.dart';
 import '../../core/text/transliteration_localizer.dart';
 import '../prayer/domain/entities/prayer_rakaat.dart';
 import '../prayer/domain/entities/prayer_request_context.dart';
@@ -234,6 +235,9 @@ Future<List<RakaatData>> _mapPrayerToStageRakaats(
         continue;
       }
 
+      final arabicAudio = AudioAssetResolver.forStageArabic(
+        step.content.recitationArabic,
+      );
       stageSteps.add(
         RakaatStep(
           orderIndex: step.orderIndex,
@@ -246,7 +250,7 @@ Future<List<RakaatData>> _mapPrayerToStageRakaats(
           ),
           translation: step.content.translation,
           stepCode: step.stepCode,
-          audioUrl: stepAudioPath,
+          audioUrl: arabicAudio.isNotEmpty ? arabicAudio : stepAudioPath,
         ),
       );
     }
@@ -277,7 +281,8 @@ List<RakaatData> _normalizeFajrStepCounts(
 }) {
   if (prayerCode.trim().toLowerCase() != 'fajr') return input;
   if (input.isEmpty) return input;
-  const targetsByRakaatNumber = <int, int>{1: 16, 2: 18};
+  // R1 has +1 from the injected Dua Istiftah step; R2 stays unchanged.
+  const targetsByRakaatNumber = <int, int>{1: 17, 2: 18};
 
   return input
       .map((rakaat) {
@@ -466,25 +471,29 @@ Future<List<RakaatStep>> _mapSurahToStageSteps({
   final displayTitle = title.trim().isEmpty
       ? _stageStepTitle(surahCode)
       : title;
-  return surah.ayahs
-      .map(
-        (ayah) => RakaatStep(
-          orderIndex: stepOrderIndex,
-          title: displayTitle,
-          movementDescription: '',
-          arabic: ayah.recitationArabic,
-          transliteration: localizedTransliteration(
-            ayah.transliteration,
-            normalizedLanguageCode,
-          ),
-          translation: ayah.translation,
-          stepCode: stepCode,
-          audioUrl: audioUrl,
-          surahCode: surahCode,
-          additionalSurahOptionCode: additionalSurahOptionCode,
+  final mapped = <RakaatStep>[];
+  for (var i = 0; i < surah.ayahs.length; i++) {
+    final ayah = surah.ayahs[i];
+    final perAyahAudio = AudioAssetResolver.forSurahAyah(surahCode, i);
+    mapped.add(
+      RakaatStep(
+        orderIndex: stepOrderIndex,
+        title: displayTitle,
+        movementDescription: '',
+        arabic: ayah.recitationArabic,
+        transliteration: localizedTransliteration(
+          ayah.transliteration,
+          normalizedLanguageCode,
         ),
-      )
-      .toList(growable: false);
+        translation: ayah.translation,
+        stepCode: stepCode,
+        audioUrl: perAyahAudio.isNotEmpty ? perAyahAudio : audioUrl,
+        surahCode: surahCode,
+        additionalSurahOptionCode: additionalSurahOptionCode,
+      ),
+    );
+  }
+  return mapped;
 }
 
 String _stageStepTitle(String code) {
@@ -540,6 +549,9 @@ Future<String> _resolveAudioAssetPath({
 }) async {
   final normalizedStepCode = stepCode.trim().toLowerCase();
   if (normalizedStepCode.isEmpty) return '';
+
+  final fromResolver = AudioAssetResolver.forStageStep(normalizedStepCode);
+  if (fromResolver.isNotEmpty) return fromResolver;
 
   final byRakah = 'assets/audio/prayer/${rakah}_$normalizedStepCode.mp3';
   if (await _assetExists(byRakah)) return byRakah;
@@ -655,8 +667,13 @@ Future<_LocalRakaatMappedData> _mapLocalStepsToRakaatData({
         ) ??
         _lookupTranslationValue(translations, fallbackDescriptionKey) ??
         (stepMap['description'] as String? ?? '').trim();
+    final rawTextMap = (stepMap['text'] as Map?)?.cast<String, dynamic>();
+    final rawArabicText = (rawTextMap?['arabic'] as String? ?? '').trim();
+    final rawTitleText = (stepMap['title'] as String? ?? '').trim();
     final stepCode = _stepCodeFromLocalImage(
       imagePath: imagePath,
+      title: rawTitleText,
+      arabic: rawArabicText,
       fallback: type == 'surah_choice' ? 'additional_surah' : 'step',
     );
     final audioPath = await _resolveAudioAssetPath(
@@ -689,9 +706,14 @@ Future<_LocalRakaatMappedData> _mapLocalStepsToRakaatData({
         );
         continue;
       }
-      steps.addAll(
-        ayahs.map(
-          (ayah) => RakaatStep(
+      var ayahIndex = 0;
+      for (final ayah in ayahs) {
+        final perAyahAudio = AudioAssetResolver.forSurahAyah(
+          surahCode,
+          ayahIndex,
+        );
+        steps.add(
+          RakaatStep(
             orderIndex: orderIndex,
             title: title,
             movementDescription: movementDescription,
@@ -700,11 +722,12 @@ Future<_LocalRakaatMappedData> _mapLocalStepsToRakaatData({
             translation: ayah.translation,
             stepCode: stepCode,
             imageAsset: resolvedImageAsset,
-            audioUrl: audioPath,
+            audioUrl: perAyahAudio.isNotEmpty ? perAyahAudio : audioPath,
             surahCode: surahCode,
           ),
-        ),
-      );
+        );
+        ayahIndex++;
+      }
       continue;
     }
 
@@ -738,9 +761,14 @@ Future<_LocalRakaatMappedData> _mapLocalStepsToRakaatData({
           surahCode: selected.code,
           translations: translations,
         );
-        steps.addAll(
-          ayahs.map(
-            (ayah) => RakaatStep(
+        var addAyahIndex = 0;
+        for (final ayah in ayahs) {
+          final perAyahAudio = AudioAssetResolver.forSurahAyah(
+            selected.code,
+            addAyahIndex,
+          );
+          steps.add(
+            RakaatStep(
               orderIndex: orderIndex,
               title: selected.label,
               movementDescription: '',
@@ -749,12 +777,13 @@ Future<_LocalRakaatMappedData> _mapLocalStepsToRakaatData({
               translation: ayah.translation,
               stepCode: 'additional_surah',
               imageAsset: resolvedImageAsset,
-              audioUrl: audioPath,
+              audioUrl: perAyahAudio.isNotEmpty ? perAyahAudio : audioPath,
               surahCode: selected.code,
               additionalSurahOptionCode: selected.code,
             ),
-          ),
-        );
+          );
+          addAyahIndex++;
+        }
       }
       continue;
     }
@@ -778,6 +807,12 @@ Future<_LocalRakaatMappedData> _mapLocalStepsToRakaatData({
         ) ??
         _lookupTranslationValue(translations, fallbackTextTranslationKey) ??
         (textMap?['translation'] as String? ?? '').trim();
+    final arabicAudio = AudioAssetResolver.forStageArabic(textArabic);
+    // Istiaza (защита от шайтана) — стоит со скрещёнными руками на груди,
+    // картинку используем stay_*, а не takbir_*.
+    final stepImageAsset = stepCode == 'istigfar'
+        ? _resolveNamazStepImageAsset('assets/namaz/images/stay.svg')
+        : resolvedImageAsset;
     steps.add(
       RakaatStep(
         orderIndex: orderIndex,
@@ -787,16 +822,97 @@ Future<_LocalRakaatMappedData> _mapLocalStepsToRakaatData({
         transliteration: textTransliteration,
         translation: textTranslation,
         stepCode: stepCode,
-        imageAsset: resolvedImageAsset,
-        audioUrl: audioPath,
+        imageAsset: stepImageAsset,
+        audioUrl: arabicAudio.isNotEmpty ? arabicAudio : audioPath,
       ),
     );
   }
 
+  // Dua Istiftah is recited only once — after the opening takbir of the
+  // very first rakaat. Subsequent rakaats skip it.
+  final processed = rakaatNumber == 1
+      ? _injectDuaIstiftahAfterOpeningTakbir(steps, translations: translations)
+      : steps;
+
   return _LocalRakaatMappedData(
-    steps: steps.toList(growable: false),
+    steps: processed.toList(growable: false),
     additionalSurahOptions: additionalSurahOptions.toList(growable: false),
   );
+}
+
+/// Inserts a "Dua Istiftah" step immediately after the very first Takbir of
+/// the rakaat. This is the opening supplication recited after the opening
+/// takbir but before Al-Fatiha / istiaza. Applied to both rakaats so the
+/// position of istiaza/Fatiha shifts down by one in step numbering.
+List<RakaatStep> _injectDuaIstiftahAfterOpeningTakbir(
+  List<RakaatStep> steps, {
+  required Map<String, dynamic> translations,
+}) {
+  if (steps.isEmpty) return steps;
+  final firstTakbirIndex = steps.indexWhere(
+    (step) => step.stepCode.trim().toLowerCase() == 'takbir',
+  );
+  if (firstTakbirIndex < 0) return steps;
+  // Avoid double-insertion if a dua_istiftah step already follows.
+  final next = firstTakbirIndex + 1 < steps.length
+      ? steps[firstTakbirIndex + 1]
+      : null;
+  if (next != null &&
+      next.stepCode.trim().toLowerCase() == 'dua_istiftah') {
+    return steps;
+  }
+
+  final takbir = steps[firstTakbirIndex];
+  final title =
+      _lookupTranslationValue(translations, 'stage.stepNames.duaIstiftah') ??
+      'Dua Istiftah';
+  final description =
+      _lookupTranslationValue(
+        translations,
+        'stage.stepNames.duaIstiftahDescription',
+      ) ??
+      '';
+  final translation =
+      _lookupTranslationValue(
+        translations,
+        'stage.stepNames.duaIstiftahText',
+      ) ??
+      '';
+  final istiftahStep = RakaatStep(
+    orderIndex: takbir.orderIndex + 1,
+    title: title,
+    movementDescription: description,
+    arabic:
+        'سُبْـحانَكَ اللّهُـمَّ وَبِحَمْـدِكَ وَتَبارَكَ اسْمُـكَ وَتَعـالى '
+        'جَـدُّكَ وَلا إِلهَ غَيْرُك',
+    transliteration: localizedTransliteration(
+      "Subhanaka Allahumma wa bi-hamdika, wa tabaraka-smuka, wa ta'ala jadduka, wa la ilaha ghayruk",
+      LanguageRepositoryMemory.instance.getSelectedLanguage().id,
+    ),
+    translation: translation,
+    stepCode: 'dua_istiftah',
+    imageAsset: _resolveNamazStepImageAsset('assets/namaz/images/stay.svg'),
+    audioUrl: 'assets/audios/dua_istiftah.mp3',
+  );
+
+  // Renumber: every step strictly after the inserted istiftah keeps its
+  // original orderIndex bumped by 1 so unique-step counters stay consistent.
+  final result = <RakaatStep>[];
+  for (var i = 0; i < steps.length; i++) {
+    if (i == firstTakbirIndex) {
+      result.add(steps[i]);
+      result.add(istiftahStep);
+      continue;
+    }
+    if (i > firstTakbirIndex) {
+      result.add(
+        _copyStepWithOrderIndex(steps[i], steps[i].orderIndex + 1),
+      );
+    } else {
+      result.add(steps[i]);
+    }
+  }
+  return result;
 }
 
 String? _commonStageStepTitleKey(String title) {
@@ -805,6 +921,8 @@ String? _commonStageStepTitleKey(String title) {
     'takbir' => 'stage.stepNames.takbir',
     'a prayer for protection from the devil' =>
       'stage.stepNames.protectionFromDevil',
+    "dua'a istighfar" => 'stage.stepNames.protectionFromDevil',
+    'dua istighfar' => 'stage.stepNames.protectionFromDevil',
     'reading surah al-fatiha' => 'stage.stepNames.readingAlFatiha',
     'ameen' => 'stage.stepNames.ameen',
     'reading additional surahs' => 'stage.stepNames.readingAdditionalSurahs',
@@ -857,7 +975,7 @@ Future<List<_LocalSurahAyah>> _loadLocalSurahAyahs({
     final map = json.cast<String, dynamic>();
     final rows = (map['ayahs'] as List?)?.cast<dynamic>() ?? const [];
 
-    final deduped = <String, _LocalSurahAyah>{};
+    final result = <_LocalSurahAyah>[];
     for (var i = 0; i < rows.length; i++) {
       final row = rows[i];
       if (row is! Map) continue;
@@ -879,14 +997,15 @@ Future<List<_LocalSurahAyah>> _loadLocalSurahAyahs({
       if (arabic.isEmpty && transliteration.isEmpty && translation.isEmpty) {
         continue;
       }
-      final fingerprint = '$arabic|$transliteration|$translation';
-      deduped[fingerprint] = _LocalSurahAyah(
-        recitationArabic: arabic,
-        translation: translation,
-        transliteration: transliteration,
+      result.add(
+        _LocalSurahAyah(
+          recitationArabic: arabic,
+          translation: translation,
+          transliteration: transliteration,
+        ),
       );
     }
-    return deduped.values.toList(growable: false);
+    return result;
   } catch (e) {
     debugPrint('[StagePrayerLoader] _loadLocalSurahAyahs parse failed: $e');
     return const [];
@@ -966,18 +1085,67 @@ String _prettySurahCodeLabel(String code) {
 String _stepCodeFromLocalImage({
   required String imagePath,
   required String fallback,
+  String title = '',
+  String arabic = '',
 }) {
-  final normalized = imagePath.trim().toLowerCase();
-  if (normalized.contains('takbir')) return 'takbir';
-  if (normalized.contains('ruku')) return 'ruku';
-  if (normalized.contains('sudjud') || normalized.contains('sujud')) {
+  final normalizedTitle = title.trim().toLowerCase();
+  final normalizedArabic = arabic.trim();
+
+  // Title-based detection takes priority — image alone can be ambiguous
+  // (e.g. takbir.svg is used for both Takbir and "protection from devil").
+  if (normalizedTitle.contains('protection') ||
+      normalizedTitle.contains('защит') ||
+      normalizedTitle.contains('auzu') ||
+      normalizedArabic.contains('أَعُوذُ') ||
+      normalizedArabic.contains('اعوذ')) {
+    return 'istigfar';
+  }
+  if (normalizedTitle.contains('ameen') ||
+      normalizedTitle.contains('amin') ||
+      normalizedTitle == 'аминь' ||
+      normalizedArabic.startsWith('آمِين') ||
+      normalizedArabic.startsWith('امين')) {
+    return 'ameen';
+  }
+  if (normalizedTitle.contains('basmallah') ||
+      normalizedTitle.contains('bismillah') ||
+      normalizedArabic.startsWith('بِسْمِ ٱللّٰهِ') ||
+      normalizedArabic.startsWith('بسم الله')) {
+    return 'basmallah';
+  }
+  if (normalizedTitle.contains('istiftah') ||
+      normalizedTitle.contains('opening')) {
+    return 'dua_istiftah';
+  }
+  if (normalizedTitle.contains('salam') ||
+      normalizedTitle.contains('taslim') ||
+      normalizedTitle.contains('салам')) {
+    if (normalizedTitle.contains('left') || normalizedTitle.contains('лево')) {
+      return 'taslim_left';
+    }
+    if (normalizedTitle.contains('right') ||
+        normalizedTitle.contains('право')) {
+      return 'taslim_right';
+    }
+    return 'salam';
+  }
+  if (normalizedTitle.contains('tahiyat') ||
+      normalizedTitle.contains('тахияту')) {
+    return 'at_tahiyat';
+  }
+
+  final normalizedImage = imagePath.trim().toLowerCase();
+  if (normalizedImage.contains('ruku')) return 'ruku';
+  if (normalizedImage.contains('sudjud') ||
+      normalizedImage.contains('sujud')) {
     return 'sujud';
   }
-  if (normalized.contains('taslim-left')) return 'taslim_left';
-  if (normalized.contains('taslim-right')) return 'taslim_right';
-  if (normalized.contains('at-tahiyat')) return 'at_tahiyat';
-  if (normalized.contains('seat')) return 'jalsa';
-  if (normalized.contains('stay')) return 'qiyam';
+  if (normalizedImage.contains('taslim-left')) return 'taslim_left';
+  if (normalizedImage.contains('taslim-right')) return 'taslim_right';
+  if (normalizedImage.contains('at-tahiyat')) return 'at_tahiyat';
+  if (normalizedImage.contains('seat')) return 'jalsa';
+  if (normalizedImage.contains('stay')) return 'qiyam';
+  if (normalizedImage.contains('takbir')) return 'takbir';
   return fallback;
 }
 

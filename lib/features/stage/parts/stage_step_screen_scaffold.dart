@@ -186,6 +186,11 @@ class StageStepScreenScaffold extends StatelessWidget {
                                         onBack: onBack,
                                         onStage: onStage,
                                         stageButtonKey: stageButtonKey,
+                                        stageButtonRightPadding:
+                                            showOnboarding &&
+                                                onboardingStepIndex < 2
+                                            ? 16.sp
+                                            : 0,
                                       ),
                                     ),
                                   ),
@@ -243,18 +248,32 @@ class StageStepScreenScaffold extends StatelessWidget {
                           duration: pinnedFadeDuration,
                           curve: Curves.easeOutCubic,
                           opacity: showPinned ? 1 : 0,
-                          child: Pressable(
-                            onTap: onPinnedTap,
-                            borderRadius: BorderRadius.circular(
-                              AppRadii.card,
+                          // Тень держим снаружи Pressable, потому что внутри
+                          // Pressable стоит ClipRRect — он обрезает тень.
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(AppRadii.card),
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Color(0x33000000),
+                                  blurRadius: 16,
+                                  offset: Offset(0, 4),
+                                ),
+                              ],
                             ),
-                            child: StagePinnedProgressCard(
-                              rakaatIndex: pinnedRakaatIndex,
-                              totalRakaats: pinnedTotalRakaats,
-                              stepIndex: pinnedStepIndex,
-                              totalSteps: pinnedTotalSteps,
-                              progress: pinnedProgress.clamp(0.0, 1.0),
-                              animateProgress: false,
+                            child: Pressable(
+                              onTap: onPinnedTap,
+                              borderRadius: BorderRadius.circular(
+                                AppRadii.card,
+                              ),
+                              child: StagePinnedProgressCard(
+                                rakaatIndex: pinnedRakaatIndex,
+                                totalRakaats: pinnedTotalRakaats,
+                                stepIndex: pinnedStepIndex,
+                                totalSteps: pinnedTotalSteps,
+                                progress: pinnedProgress.clamp(0.0, 1.0),
+                                animateProgress: false,
+                              ),
                             ),
                           ),
                         ),

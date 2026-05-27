@@ -19,8 +19,8 @@
         {
           "id": 2,
           "image": "assets/namaz/images/takbir.svg",
-          "title": "A prayer for protection from the devil",
-          "description": "He places his hands on his chest, laying his right hand over his left, and says:",
+          "title": "Dua'a istighfar",
+          "description": "After the opening prayer, while standing in the same position, say the following:",
           "text": {
             "arabic": "أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ",
             "transliteration": "A'oothu billaahi minash-shaytanir-rajeem",
@@ -106,7 +106,7 @@
           "id": 10,
           "image": "assets/namaz/images/sudjud.svg",
           "title": "Takbir",
-          "description": "Next you go into the prostration (sujood) position. As you go into this position say:",
+          "description": "Next you go into the prostration (sujood) position as described below. As you go into this position say:",
           "text": {
             "arabic": "اللَّهُ أَكْبَرُ",
             "transliteration": "Allahu akbar",
@@ -117,7 +117,7 @@
           "id": 11,
           "image": "assets/namaz/images/sudjud.svg",
           "title": "Prostration (sajda)",
-          "description": "In the sujood position say the following 3 times:",
+          "description": "Important: In the prostration position (sujood), ensure:\nThe nose and forehead are touching the ground\nThe two palms are on the floor with fingers together\nThe two knees are on the floor\nThe toes of both feet are upright and not laying flat on the floor\nIn the sujood position say the following 3 times:",
           "text": {
             "arabic": "سُبْحَانَ رَبِّيَ الأَعْلَى",
             "transliteration": "Subhaana rabbiyal 'alaa",
@@ -139,7 +139,7 @@
           "id": 13,
           "image": "assets/namaz/images/seat.svg",
           "title": "Straightening",
-          "description": "In this position, sit on the left thigh, with the left foot along the ground and the right foot upright. In the sitting position say the following (3 times):",
+          "description": "In this position, sit on the left thigh, with the left foot along the ground and the right foot upright. The toes of the right foot should be facing the Qiblah and the hands should be placed of the knees. In the sitting position say the following (3 times):",
           "text": {
             "arabic": "رَبِّ اغْفِرْ لِي",
             "transliteration": "Rabbighfirlee",
@@ -148,9 +148,9 @@
         },
         {
           "id": 14,
-          "image": "assets/namaz/images/stay.svg",
+          "image": "assets/namaz/images/sudjud.svg",
           "title": "Takbir",
-          "description": "Next you come up into the standing position, saying:",
+          "description": "Next you go into the prostration (sujood) position as described below. As you go into this position say:",
           "text": {
             "arabic": "اللَّهُ أَكْبَرُ",
             "transliteration": "Allahu akbar",
@@ -186,25 +186,14 @@
       "steps": [
         {
           "id": 1,
-          "image": "assets/namaz/images/takbir.svg",
-          "title": "Takbir",
-          "description": "Standing, he directs his gaze to the spot where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:",
-          "text": {
-            "arabic": "اللَّهُ أَكْبَرُ",
-            "transliteration": "Allahu akbar",
-            "translation": "Allah is the Greatest"
-          }
-        },
-        {
-          "id": 2,
-          "type": "surah",
-          "image": "assets/namaz/images/takbir.svg",
+          "image": "assets/namaz/images/stay.svg",
           "title": "Reading Surah Al-Fatiha",
-          "description": "Standing recitation after Takbir:",
+          "description": "Standing, he directs his gaze to the spot where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:",
+          "type": "surah",
           "surah_id": "al_fatiha"
         },
         {
-          "id": 3,
+          "id": 2,
           "image": "assets/namaz/images/stay.svg",
           "title": "Ameen",
           "description": "After this, he says:",
@@ -215,11 +204,11 @@
           }
         },
         {
-          "id": 4,
-          "type": "surah_choice",
+          "id": 3,
           "image": "assets/namaz/images/stay.svg",
           "title": "Reading additional Surahs",
-          "description": "Any of these Surahs can be recited after Al-Fatiha in the second Rak'ah as well.",
+          "description": "Reciting additional Surahs is not an obligatory act. Any of the Surahs listed below can be recited after \"Al-Fatiha\" in the first and second Rak'ahs of the prayer.",
+          "type": "surah_choice",
           "options": [
             "al_ikhlas",
             "al_falaq",
@@ -227,138 +216,149 @@
           ]
         },
         {
-          "id": 5,
+          "id": 4,
           "image": "assets/namaz/images/takbir.svg",
           "title": "Takbir",
-          "description": "Move toward bowing and say:",
+          "description": "Standing, he directs his gaze to the place where his forehead will touch during prostration, raises his hands to the level of his ears or shoulders and says:",
           "text": {
-            "arabic": "اللَّهُ أَكْبَرُ",
+            "arabic": "اللَّهُ أَكْبَرُ",
             "transliteration": "Allahu akbar",
-            "translation": "Allah is the Greatest"
+            "translation": "Allah is Great"
           }
         },
         {
-          "id": 6,
+          "id": 5,
           "image": "assets/namaz/images/ruku.svg",
           "title": "Waist bow (hand)",
-          "description": "In rukoo' say this 3 times:",
+          "description": "You should now be in the bowing (rukoo') position. Say this 3 times:",
           "text": {
-            "arabic": "سُبْحَانَ رَبِّيَ العَظِيم",
+            "arabic": "سُبْحَانَ رَبِّيَ العَظِيم",
             "transliteration": "Subhaana rabbiyal 'atheem",
             "translation": "Glory be to my Lord the Supreme"
           }
         },
         {
-          "id": 7,
+          "id": 6,
           "image": "assets/namaz/images/takbir.svg",
           "title": "Straightening",
-          "description": "As you rise from bowing say:",
+          "description": "Next, come up from the bowing position into the standing position. As you are coming up say:",
           "text": {
-            "arabic": "سَمِعَ اللَّهُ لِمَنْ حَمِدَهُ",
+            "arabic": "سَمِعَ اللَّهُ لِمَنْ حَمِدَهُ",
             "transliteration": "Sami'-Allaahu liman hamidah",
             "translation": "Allah listens to the one who praises him"
           }
         },
         {
-          "id": 8,
+          "id": 7,
           "image": "assets/namaz/images/takbir.svg",
           "title": "Standing",
-          "description": "In standing say:",
+          "description": "Now you should be in the standing position with your hands by your sides. In this position say:",
           "text": {
-            "arabic": "رَبَّنَا وَلَكَ الْحَمْدُ",
+            "arabic": "رَبَّنَا وَلَكَ الْحَمْدُ",
             "transliteration": "Rabbanaa wa lakal hamd",
             "translation": "Our Lord, and to You belongs the praise"
           }
         },
         {
-          "id": 9,
+          "id": 8,
           "image": "assets/namaz/images/sudjud.svg",
           "title": "Takbir",
-          "description": "As you go into prostration say:",
+          "description": "Next you go into the prostration (sujood) position as described below. As you go into this position say:",
           "text": {
-            "arabic": "اللَّهُ أَكْبَرُ",
+            "arabic": "اللَّهُ أَكْبَرُ",
             "transliteration": "Allahu akbar",
             "translation": "Allah is the Greatest"
           }
         },
         {
-          "id": 10,
+          "id": 9,
           "image": "assets/namaz/images/sudjud.svg",
           "title": "Prostration (sajda)",
-          "description": "In sujood say this 3 times:",
+          "description": "Important: In the prostration position (sujood), ensure:\nThe nose and forehead are touching the ground\nThe two palms are on the floor with fingers together\nThe two knees are on the floor\nThe toes of both feet are upright and not laying flat on the floor\nIn the sujood position say the following 3 times:",
           "text": {
-            "arabic": "سُبْحَانَ رَبِّيَ الأَعْلَى",
+            "arabic": "سُبْحَانَ رَبِّيَ الأَعْلَى",
             "transliteration": "Subhaana rabbiyal 'alaa",
             "translation": "Glory be to my Lord Most High"
           }
         },
         {
-          "id": 11,
+          "id": 10,
           "image": "assets/namaz/images/seat.svg",
           "title": "Takbir",
-          "description": "Come to the sitting position, saying:",
+          "description": "Next you come up into the sitting position, saying:",
           "text": {
-            "arabic": "اللَّهُ أَكْبَرُ",
+            "arabic": "اللَّهُ أَكْبَرُ",
             "transliteration": "Allahu akbar",
             "translation": "Allah is the Greatest"
           }
         },
         {
-          "id": 12,
+          "id": 11,
           "image": "assets/namaz/images/seat.svg",
           "title": "Straightening",
-          "description": "In the sitting position say the following (3 times):",
+          "description": "In this position, sit on the left thigh, with the left foot along the ground and the right foot upright. The toes of the right foot should be facing the Qiblah and the hands should be placed of the knees. In the sitting position say the following (3 times):",
           "text": {
-            "arabic": "رَبِّ اغْفِرْ لِي",
+            "arabic": "رَبِّ اغْفِرْ لِي",
             "transliteration": "Rabbighfirlee",
             "translation": "Allah, forgive me"
           }
         },
         {
-          "id": 13,
+          "id": 12,
           "image": "assets/namaz/images/sudjud.svg",
           "title": "Takbir",
-          "description": "Go into prostration again, saying:",
+          "description": "Next you go into the prostration (sujood) position as described below. As you go into this position say:",
           "text": {
-            "arabic": "اللَّهُ أَكْبَرُ",
+            "arabic": "اللَّهُ أَكْبَرُ",
             "transliteration": "Allahu akbar",
             "translation": "Allah is the Greatest"
           }
         },
         {
-          "id": 14,
-          "image": "assets/namaz/images/stay.svg",
-          "title": "Takbir",
-          "description": "Next you come up into the standing position, saying:",
+          "id": 13,
+          "image": "assets/namaz/images/sudjud.svg",
+          "title": "Dua in prostration",
+          "description": "In the sujood position say the following 3 times:",
           "text": {
-            "arabic": "اللَّهُ أَكْبَرُ",
+            "arabic": "سُبْحَانَ رَبِّيَ الأَعْلَى",
+            "transliteration": "Subhaana rabbiyal 'alaa",
+            "translation": "Glory be to my Lord Most High"
+          }
+        },
+        {
+          "id": 14,
+          "image": "assets/namaz/images/seat.svg",
+          "title": "Takbir",
+          "description": "Next you come up into the sitting position, saying:",
+          "text": {
+            "arabic": "اللَّهُ أَكْبَرُ",
             "transliteration": "Allahu akbar",
             "translation": "Allah is the Greatest"
           }
         },
         {
           "id": 15,
-          "type": "surah",
           "image": "assets/namaz/images/at-tahiyat.svg",
           "title": "Reading at-tahiyat",
           "description": "Then go into the sitting position. At this point raise your index finger on your right hand. Now recite the following:",
+          "type": "surah",
           "surah_id": "at_tahiyat"
         },
         {
           "id": 16,
-          "type": "surah",
           "image": "assets/namaz/images/at-tahiyat.svg",
           "title": "The end of prayer",
           "description": "Then you should say:",
+          "type": "surah",
           "surah_id": "salawat"
         },
         {
           "id": 17,
           "image": "assets/namaz/images/taslim-right.svg",
           "title": "Turn your head to the right",
-          "description": "Upon completion of the Tashahhud and the words that follow, the prayer is finished with the Tasleem. Turn your head to the right and say:",
+          "description": "Upon completion of the Tashahhud and the words that follow, the prayer is finished with the Tasleem by doing the following. Turn your head to the right and say:",
           "text": {
-            "arabic": "السَّلامُ عَلَيْكُم وَرَحْمَةُ اللَّهِ",
+            "arabic": "السَّلامُ عَلَيْكُم وَرَحْمَةُ اللَّهِ",
             "transliteration": "Assalaamu 'alaykum wa rahmatullah",
             "translation": "May Allah's peace and mercy be upon you"
           }
@@ -369,7 +369,7 @@
           "title": "Turn your head to the left",
           "description": "Turn your head to the left and say:",
           "text": {
-            "arabic": "السَّلامُ عَلَيْكُم وَرَحْمَةُ اللَّهِ",
+            "arabic": "السَّلامُ عَلَيْكُم وَرَحْمَةُ اللَّهِ",
             "transliteration": "Assalaamu 'alaykum wa rahmatullah",
             "translation": "May Allah's peace and mercy be upon you"
           }

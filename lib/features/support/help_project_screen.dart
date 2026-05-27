@@ -179,9 +179,9 @@ class _HelpProjectScreenState extends State<HelpProjectScreen> {
                         Text(
                           context.t('support.description'),
                           style: TextStyle(
-                            fontSize: 14.sp,
+                            fontSize: 13.sp,
                             fontWeight: FontWeight.w400,
-                            height: 1,
+                            height: 1.2,
                             color: Colors.white,
                           ),
                         ),
@@ -285,7 +285,12 @@ class _PlanTile extends StatelessWidget {
                   ),
                   if (plan.discountLabel != null) ...[
                     SizedBox(width: 16.w),
-                    _DiscountBadge(text: plan.discountLabel!),
+                    _DiscountBadge(
+                      text: plan.discountLabel!,
+                      backgroundColor: plan.months == 3
+                          ? context.colors.secondBlue
+                          : context.colors.primary,
+                    ),
                   ],
                 ],
               ),
@@ -323,9 +328,10 @@ String _monthPlanLabel(BuildContext context, int months) {
 }
 
 class _DiscountBadge extends StatelessWidget {
-  const _DiscountBadge({required this.text});
+  const _DiscountBadge({required this.text, this.backgroundColor});
 
   final String text;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
@@ -333,7 +339,7 @@ class _DiscountBadge extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 4.h),
       decoration: BoxDecoration(
-        color: colors.primary,
+        color: backgroundColor ?? colors.primary,
         borderRadius: BorderRadius.circular(AppRadii.chip.r),
       ),
       child: Text(
@@ -459,7 +465,7 @@ class _SubscribeButton extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppRadii.inner.r),
       child: Container(
-        height: 52.h,
+        height: 50.h,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(AppRadii.inner.r),
@@ -471,15 +477,15 @@ class _SubscribeButton extends StatelessWidget {
                   height: 18.r,
                   child: const CircularProgressIndicator(
                     strokeWidth: 2,
-                    color: Color(0xFF24398B),
+                    color: Color(0xFF02186C),
                   ),
                 )
               : Text(
                   context.t('support.subscribe'),
                   style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xFF24398B),
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF02186C),
                     height: 1.2,
                   ),
                 ),
@@ -494,27 +500,39 @@ class _Background extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/images/background.png'),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Colors.transparent,
-              Colors.black.withAlpha(26),
-              Colors.black.withAlpha(110),
-              Colors.black.withAlpha(190),
-            ],
-            stops: const [0.0, 0.55, 0.78, 1.0],
+
+    const zoom = 1.2;
+    return ClipRect(
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          Transform.scale(
+            scale: zoom,
+            child: Container(
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/background.png'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
           ),
-        ),
+          DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.transparent,
+                  Colors.black.withAlpha(26),
+                  Colors.black.withAlpha(110),
+                  Colors.black.withAlpha(190),
+                ],
+                stops: const [0.0, 0.22, 0.78, 1.0],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

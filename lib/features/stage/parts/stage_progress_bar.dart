@@ -18,6 +18,7 @@ class StageProgressBlock extends StatelessWidget {
     this.animateProgress = true,
     this.titleFontSize,
     this.metaFontSize,
+    this.withShadow = false,
   });
 
   final String title;
@@ -30,13 +31,17 @@ class StageProgressBlock extends StatelessWidget {
   final bool animateProgress;
   final double? titleFontSize;
   final double? metaFontSize;
+  final bool withShadow;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
     final resolvedTitleFontSize = titleFontSize ?? 16;
-    final resolvedMetaFontSize = metaFontSize ?? 12;
+    final resolvedMetaFontSize = metaFontSize ?? 13;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final metaColor = isDark ? Colors.white : colors.primary;
     return StageCard(
+      withShadow: withShadow,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -45,7 +50,7 @@ class StageProgressBlock extends StatelessWidget {
             title,
             style: TextStyle(
               fontSize: resolvedTitleFontSize.sp,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w600,
               height: 1,
               color: colors.textPrimary,
             ),
@@ -69,7 +74,7 @@ class StageProgressBlock extends StatelessWidget {
                       height: 1,
                       fontSize: resolvedMetaFontSize.sp,
                       fontWeight: FontWeight.w500,
-                      color: colors.primary,
+                      color: metaColor,
                     ),
                   ),
                 ),
@@ -89,7 +94,7 @@ class StageProgressBlock extends StatelessWidget {
                     style: TextStyle(
                       fontSize: resolvedMetaFontSize.sp,
                       fontWeight: FontWeight.w500,
-                      color: colors.primary,
+                      color: metaColor,
                     ),
                   ),
                 ),
@@ -107,7 +112,7 @@ class StageProgressBlock extends StatelessWidget {
               style: TextStyle(
                 fontSize: resolvedMetaFontSize.sp,
                 fontWeight: FontWeight.w500,
-                color: colors.secondary,
+                color: metaColor,
               ),
             ),
           SizedBox(height: 9.h),

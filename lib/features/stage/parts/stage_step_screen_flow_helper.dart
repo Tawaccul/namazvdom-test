@@ -59,16 +59,20 @@ class StageStepScreenFlowHelper {
     }
     final clampedStep = stepIndex.clamp(0, orderIndexes.length - 1);
     final currentOrderIndex = orderIndexes[clampedStep];
-    final isFajr = prayerCode.trim().toLowerCase() == 'fajr';
     final rakaatNumber =
         rakaats[rakaatIndex.clamp(0, rakaats.length - 1)].number;
-    if (isFajr && rakaatNumber == 1) {
-      if (currentOrderIndex <= 2) {
-        return DisplayedStepProgress(current: currentOrderIndex, total: 2);
+    // In every prayer the very first rakaat has 3 opening dhikrs:
+    // Takbir → Dua Istiftah → Istiaza (protection from devil). Show them
+    // as 1/3, 2/3, 3/3, then the rest of the rakaat as its own block.
+    if (rakaatNumber == 1) {
+      if (currentOrderIndex <= 3) {
+        return DisplayedStepProgress(current: currentOrderIndex, total: 3);
       }
+      final totalUnique = orderIndexes.toSet().length;
+      final remainingTotal = (totalUnique - 3).clamp(1, 1 << 30);
       return DisplayedStepProgress(
-        current: (currentOrderIndex - 2).clamp(1, 14),
-        total: 14,
+        current: (currentOrderIndex - 3).clamp(1, remainingTotal),
+        total: remainingTotal,
       );
     }
     return DisplayedStepProgress(

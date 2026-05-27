@@ -17,93 +17,79 @@ class AboutProjectScreen extends StatelessWidget {
       body: SafeArea(
         top: false,
         child: Padding(
-          padding: EdgeInsets.fromLTRB(14.w, 60.h, 14.w, 12),
+          padding: EdgeInsets.fromLTRB(14.w, 60.h, 14.w, 60.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
             children: [
               AppTopBar(
                 title: context.t('about.title'),
                 onBack: () => Navigator.of(context).maybePop(),
               ),
               SizedBox(height: 16.h),
-              Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: colors.card,
-                    borderRadius: BorderRadius.circular(38.r),
-                  ),
-                  child: SingleChildScrollView(
-                    physics: const BouncingScrollPhysics(),
-                    padding: EdgeInsets.fromLTRB(20.w, 40.h, 20.w, 40.h),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Center(
-                          child: Container(
-                            width: 100.w,
-                            height: 100.w,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(18.r),
-                              color: const Color(0xFF1E1E1E),
-                            ),
-                            child: Center(
-                              child: Image.asset(
-                                'assets/images/logo-white.png',
-                                width: 74.w,
-                              ),
-                            ),
+              Container(
+                decoration: BoxDecoration(
+                  color: colors.card,
+                  borderRadius: BorderRadius.circular(38.r),
+                ),
+                  padding: EdgeInsets.fromLTRB(20.w, 40.h, 20.w, 40.h),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Center(
+                      child: Container(
+                        width: 100.w,
+                        height: 100.w,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(18.r),
+                          color: const Color(0xFF1E1E1E),
+                        ),
+                        child: Center(
+                          child: Image.asset(
+                            'assets/images/logo-white.png',
+                            width: 74.w,
                           ),
                         ),
-                        SizedBox(height: 13.h),
-                        Text(
-                          context.t(
-                            'about.version',
-                            namedArgs: {'value': '1.34'},
-                          ),
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w500,
-                            color: colors.textPrimary,
-                            height: 1.2,
-                          ),
-                        ),
-                        SizedBox(height: 34.h),
-                        Text(
-                          context.t('about.paragraph1'),
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            height: 1.6,
-                            fontWeight: FontWeight.w500,
-                            color: colors.textSecondary,
-                          ),
-                        ),
-                        SizedBox(height: 24.h),
-                        Text(
-                          context.t('about.paragraph2'),
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            height: 1.6,
-                            fontWeight: FontWeight.w500,
-                            color: colors.textSecondary,
-                          ),
-                        ),
-                        SizedBox(height: 54.h),
-                        const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            _SocialPlaceholder(),
-                            SizedBox(width: 20),
-                            _SocialPlaceholder(),
-                            SizedBox(width: 20),
-                            _SocialPlaceholder(),
-                          ],
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
+                    SizedBox(height: 13.h),
+                    Text(
+                      context.t(
+                        'about.version',
+                        namedArgs: {'value': '1.0.0'},
+                      ),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w500,
+                        color: colors.textPrimary,
+                        height: 1.2,
+                      ),
+                    ),
+                    SizedBox(height: 34.h),
+                    Text(
+                      context.t('about.paragraph1'),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        height: 1.6,
+                        fontWeight: FontWeight.w500,
+                        color: colors.textSecondary,
+                      ),
+                    ),
+                    SizedBox(height: 24.h),
+                    Text(
+                      context.t('about.paragraph2'),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        height: 1.6,
+                        fontWeight: FontWeight.w500,
+                        color: colors.textSecondary,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -114,18 +100,3 @@ class AboutProjectScreen extends StatelessWidget {
   }
 }
 
-class _SocialPlaceholder extends StatelessWidget {
-  const _SocialPlaceholder();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 48.w,
-      height: 48.w,
-      decoration: BoxDecoration(
-        color: const Color(0xFFE5E5E8),
-        borderRadius: BorderRadius.circular(8.r),
-      ),
-    );
-  }
-}

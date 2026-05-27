@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_radii.dart';
+import '../../../core/text/capitalize.dart';
 import '../../../core/widgets/pressable.dart';
 import '../models/rakaat_models.dart';
 
@@ -35,8 +36,10 @@ class StageAyahCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+    // Border ширины 2 держится всегда — прозрачной в неактивном состоянии.
+    // Так размеры карточки не «прыгают» при выделении и текст не переносится.
     final borderColor = selected ? colors.primary : Colors.transparent;
-    final borderWidth = selected ? 2.0 : 0.0;
+    const borderWidth = 2.0;
 
     return Pressable(
       onTap: onTap,
@@ -71,17 +74,17 @@ class StageAyahCard extends StatelessWidget {
             ),
             SizedBox(height: 18.h),
             Text(
-              ayah.transliteration,
+              capitalizeFirst(ayah.transliteration),
               style: TextStyle(
                 fontSize: textSize.sp,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w600,
                 fontStyle: FontStyle.italic,
                 color: colors.textPrimary,
               ),
             ),
             SizedBox(height: 4.h),
             Text(
-              ayah.translation,
+              capitalizeFirst(ayah.translation),
               style: TextStyle(
                 fontSize: textSize.sp,
                 height: 1.48,

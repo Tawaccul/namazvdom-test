@@ -28,16 +28,17 @@ class StagePinnedProgressCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final metaColor = isDark ? Colors.white : colors.primary;
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
       decoration: BoxDecoration(
         color: colors.card,
         borderRadius: BorderRadius.circular(AppRadii.card),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.34 : 0.14),
-            blurRadius: isDark ? 24 : 16,
-            offset: Offset(0, isDark ? 10 : 8),
+            color: Color(0x33000000),
+            blurRadius: 16,
+            offset: Offset(0, 4),
           ),
         ],
       ),
@@ -58,7 +59,7 @@ class StagePinnedProgressCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w500,
-                    color: colors.primary,
+                    color: metaColor,
                   ),
                 ),
               ),
@@ -75,7 +76,7 @@ class StagePinnedProgressCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w500,
-                    color: colors.primary,
+                    color: metaColor,
                   ),
                 ),
               ),

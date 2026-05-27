@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../core/audio/audio_asset_resolver.dart';
 import '../../../core/text/transliteration_localizer.dart';
 import '../../settings/language/data/language_repository_memory.dart';
 import '../models/rakaat_models.dart';
@@ -229,6 +230,7 @@ class StageAdditionalSurahHelper {
           (json.cast<String, dynamic>()['ayahs'] as List?)?.cast<dynamic>() ??
           const [];
       final ayahs = <RakaatStep>[];
+      var ayahIndex = 0;
       for (final row in rows) {
         if (row is! Map) continue;
         final map = row.cast<String, dynamic>();
@@ -248,6 +250,10 @@ class StageAdditionalSurahHelper {
         if (arabic.isEmpty && transliteration.isEmpty && translation.isEmpty) {
           continue;
         }
+        final perAyahAudio = AudioAssetResolver.forSurahAyah(
+          normalized,
+          ayahIndex,
+        );
         ayahs.add(
           RakaatStep(
             orderIndex: orderIndex,
@@ -257,11 +263,12 @@ class StageAdditionalSurahHelper {
             transliteration: transliteration,
             translation: translation,
             stepCode: 'additional_surah',
-            audioUrl: audioUrl,
+            audioUrl: perAyahAudio.isNotEmpty ? perAyahAudio : audioUrl,
             surahCode: normalized,
             additionalSurahOptionCode: normalized,
           ),
         );
+        ayahIndex++;
       }
       return ayahs.toList(growable: false);
     } catch (e) {

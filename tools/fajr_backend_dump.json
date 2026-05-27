@@ -1,0 +1,2160 @@
+{
+  "meta": {
+    "status": 200,
+    "url": "https://prayday.io/api/prayer/meta",
+    "body": {
+      "meta": {
+        "lastModifiedAt": "2026-05-08T15:36:58.554Z",
+        "scope": "global"
+      }
+    }
+  },
+  "prayerRakaats": [
+    {
+      "context": {
+        "prayerCode": "fajr",
+        "languageCode": "en",
+        "script": "latin",
+        "genderCode": "male",
+        "madhhabCode": "hanafi",
+        "rakah": "1"
+      },
+      "response": {
+        "status": 404,
+        "url": "https://prayday.io/api/prayer?prayerCode=fajr&languageCode=en&script=latin&genderCode=male&madhhabCode=hanafi&rakah=1",
+        "body": {
+          "message": "Language not found",
+          "error": "Not Found",
+          "statusCode": 404
+        }
+      }
+    },
+    {
+      "context": {
+        "prayerCode": "fajr",
+        "languageCode": "en",
+        "script": "latin",
+        "genderCode": "male",
+        "madhhabCode": "shafii",
+        "rakah": "1"
+      },
+      "response": {
+        "status": 404,
+        "url": "https://prayday.io/api/prayer?prayerCode=fajr&languageCode=en&script=latin&genderCode=male&madhhabCode=shafii&rakah=1",
+        "body": {
+          "message": "Language not found",
+          "error": "Not Found",
+          "statusCode": 404
+        }
+      }
+    },
+    {
+      "context": {
+        "prayerCode": "fajr",
+        "languageCode": "en",
+        "script": "latin",
+        "genderCode": "male",
+        "madhhabCode": "maliki",
+        "rakah": "1"
+      },
+      "response": {
+        "status": 404,
+        "url": "https://prayday.io/api/prayer?prayerCode=fajr&languageCode=en&script=latin&genderCode=male&madhhabCode=maliki&rakah=1",
+        "body": {
+          "message": "Language not found",
+          "error": "Not Found",
+          "statusCode": 404
+        }
+      }
+    },
+    {
+      "context": {
+        "prayerCode": "fajr",
+        "languageCode": "en",
+        "script": "latin",
+        "genderCode": "male",
+        "madhhabCode": "hanbali",
+        "rakah": "1"
+      },
+      "response": {
+        "status": 404,
+        "url": "https://prayday.io/api/prayer?prayerCode=fajr&languageCode=en&script=latin&genderCode=male&madhhabCode=hanbali&rakah=1",
+        "body": {
+          "message": "Language not found",
+          "error": "Not Found",
+          "statusCode": 404
+        }
+      }
+    },
+    {
+      "context": {
+        "prayerCode": "fajr",
+        "languageCode": "en",
+        "script": "latin",
+        "genderCode": "female",
+        "madhhabCode": "hanafi",
+        "rakah": "1"
+      },
+      "response": {
+        "status": 404,
+        "url": "https://prayday.io/api/prayer?prayerCode=fajr&languageCode=en&script=latin&genderCode=female&madhhabCode=hanafi&rakah=1",
+        "body": {
+          "message": "Language not found",
+          "error": "Not Found",
+          "statusCode": 404
+        }
+      }
+    },
+    {
+      "context": {
+        "prayerCode": "fajr",
+        "languageCode": "en",
+        "script": "latin",
+        "genderCode": "female",
+        "madhhabCode": "shafii",
+        "rakah": "1"
+      },
+      "response": {
+        "status": 404,
+        "url": "https://prayday.io/api/prayer?prayerCode=fajr&languageCode=en&script=latin&genderCode=female&madhhabCode=shafii&rakah=1",
+        "body": {
+          "message": "Language not found",
+          "error": "Not Found",
+          "statusCode": 404
+        }
+      }
+    },
+    {
+      "context": {
+        "prayerCode": "fajr",
+        "languageCode": "en",
+        "script": "latin",
+        "genderCode": "female",
+        "madhhabCode": "maliki",
+        "rakah": "1"
+      },
+      "response": {
+        "status": 404,
+        "url": "https://prayday.io/api/prayer?prayerCode=fajr&languageCode=en&script=latin&genderCode=female&madhhabCode=maliki&rakah=1",
+        "body": {
+          "message": "Language not found",
+          "error": "Not Found",
+          "statusCode": 404
+        }
+      }
+    },
+    {
+      "context": {
+        "prayerCode": "fajr",
+        "languageCode": "en",
+        "script": "latin",
+        "genderCode": "female",
+        "madhhabCode": "hanbali",
+        "rakah": "1"
+      },
+      "response": {
+        "status": 404,
+        "url": "https://prayday.io/api/prayer?prayerCode=fajr&languageCode=en&script=latin&genderCode=female&madhhabCode=hanbali&rakah=1",
+        "body": {
+          "message": "Language not found",
+          "error": "Not Found",
+          "statusCode": 404
+        }
+      }
+    },
+    {
+      "context": {
+        "prayerCode": "fajr",
+        "languageCode": "en",
+        "script": "cyrillic",
+        "genderCode": "male",
+        "madhhabCode": "hanafi",
+        "rakah": "1"
+      },
+      "response": {
+        "status": 404,
+        "url": "https://prayday.io/api/prayer?prayerCode=fajr&languageCode=en&script=cyrillic&genderCode=male&madhhabCode=hanafi&rakah=1",
+        "body": {
+          "message": "Language not found",
+          "error": "Not Found",
+          "statusCode": 404
+        }
+      }
+    },
+    {
+      "context": {
+        "prayerCode": "fajr",
+        "languageCode": "en",
+        "script": "cyrillic",
+        "genderCode": "male",
+        "madhhabCode": "shafii",
+        "rakah": "1"
+      },
+      "response": {
+        "status": 404,
+        "url": "https://prayday.io/api/prayer?prayerCode=fajr&languageCode=en&script=cyrillic&genderCode=male&madhhabCode=shafii&rakah=1",
+        "body": {
+          "message": "Language not found",
+          "error": "Not Found",
+          "statusCode": 404
+        }
+      }
+    },
+    {
+      "context": {
+        "prayerCode": "fajr",
+        "languageCode": "en",
+        "script": "cyrillic",
+        "genderCode": "male",
+        "madhhabCode": "maliki",
+        "rakah": "1"
+      },
+      "response": {
+        "status": 404,
+        "url": "https://prayday.io/api/prayer?prayerCode=fajr&languageCode=en&script=cyrillic&genderCode=male&madhhabCode=maliki&rakah=1",
+        "body": {
+          "message": "Language not found",
+          "error": "Not Found",
+          "statusCode": 404
+        }
+      }
+    },
+    {
+      "context": {
+        "prayerCode": "fajr",
+        "languageCode": "en",
+        "script": "cyrillic",
+        "genderCode": "male",
+        "madhhabCode": "hanbali",
+        "rakah": "1"
+      },
+      "response": {
+        "status": 404,
+        "url": "https://prayday.io/api/prayer?prayerCode=fajr&languageCode=en&script=cyrillic&genderCode=male&madhhabCode=hanbali&rakah=1",
+        "body": {
+          "message": "Language not found",
+          "error": "Not Found",
+          "statusCode": 404
+        }
+      }
+    },
+    {
+      "context": {
+        "prayerCode": "fajr",
+        "languageCode": "en",
+        "script": "cyrillic",
+        "genderCode": "female",
+        "madhhabCode": "hanafi",
+        "rakah": "1"
+      },
+      "response": {
+        "status": 404,
+        "url": "https://prayday.io/api/prayer?prayerCode=fajr&languageCode=en&script=cyrillic&genderCode=female&madhhabCode=hanafi&rakah=1",
+        "body": {
+          "message": "Language not found",
+          "error": "Not Found",
+          "statusCode": 404
+        }
+      }
+    },
+    {
+      "context": {
+        "prayerCode": "fajr",
+        "languageCode": "en",
+        "script": "cyrillic",
+        "genderCode": "female",
+        "madhhabCode": "shafii",
+        "rakah": "1"
+      },
+      "response": {
+        "status": 404,
+        "url": "https://prayday.io/api/prayer?prayerCode=fajr&languageCode=en&script=cyrillic&genderCode=female&madhhabCode=shafii&rakah=1",
+        "body": {
+          "message": "Language not found",
+          "error": "Not Found",
+          "statusCode": 404
+        }
+      }
+    },
+    {
+      "context": {
+        "prayerCode": "fajr",
+        "languageCode": "en",
+        "script": "cyrillic",
+        "genderCode": "female",
+        "madhhabCode": "maliki",
+        "rakah": "1"
+      },
+      "response": {
+        "status": 404,
+        "url": "https://prayday.io/api/prayer?prayerCode=fajr&languageCode=en&script=cyrillic&genderCode=female&madhhabCode=maliki&rakah=1",
+        "body": {
+          "message": "Language not found",
+          "error": "Not Found",
+          "statusCode": 404
+        }
+      }
+    },
+    {
+      "context": {
+        "prayerCode": "fajr",
+        "languageCode": "en",
+        "script": "cyrillic",
+        "genderCode": "female",
+        "madhhabCode": "hanbali",
+        "rakah": "1"
+      },
+      "response": {
+        "status": 404,
+        "url": "https://prayday.io/api/prayer?prayerCode=fajr&languageCode=en&script=cyrillic&genderCode=female&madhhabCode=hanbali&rakah=1",
+        "body": {
+          "message": "Language not found",
+          "error": "Not Found",
+          "statusCode": 404
+        }
+      }
+    },
+    {
+      "context": {
+        "prayerCode": "fajr",
+        "languageCode": "ru",
+        "script": "latin",
+        "genderCode": "male",
+        "madhhabCode": "hanafi",
+        "rakah": "1"
+      },
+      "response": {
+        "status": 200,
+        "url": "https://prayday.io/api/prayer?prayerCode=fajr&languageCode=ru&script=latin&genderCode=male&madhhabCode=hanafi&rakah=1",
+        "body": {
+          "data": {
+            "context": {
+              "prayerCode": "fajr",
+              "madhhabCode": "hanafi",
+              "genderCode": "male",
+              "languageCode": "ru",
+              "rakah": 1,
+              "script": "latin",
+              "totalRakahCount": 2
+            },
+            "steps": [
+              {
+                "orderIndex": 1,
+                "stepCode": "takbir",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Встав, он направляет взгляд на место, которое будет касаться его лбом во время земного поклона, поднимает руки до уровня ушей или плеч и произносит:2",
+                  "recitationArabic": "اللَّهُ أَكْبَر",
+                  "translation": "Аллах Велик",
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 2,
+                "stepCode": "qiyam",
+                "recitationMode": "LOUD",
+                "hasRecitation": false,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Стоя прямо, сложите руки на груди.",
+                  "recitationArabic": null,
+                  "translation": null,
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 3,
+                "stepCode": "additional_surah",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": null,
+                "availableSurahs": []
+              },
+              {
+                "orderIndex": 3,
+                "stepCode": "al_fatiha",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Встав, он направляет взгляд на место, которое будет касаться его лбом во время земного поклона, поднимает руки до уровня ушей или плеч и произносит:1",
+                  "recitationArabic": "بِسْمِ اللَّهِ الرَّحْمَـٰنِ الرَّحِيمِ\nالْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ\nالرَّحْمَـٰنِ الرَّحِيمِ\nمَالِكِ يَوْمِ الدِّينِ\nإِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ\nاهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ\nصِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ",
+                  "translation": "Во имя Аллаха, Милостивого, Милосердного!\nХвала Аллаху, Господу миров,\nМилостивому, Милосердному,\nВластелину Дня воздаяния!\nТебе одному мы поклоняемся и Тебя одного молим о помощи.\nВеди нас прямым путем,\nпутем тех, кого Ты облагодетельствовал, не тех, на кого пал гнев, и не заблудших.1",
+                  "transliteration": null
+                },
+                "surahCode": "al_fatiha"
+              },
+              {
+                "orderIndex": 4,
+                "stepCode": "al_fatiha",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Встав, он направляет взгляд на место, которое будет касаться его лбом во время земного поклона, поднимает руки до уровня ушей или плеч и произносит:1",
+                  "recitationArabic": "بِسْمِ اللَّهِ الرَّحْمَـٰنِ الرَّحِيمِ\nالْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ\nالرَّحْمَـٰنِ الرَّحِيمِ\nمَالِكِ يَوْمِ الدِّينِ\nإِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ\nاهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ\nصِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ",
+                  "translation": "Во имя Аллаха, Милостивого, Милосердного!\nХвала Аллаху, Господу миров,\nМилостивому, Милосердному,\nВластелину Дня воздаяния!\nТебе одному мы поклоняемся и Тебя одного молим о помощи.\nВеди нас прямым путем,\nпутем тех, кого Ты облагодетельствовал, не тех, на кого пал гнев, и не заблудших.1",
+                  "transliteration": null
+                },
+                "surahCode": "al_fatiha"
+              },
+              {
+                "orderIndex": 4,
+                "stepCode": "ruku",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Наклонитесь вперёд, положив руки на колени.",
+                  "recitationArabic": "سُبْحَانَ رَبِّيَ الْعَظِيم",
+                  "translation": null,
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 5,
+                "stepCode": "sujud",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Опуститесь в земной поклон, касаясь лбом и носом земли.",
+                  "recitationArabic": "سُبْحَانَ رَبِّيَ الْأَعْلَى",
+                  "translation": null,
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 12,
+                "stepCode": "istiaza",
+                "recitationMode": "SILENT",
+                "hasRecitation": false,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": null,
+                  "recitationArabic": null,
+                  "translation": null,
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 13,
+                "stepCode": "ameen",
+                "recitationMode": "SILENT",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": null,
+                  "recitationArabic": null,
+                  "translation": null,
+                  "transliteration": null
+                }
+              }
+            ]
+          },
+          "meta": {
+            "lastModifiedAt": "2026-05-08T15:36:58.554Z"
+          }
+        }
+      }
+    },
+    {
+      "context": {
+        "prayerCode": "fajr",
+        "languageCode": "ru",
+        "script": "latin",
+        "genderCode": "male",
+        "madhhabCode": "shafii",
+        "rakah": "1"
+      },
+      "response": {
+        "status": 200,
+        "url": "https://prayday.io/api/prayer?prayerCode=fajr&languageCode=ru&script=latin&genderCode=male&madhhabCode=shafii&rakah=1",
+        "body": {
+          "data": {
+            "context": {
+              "prayerCode": "fajr",
+              "madhhabCode": "shafii",
+              "genderCode": "male",
+              "languageCode": "ru",
+              "rakah": 1,
+              "script": "latin",
+              "totalRakahCount": 2
+            },
+            "steps": [
+              {
+                "orderIndex": 1,
+                "stepCode": "takbir",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Встав, он направляет взгляд на место, которое будет касаться его лбом во время земного поклона, поднимает руки до уровня ушей или плеч и произносит:2",
+                  "recitationArabic": "اللَّهُ أَكْبَر",
+                  "translation": "Аллах Велик",
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 2,
+                "stepCode": "qiyam",
+                "recitationMode": "LOUD",
+                "hasRecitation": false,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Стоя прямо, сложите руки на груди.",
+                  "recitationArabic": null,
+                  "translation": null,
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 3,
+                "stepCode": "al_fatiha",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Встав, он направляет взгляд на место, которое будет касаться его лбом во время земного поклона, поднимает руки до уровня ушей или плеч и произносит:1",
+                  "recitationArabic": "بِسْمِ اللَّهِ الرَّحْمَـٰنِ الرَّحِيمِ\nالْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ\nالرَّحْمَـٰنِ الرَّحِيمِ\nمَالِكِ يَوْمِ الدِّينِ\nإِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ\nاهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ\nصِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ",
+                  "translation": "Во имя Аллаха, Милостивого, Милосердного!\nХвала Аллаху, Господу миров,\nМилостивому, Милосердному,\nВластелину Дня воздаяния!\nТебе одному мы поклоняемся и Тебя одного молим о помощи.\nВеди нас прямым путем,\nпутем тех, кого Ты облагодетельствовал, не тех, на кого пал гнев, и не заблудших.1",
+                  "transliteration": null
+                },
+                "surahCode": "al_fatiha"
+              },
+              {
+                "orderIndex": 4,
+                "stepCode": "additional_surah",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": null,
+                "availableSurahs": []
+              },
+              {
+                "orderIndex": 5,
+                "stepCode": "ruku",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Наклонитесь вперёд, положив руки на колени.",
+                  "recitationArabic": "سُبْحَانَ رَبِّيَ الْعَظِيم",
+                  "translation": null,
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 6,
+                "stepCode": "sujud",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Опуститесь в земной поклон, касаясь лбом и носом земли.",
+                  "recitationArabic": "سُبْحَانَ رَبِّيَ الْأَعْلَى",
+                  "translation": null,
+                  "transliteration": null
+                }
+              }
+            ]
+          },
+          "meta": {
+            "lastModifiedAt": "2026-05-08T15:36:58.554Z"
+          }
+        }
+      }
+    },
+    {
+      "context": {
+        "prayerCode": "fajr",
+        "languageCode": "ru",
+        "script": "latin",
+        "genderCode": "male",
+        "madhhabCode": "maliki",
+        "rakah": "1"
+      },
+      "response": {
+        "status": 200,
+        "url": "https://prayday.io/api/prayer?prayerCode=fajr&languageCode=ru&script=latin&genderCode=male&madhhabCode=maliki&rakah=1",
+        "body": {
+          "data": {
+            "context": {
+              "prayerCode": "fajr",
+              "madhhabCode": "maliki",
+              "genderCode": "male",
+              "languageCode": "ru",
+              "rakah": 1,
+              "script": "latin",
+              "totalRakahCount": 2
+            },
+            "steps": [
+              {
+                "orderIndex": 1,
+                "stepCode": "takbir",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Встав, он направляет взгляд на место, которое будет касаться его лбом во время земного поклона, поднимает руки до уровня ушей или плеч и произносит:2",
+                  "recitationArabic": "اللَّهُ أَكْبَر",
+                  "translation": "Аллах Велик",
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 2,
+                "stepCode": "qiyam",
+                "recitationMode": "LOUD",
+                "hasRecitation": false,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Стоя прямо, сложите руки на груди.",
+                  "recitationArabic": null,
+                  "translation": null,
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 3,
+                "stepCode": "al_fatiha",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Встав, он направляет взгляд на место, которое будет касаться его лбом во время земного поклона, поднимает руки до уровня ушей или плеч и произносит:1",
+                  "recitationArabic": "بِسْمِ اللَّهِ الرَّحْمَـٰنِ الرَّحِيمِ\nالْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ\nالرَّحْمَـٰنِ الرَّحِيمِ\nمَالِكِ يَوْمِ الدِّينِ\nإِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ\nاهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ\nصِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ",
+                  "translation": "Во имя Аллаха, Милостивого, Милосердного!\nХвала Аллаху, Господу миров,\nМилостивому, Милосердному,\nВластелину Дня воздаяния!\nТебе одному мы поклоняемся и Тебя одного молим о помощи.\nВеди нас прямым путем,\nпутем тех, кого Ты облагодетельствовал, не тех, на кого пал гнев, и не заблудших.1",
+                  "transliteration": null
+                },
+                "surahCode": "al_fatiha"
+              },
+              {
+                "orderIndex": 4,
+                "stepCode": "additional_surah",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": null,
+                "availableSurahs": []
+              },
+              {
+                "orderIndex": 5,
+                "stepCode": "ruku",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Наклонитесь вперёд, положив руки на колени.",
+                  "recitationArabic": "سُبْحَانَ رَبِّيَ الْعَظِيم",
+                  "translation": null,
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 6,
+                "stepCode": "sujud",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Опуститесь в земной поклон, касаясь лбом и носом земли.",
+                  "recitationArabic": "سُبْحَانَ رَبِّيَ الْأَعْلَى",
+                  "translation": null,
+                  "transliteration": null
+                }
+              }
+            ]
+          },
+          "meta": {
+            "lastModifiedAt": "2026-05-08T15:36:58.554Z"
+          }
+        }
+      }
+    },
+    {
+      "context": {
+        "prayerCode": "fajr",
+        "languageCode": "ru",
+        "script": "latin",
+        "genderCode": "male",
+        "madhhabCode": "hanbali",
+        "rakah": "1"
+      },
+      "response": {
+        "status": 200,
+        "url": "https://prayday.io/api/prayer?prayerCode=fajr&languageCode=ru&script=latin&genderCode=male&madhhabCode=hanbali&rakah=1",
+        "body": {
+          "data": {
+            "context": {
+              "prayerCode": "fajr",
+              "madhhabCode": "hanbali",
+              "genderCode": "male",
+              "languageCode": "ru",
+              "rakah": 1,
+              "script": "latin",
+              "totalRakahCount": 2
+            },
+            "steps": [
+              {
+                "orderIndex": 1,
+                "stepCode": "takbir",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Встав, он направляет взгляд на место, которое будет касаться его лбом во время земного поклона, поднимает руки до уровня ушей или плеч и произносит:2",
+                  "recitationArabic": "اللَّهُ أَكْبَر",
+                  "translation": "Аллах Велик",
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 2,
+                "stepCode": "qiyam",
+                "recitationMode": "LOUD",
+                "hasRecitation": false,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Стоя прямо, сложите руки на груди.",
+                  "recitationArabic": null,
+                  "translation": null,
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 3,
+                "stepCode": "al_fatiha",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Встав, он направляет взгляд на место, которое будет касаться его лбом во время земного поклона, поднимает руки до уровня ушей или плеч и произносит:1",
+                  "recitationArabic": "بِسْمِ اللَّهِ الرَّحْمَـٰنِ الرَّحِيمِ\nالْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ\nالرَّحْمَـٰنِ الرَّحِيمِ\nمَالِكِ يَوْمِ الدِّينِ\nإِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ\nاهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ\nصِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ",
+                  "translation": "Во имя Аллаха, Милостивого, Милосердного!\nХвала Аллаху, Господу миров,\nМилостивому, Милосердному,\nВластелину Дня воздаяния!\nТебе одному мы поклоняемся и Тебя одного молим о помощи.\nВеди нас прямым путем,\nпутем тех, кого Ты облагодетельствовал, не тех, на кого пал гнев, и не заблудших.1",
+                  "transliteration": null
+                },
+                "surahCode": "al_fatiha"
+              },
+              {
+                "orderIndex": 4,
+                "stepCode": "additional_surah",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": null,
+                "availableSurahs": []
+              },
+              {
+                "orderIndex": 5,
+                "stepCode": "ruku",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Наклонитесь вперёд, положив руки на колени.",
+                  "recitationArabic": "سُبْحَانَ رَبِّيَ الْعَظِيم",
+                  "translation": null,
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 6,
+                "stepCode": "sujud",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Опуститесь в земной поклон, касаясь лбом и носом земли.",
+                  "recitationArabic": "سُبْحَانَ رَبِّيَ الْأَعْلَى",
+                  "translation": null,
+                  "transliteration": null
+                }
+              }
+            ]
+          },
+          "meta": {
+            "lastModifiedAt": "2026-05-08T15:36:58.554Z"
+          }
+        }
+      }
+    },
+    {
+      "context": {
+        "prayerCode": "fajr",
+        "languageCode": "ru",
+        "script": "latin",
+        "genderCode": "female",
+        "madhhabCode": "hanafi",
+        "rakah": "1"
+      },
+      "response": {
+        "status": 200,
+        "url": "https://prayday.io/api/prayer?prayerCode=fajr&languageCode=ru&script=latin&genderCode=female&madhhabCode=hanafi&rakah=1",
+        "body": {
+          "data": {
+            "context": {
+              "prayerCode": "fajr",
+              "madhhabCode": "hanafi",
+              "genderCode": "female",
+              "languageCode": "ru",
+              "rakah": 1,
+              "script": "latin",
+              "totalRakahCount": 2
+            },
+            "steps": [
+              {
+                "orderIndex": 1,
+                "stepCode": "takbir",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Встав, он направляет взгляд на место, которое будет касаться его лбом во время земного поклона, поднимает руки до уровня ушей или плеч и произносит:2",
+                  "recitationArabic": "اللَّهُ أَكْبَر",
+                  "translation": "Аллах Велик",
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 2,
+                "stepCode": "qiyam",
+                "recitationMode": "LOUD",
+                "hasRecitation": false,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Стоя прямо, сложите руки на груди.",
+                  "recitationArabic": null,
+                  "translation": null,
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 3,
+                "stepCode": "al_fatiha",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Встав, он направляет взгляд на место, которое будет касаться его лбом во время земного поклона, поднимает руки до уровня ушей или плеч и произносит:1",
+                  "recitationArabic": "بِسْمِ اللَّهِ الرَّحْمَـٰنِ الرَّحِيمِ\nالْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ\nالرَّحْمَـٰنِ الرَّحِيمِ\nمَالِكِ يَوْمِ الدِّينِ\nإِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ\nاهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ\nصِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ",
+                  "translation": "Во имя Аллаха, Милостивого, Милосердного!\nХвала Аллаху, Господу миров,\nМилостивому, Милосердному,\nВластелину Дня воздаяния!\nТебе одному мы поклоняемся и Тебя одного молим о помощи.\nВеди нас прямым путем,\nпутем тех, кого Ты облагодетельствовал, не тех, на кого пал гнев, и не заблудших.1",
+                  "transliteration": null
+                },
+                "surahCode": "al_fatiha"
+              },
+              {
+                "orderIndex": 4,
+                "stepCode": "additional_surah",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": null,
+                "availableSurahs": []
+              },
+              {
+                "orderIndex": 5,
+                "stepCode": "ruku",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Наклонитесь вперёд, положив руки на колени.",
+                  "recitationArabic": "سُبْحَانَ رَبِّيَ الْعَظِيم",
+                  "translation": null,
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 6,
+                "stepCode": "sujud",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Опуститесь в земной поклон, касаясь лбом и носом земли.",
+                  "recitationArabic": "سُبْحَانَ رَبِّيَ الْأَعْلَى",
+                  "translation": null,
+                  "transliteration": null
+                }
+              }
+            ]
+          },
+          "meta": {
+            "lastModifiedAt": "2026-05-08T15:36:58.554Z"
+          }
+        }
+      }
+    },
+    {
+      "context": {
+        "prayerCode": "fajr",
+        "languageCode": "ru",
+        "script": "latin",
+        "genderCode": "female",
+        "madhhabCode": "shafii",
+        "rakah": "1"
+      },
+      "response": {
+        "status": 200,
+        "url": "https://prayday.io/api/prayer?prayerCode=fajr&languageCode=ru&script=latin&genderCode=female&madhhabCode=shafii&rakah=1",
+        "body": {
+          "data": {
+            "context": {
+              "prayerCode": "fajr",
+              "madhhabCode": "shafii",
+              "genderCode": "female",
+              "languageCode": "ru",
+              "rakah": 1,
+              "script": "latin",
+              "totalRakahCount": 2
+            },
+            "steps": [
+              {
+                "orderIndex": 1,
+                "stepCode": "takbir",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Встав, он направляет взгляд на место, которое будет касаться его лбом во время земного поклона, поднимает руки до уровня ушей или плеч и произносит:2",
+                  "recitationArabic": "اللَّهُ أَكْبَر",
+                  "translation": "Аллах Велик",
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 2,
+                "stepCode": "qiyam",
+                "recitationMode": "LOUD",
+                "hasRecitation": false,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Стоя прямо, сложите руки на груди.",
+                  "recitationArabic": null,
+                  "translation": null,
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 3,
+                "stepCode": "al_fatiha",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Встав, он направляет взгляд на место, которое будет касаться его лбом во время земного поклона, поднимает руки до уровня ушей или плеч и произносит:1",
+                  "recitationArabic": "بِسْمِ اللَّهِ الرَّحْمَـٰنِ الرَّحِيمِ\nالْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ\nالرَّحْمَـٰنِ الرَّحِيمِ\nمَالِكِ يَوْمِ الدِّينِ\nإِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ\nاهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ\nصِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ",
+                  "translation": "Во имя Аллаха, Милостивого, Милосердного!\nХвала Аллаху, Господу миров,\nМилостивому, Милосердному,\nВластелину Дня воздаяния!\nТебе одному мы поклоняемся и Тебя одного молим о помощи.\nВеди нас прямым путем,\nпутем тех, кого Ты облагодетельствовал, не тех, на кого пал гнев, и не заблудших.1",
+                  "transliteration": null
+                },
+                "surahCode": "al_fatiha"
+              },
+              {
+                "orderIndex": 4,
+                "stepCode": "additional_surah",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": null,
+                "availableSurahs": []
+              },
+              {
+                "orderIndex": 5,
+                "stepCode": "ruku",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Наклонитесь вперёд, положив руки на колени.",
+                  "recitationArabic": "سُبْحَانَ رَبِّيَ الْعَظِيم",
+                  "translation": null,
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 6,
+                "stepCode": "sujud",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Опуститесь в земной поклон, касаясь лбом и носом земли.",
+                  "recitationArabic": "سُبْحَانَ رَبِّيَ الْأَعْلَى",
+                  "translation": null,
+                  "transliteration": null
+                }
+              }
+            ]
+          },
+          "meta": {
+            "lastModifiedAt": "2026-05-08T15:36:58.554Z"
+          }
+        }
+      }
+    },
+    {
+      "context": {
+        "prayerCode": "fajr",
+        "languageCode": "ru",
+        "script": "latin",
+        "genderCode": "female",
+        "madhhabCode": "maliki",
+        "rakah": "1"
+      },
+      "response": {
+        "status": 200,
+        "url": "https://prayday.io/api/prayer?prayerCode=fajr&languageCode=ru&script=latin&genderCode=female&madhhabCode=maliki&rakah=1",
+        "body": {
+          "data": {
+            "context": {
+              "prayerCode": "fajr",
+              "madhhabCode": "maliki",
+              "genderCode": "female",
+              "languageCode": "ru",
+              "rakah": 1,
+              "script": "latin",
+              "totalRakahCount": 2
+            },
+            "steps": [
+              {
+                "orderIndex": 1,
+                "stepCode": "takbir",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Встав, он направляет взгляд на место, которое будет касаться его лбом во время земного поклона, поднимает руки до уровня ушей или плеч и произносит:2",
+                  "recitationArabic": "اللَّهُ أَكْبَر",
+                  "translation": "Аллах Велик",
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 2,
+                "stepCode": "qiyam",
+                "recitationMode": "LOUD",
+                "hasRecitation": false,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Стоя прямо, сложите руки на груди.",
+                  "recitationArabic": null,
+                  "translation": null,
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 3,
+                "stepCode": "al_fatiha",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Встав, он направляет взгляд на место, которое будет касаться его лбом во время земного поклона, поднимает руки до уровня ушей или плеч и произносит:1",
+                  "recitationArabic": "بِسْمِ اللَّهِ الرَّحْمَـٰنِ الرَّحِيمِ\nالْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ\nالرَّحْمَـٰنِ الرَّحِيمِ\nمَالِكِ يَوْمِ الدِّينِ\nإِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ\nاهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ\nصِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ",
+                  "translation": "Во имя Аллаха, Милостивого, Милосердного!\nХвала Аллаху, Господу миров,\nМилостивому, Милосердному,\nВластелину Дня воздаяния!\nТебе одному мы поклоняемся и Тебя одного молим о помощи.\nВеди нас прямым путем,\nпутем тех, кого Ты облагодетельствовал, не тех, на кого пал гнев, и не заблудших.1",
+                  "transliteration": null
+                },
+                "surahCode": "al_fatiha"
+              },
+              {
+                "orderIndex": 4,
+                "stepCode": "additional_surah",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": null,
+                "availableSurahs": []
+              },
+              {
+                "orderIndex": 5,
+                "stepCode": "ruku",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Наклонитесь вперёд, положив руки на колени.",
+                  "recitationArabic": "سُبْحَانَ رَبِّيَ الْعَظِيم",
+                  "translation": null,
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 6,
+                "stepCode": "sujud",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Опуститесь в земной поклон, касаясь лбом и носом земли.",
+                  "recitationArabic": "سُبْحَانَ رَبِّيَ الْأَعْلَى",
+                  "translation": null,
+                  "transliteration": null
+                }
+              }
+            ]
+          },
+          "meta": {
+            "lastModifiedAt": "2026-05-08T15:36:58.554Z"
+          }
+        }
+      }
+    },
+    {
+      "context": {
+        "prayerCode": "fajr",
+        "languageCode": "ru",
+        "script": "latin",
+        "genderCode": "female",
+        "madhhabCode": "hanbali",
+        "rakah": "1"
+      },
+      "response": {
+        "status": 200,
+        "url": "https://prayday.io/api/prayer?prayerCode=fajr&languageCode=ru&script=latin&genderCode=female&madhhabCode=hanbali&rakah=1",
+        "body": {
+          "data": {
+            "context": {
+              "prayerCode": "fajr",
+              "madhhabCode": "hanbali",
+              "genderCode": "female",
+              "languageCode": "ru",
+              "rakah": 1,
+              "script": "latin",
+              "totalRakahCount": 2
+            },
+            "steps": [
+              {
+                "orderIndex": 1,
+                "stepCode": "takbir",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Встав, он направляет взгляд на место, которое будет касаться его лбом во время земного поклона, поднимает руки до уровня ушей или плеч и произносит:2",
+                  "recitationArabic": "اللَّهُ أَكْبَر",
+                  "translation": "Аллах Велик",
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 2,
+                "stepCode": "qiyam",
+                "recitationMode": "LOUD",
+                "hasRecitation": false,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Стоя прямо, сложите руки на груди.",
+                  "recitationArabic": null,
+                  "translation": null,
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 3,
+                "stepCode": "al_fatiha",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Встав, он направляет взгляд на место, которое будет касаться его лбом во время земного поклона, поднимает руки до уровня ушей или плеч и произносит:1",
+                  "recitationArabic": "بِسْمِ اللَّهِ الرَّحْمَـٰنِ الرَّحِيمِ\nالْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ\nالرَّحْمَـٰنِ الرَّحِيمِ\nمَالِكِ يَوْمِ الدِّينِ\nإِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ\nاهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ\nصِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ",
+                  "translation": "Во имя Аллаха, Милостивого, Милосердного!\nХвала Аллаху, Господу миров,\nМилостивому, Милосердному,\nВластелину Дня воздаяния!\nТебе одному мы поклоняемся и Тебя одного молим о помощи.\nВеди нас прямым путем,\nпутем тех, кого Ты облагодетельствовал, не тех, на кого пал гнев, и не заблудших.1",
+                  "transliteration": null
+                },
+                "surahCode": "al_fatiha"
+              },
+              {
+                "orderIndex": 4,
+                "stepCode": "additional_surah",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": null,
+                "availableSurahs": []
+              },
+              {
+                "orderIndex": 5,
+                "stepCode": "ruku",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Наклонитесь вперёд, положив руки на колени.",
+                  "recitationArabic": "سُبْحَانَ رَبِّيَ الْعَظِيم",
+                  "translation": null,
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 6,
+                "stepCode": "sujud",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Опуститесь в земной поклон, касаясь лбом и носом земли.",
+                  "recitationArabic": "سُبْحَانَ رَبِّيَ الْأَعْلَى",
+                  "translation": null,
+                  "transliteration": null
+                }
+              }
+            ]
+          },
+          "meta": {
+            "lastModifiedAt": "2026-05-08T15:36:58.554Z"
+          }
+        }
+      }
+    },
+    {
+      "context": {
+        "prayerCode": "fajr",
+        "languageCode": "ru",
+        "script": "cyrillic",
+        "genderCode": "male",
+        "madhhabCode": "hanafi",
+        "rakah": "1"
+      },
+      "response": {
+        "status": 200,
+        "url": "https://prayday.io/api/prayer?prayerCode=fajr&languageCode=ru&script=cyrillic&genderCode=male&madhhabCode=hanafi&rakah=1",
+        "body": {
+          "data": {
+            "context": {
+              "prayerCode": "fajr",
+              "madhhabCode": "hanafi",
+              "genderCode": "male",
+              "languageCode": "ru",
+              "rakah": 1,
+              "script": "cyrillic",
+              "totalRakahCount": 2
+            },
+            "steps": [
+              {
+                "orderIndex": 1,
+                "stepCode": "takbir",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Встав, он направляет взгляд на место, которое будет касаться его лбом во время земного поклона, поднимает руки до уровня ушей или плеч и произносит:2",
+                  "recitationArabic": "اللَّهُ أَكْبَر",
+                  "translation": "Аллах Велик",
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 2,
+                "stepCode": "qiyam",
+                "recitationMode": "LOUD",
+                "hasRecitation": false,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Стоя прямо, сложите руки на груди.",
+                  "recitationArabic": null,
+                  "translation": null,
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 3,
+                "stepCode": "additional_surah",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": null,
+                "availableSurahs": []
+              },
+              {
+                "orderIndex": 3,
+                "stepCode": "al_fatiha",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Встав, он направляет взгляд на место, которое будет касаться его лбом во время земного поклона, поднимает руки до уровня ушей или плеч и произносит:1",
+                  "recitationArabic": "بِسْمِ اللَّهِ الرَّحْمَـٰنِ الرَّحِيمِ\nالْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ\nالرَّحْمَـٰنِ الرَّحِيمِ\nمَالِكِ يَوْمِ الدِّينِ\nإِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ\nاهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ\nصِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ",
+                  "translation": "Во имя Аллаха, Милостивого, Милосердного!\nХвала Аллаху, Господу миров,\nМилостивому, Милосердному,\nВластелину Дня воздаяния!\nТебе одному мы поклоняемся и Тебя одного молим о помощи.\nВеди нас прямым путем,\nпутем тех, кого Ты облагодетельствовал, не тех, на кого пал гнев, и не заблудших.1",
+                  "transliteration": null
+                },
+                "surahCode": "al_fatiha"
+              },
+              {
+                "orderIndex": 4,
+                "stepCode": "al_fatiha",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Встав, он направляет взгляд на место, которое будет касаться его лбом во время земного поклона, поднимает руки до уровня ушей или плеч и произносит:1",
+                  "recitationArabic": "بِسْمِ اللَّهِ الرَّحْمَـٰنِ الرَّحِيمِ\nالْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ\nالرَّحْمَـٰنِ الرَّحِيمِ\nمَالِكِ يَوْمِ الدِّينِ\nإِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ\nاهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ\nصِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ",
+                  "translation": "Во имя Аллаха, Милостивого, Милосердного!\nХвала Аллаху, Господу миров,\nМилостивому, Милосердному,\nВластелину Дня воздаяния!\nТебе одному мы поклоняемся и Тебя одного молим о помощи.\nВеди нас прямым путем,\nпутем тех, кого Ты облагодетельствовал, не тех, на кого пал гнев, и не заблудших.1",
+                  "transliteration": null
+                },
+                "surahCode": "al_fatiha"
+              },
+              {
+                "orderIndex": 4,
+                "stepCode": "ruku",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Наклонитесь вперёд, положив руки на колени.",
+                  "recitationArabic": "سُبْحَانَ رَبِّيَ الْعَظِيم",
+                  "translation": null,
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 5,
+                "stepCode": "sujud",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Опуститесь в земной поклон, касаясь лбом и носом земли.",
+                  "recitationArabic": "سُبْحَانَ رَبِّيَ الْأَعْلَى",
+                  "translation": null,
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 12,
+                "stepCode": "istiaza",
+                "recitationMode": "SILENT",
+                "hasRecitation": false,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": null,
+                  "recitationArabic": null,
+                  "translation": null,
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 13,
+                "stepCode": "ameen",
+                "recitationMode": "SILENT",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": null,
+                  "recitationArabic": null,
+                  "translation": null,
+                  "transliteration": null
+                }
+              }
+            ]
+          },
+          "meta": {
+            "lastModifiedAt": "2026-05-08T15:36:58.554Z"
+          }
+        }
+      }
+    },
+    {
+      "context": {
+        "prayerCode": "fajr",
+        "languageCode": "ru",
+        "script": "cyrillic",
+        "genderCode": "male",
+        "madhhabCode": "shafii",
+        "rakah": "1"
+      },
+      "response": {
+        "status": 200,
+        "url": "https://prayday.io/api/prayer?prayerCode=fajr&languageCode=ru&script=cyrillic&genderCode=male&madhhabCode=shafii&rakah=1",
+        "body": {
+          "data": {
+            "context": {
+              "prayerCode": "fajr",
+              "madhhabCode": "shafii",
+              "genderCode": "male",
+              "languageCode": "ru",
+              "rakah": 1,
+              "script": "cyrillic",
+              "totalRakahCount": 2
+            },
+            "steps": [
+              {
+                "orderIndex": 1,
+                "stepCode": "takbir",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Встав, он направляет взгляд на место, которое будет касаться его лбом во время земного поклона, поднимает руки до уровня ушей или плеч и произносит:2",
+                  "recitationArabic": "اللَّهُ أَكْبَر",
+                  "translation": "Аллах Велик",
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 2,
+                "stepCode": "qiyam",
+                "recitationMode": "LOUD",
+                "hasRecitation": false,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Стоя прямо, сложите руки на груди.",
+                  "recitationArabic": null,
+                  "translation": null,
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 3,
+                "stepCode": "al_fatiha",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Встав, он направляет взгляд на место, которое будет касаться его лбом во время земного поклона, поднимает руки до уровня ушей или плеч и произносит:1",
+                  "recitationArabic": "بِسْمِ اللَّهِ الرَّحْمَـٰنِ الرَّحِيمِ\nالْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ\nالرَّحْمَـٰنِ الرَّحِيمِ\nمَالِكِ يَوْمِ الدِّينِ\nإِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ\nاهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ\nصِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ",
+                  "translation": "Во имя Аллаха, Милостивого, Милосердного!\nХвала Аллаху, Господу миров,\nМилостивому, Милосердному,\nВластелину Дня воздаяния!\nТебе одному мы поклоняемся и Тебя одного молим о помощи.\nВеди нас прямым путем,\nпутем тех, кого Ты облагодетельствовал, не тех, на кого пал гнев, и не заблудших.1",
+                  "transliteration": null
+                },
+                "surahCode": "al_fatiha"
+              },
+              {
+                "orderIndex": 4,
+                "stepCode": "additional_surah",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": null,
+                "availableSurahs": []
+              },
+              {
+                "orderIndex": 5,
+                "stepCode": "ruku",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Наклонитесь вперёд, положив руки на колени.",
+                  "recitationArabic": "سُبْحَانَ رَبِّيَ الْعَظِيم",
+                  "translation": null,
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 6,
+                "stepCode": "sujud",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Опуститесь в земной поклон, касаясь лбом и носом земли.",
+                  "recitationArabic": "سُبْحَانَ رَبِّيَ الْأَعْلَى",
+                  "translation": null,
+                  "transliteration": null
+                }
+              }
+            ]
+          },
+          "meta": {
+            "lastModifiedAt": "2026-05-08T15:36:58.554Z"
+          }
+        }
+      }
+    },
+    {
+      "context": {
+        "prayerCode": "fajr",
+        "languageCode": "ru",
+        "script": "cyrillic",
+        "genderCode": "male",
+        "madhhabCode": "maliki",
+        "rakah": "1"
+      },
+      "response": {
+        "status": 200,
+        "url": "https://prayday.io/api/prayer?prayerCode=fajr&languageCode=ru&script=cyrillic&genderCode=male&madhhabCode=maliki&rakah=1",
+        "body": {
+          "data": {
+            "context": {
+              "prayerCode": "fajr",
+              "madhhabCode": "maliki",
+              "genderCode": "male",
+              "languageCode": "ru",
+              "rakah": 1,
+              "script": "cyrillic",
+              "totalRakahCount": 2
+            },
+            "steps": [
+              {
+                "orderIndex": 1,
+                "stepCode": "takbir",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Встав, он направляет взгляд на место, которое будет касаться его лбом во время земного поклона, поднимает руки до уровня ушей или плеч и произносит:2",
+                  "recitationArabic": "اللَّهُ أَكْبَر",
+                  "translation": "Аллах Велик",
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 2,
+                "stepCode": "qiyam",
+                "recitationMode": "LOUD",
+                "hasRecitation": false,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Стоя прямо, сложите руки на груди.",
+                  "recitationArabic": null,
+                  "translation": null,
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 3,
+                "stepCode": "al_fatiha",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Встав, он направляет взгляд на место, которое будет касаться его лбом во время земного поклона, поднимает руки до уровня ушей или плеч и произносит:1",
+                  "recitationArabic": "بِسْمِ اللَّهِ الرَّحْمَـٰنِ الرَّحِيمِ\nالْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ\nالرَّحْمَـٰنِ الرَّحِيمِ\nمَالِكِ يَوْمِ الدِّينِ\nإِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ\nاهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ\nصِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ",
+                  "translation": "Во имя Аллаха, Милостивого, Милосердного!\nХвала Аллаху, Господу миров,\nМилостивому, Милосердному,\nВластелину Дня воздаяния!\nТебе одному мы поклоняемся и Тебя одного молим о помощи.\nВеди нас прямым путем,\nпутем тех, кого Ты облагодетельствовал, не тех, на кого пал гнев, и не заблудших.1",
+                  "transliteration": null
+                },
+                "surahCode": "al_fatiha"
+              },
+              {
+                "orderIndex": 4,
+                "stepCode": "additional_surah",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": null,
+                "availableSurahs": []
+              },
+              {
+                "orderIndex": 5,
+                "stepCode": "ruku",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Наклонитесь вперёд, положив руки на колени.",
+                  "recitationArabic": "سُبْحَانَ رَبِّيَ الْعَظِيم",
+                  "translation": null,
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 6,
+                "stepCode": "sujud",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Опуститесь в земной поклон, касаясь лбом и носом земли.",
+                  "recitationArabic": "سُبْحَانَ رَبِّيَ الْأَعْلَى",
+                  "translation": null,
+                  "transliteration": null
+                }
+              }
+            ]
+          },
+          "meta": {
+            "lastModifiedAt": "2026-05-08T15:36:58.554Z"
+          }
+        }
+      }
+    },
+    {
+      "context": {
+        "prayerCode": "fajr",
+        "languageCode": "ru",
+        "script": "cyrillic",
+        "genderCode": "male",
+        "madhhabCode": "hanbali",
+        "rakah": "1"
+      },
+      "response": {
+        "status": 200,
+        "url": "https://prayday.io/api/prayer?prayerCode=fajr&languageCode=ru&script=cyrillic&genderCode=male&madhhabCode=hanbali&rakah=1",
+        "body": {
+          "data": {
+            "context": {
+              "prayerCode": "fajr",
+              "madhhabCode": "hanbali",
+              "genderCode": "male",
+              "languageCode": "ru",
+              "rakah": 1,
+              "script": "cyrillic",
+              "totalRakahCount": 2
+            },
+            "steps": [
+              {
+                "orderIndex": 1,
+                "stepCode": "takbir",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Встав, он направляет взгляд на место, которое будет касаться его лбом во время земного поклона, поднимает руки до уровня ушей или плеч и произносит:2",
+                  "recitationArabic": "اللَّهُ أَكْبَر",
+                  "translation": "Аллах Велик",
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 2,
+                "stepCode": "qiyam",
+                "recitationMode": "LOUD",
+                "hasRecitation": false,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Стоя прямо, сложите руки на груди.",
+                  "recitationArabic": null,
+                  "translation": null,
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 3,
+                "stepCode": "al_fatiha",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Встав, он направляет взгляд на место, которое будет касаться его лбом во время земного поклона, поднимает руки до уровня ушей или плеч и произносит:1",
+                  "recitationArabic": "بِسْمِ اللَّهِ الرَّحْمَـٰنِ الرَّحِيمِ\nالْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ\nالرَّحْمَـٰنِ الرَّحِيمِ\nمَالِكِ يَوْمِ الدِّينِ\nإِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ\nاهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ\nصِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ",
+                  "translation": "Во имя Аллаха, Милостивого, Милосердного!\nХвала Аллаху, Господу миров,\nМилостивому, Милосердному,\nВластелину Дня воздаяния!\nТебе одному мы поклоняемся и Тебя одного молим о помощи.\nВеди нас прямым путем,\nпутем тех, кого Ты облагодетельствовал, не тех, на кого пал гнев, и не заблудших.1",
+                  "transliteration": null
+                },
+                "surahCode": "al_fatiha"
+              },
+              {
+                "orderIndex": 4,
+                "stepCode": "additional_surah",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": null,
+                "availableSurahs": []
+              },
+              {
+                "orderIndex": 5,
+                "stepCode": "ruku",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Наклонитесь вперёд, положив руки на колени.",
+                  "recitationArabic": "سُبْحَانَ رَبِّيَ الْعَظِيم",
+                  "translation": null,
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 6,
+                "stepCode": "sujud",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Опуститесь в земной поклон, касаясь лбом и носом земли.",
+                  "recitationArabic": "سُبْحَانَ رَبِّيَ الْأَعْلَى",
+                  "translation": null,
+                  "transliteration": null
+                }
+              }
+            ]
+          },
+          "meta": {
+            "lastModifiedAt": "2026-05-08T15:36:58.554Z"
+          }
+        }
+      }
+    },
+    {
+      "context": {
+        "prayerCode": "fajr",
+        "languageCode": "ru",
+        "script": "cyrillic",
+        "genderCode": "female",
+        "madhhabCode": "hanafi",
+        "rakah": "1"
+      },
+      "response": {
+        "status": 200,
+        "url": "https://prayday.io/api/prayer?prayerCode=fajr&languageCode=ru&script=cyrillic&genderCode=female&madhhabCode=hanafi&rakah=1",
+        "body": {
+          "data": {
+            "context": {
+              "prayerCode": "fajr",
+              "madhhabCode": "hanafi",
+              "genderCode": "female",
+              "languageCode": "ru",
+              "rakah": 1,
+              "script": "cyrillic",
+              "totalRakahCount": 2
+            },
+            "steps": [
+              {
+                "orderIndex": 1,
+                "stepCode": "takbir",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Встав, он направляет взгляд на место, которое будет касаться его лбом во время земного поклона, поднимает руки до уровня ушей или плеч и произносит:2",
+                  "recitationArabic": "اللَّهُ أَكْبَر",
+                  "translation": "Аллах Велик",
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 2,
+                "stepCode": "qiyam",
+                "recitationMode": "LOUD",
+                "hasRecitation": false,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Стоя прямо, сложите руки на груди.",
+                  "recitationArabic": null,
+                  "translation": null,
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 3,
+                "stepCode": "al_fatiha",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Встав, он направляет взгляд на место, которое будет касаться его лбом во время земного поклона, поднимает руки до уровня ушей или плеч и произносит:1",
+                  "recitationArabic": "بِسْمِ اللَّهِ الرَّحْمَـٰنِ الرَّحِيمِ\nالْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ\nالرَّحْمَـٰنِ الرَّحِيمِ\nمَالِكِ يَوْمِ الدِّينِ\nإِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ\nاهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ\nصِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ",
+                  "translation": "Во имя Аллаха, Милостивого, Милосердного!\nХвала Аллаху, Господу миров,\nМилостивому, Милосердному,\nВластелину Дня воздаяния!\nТебе одному мы поклоняемся и Тебя одного молим о помощи.\nВеди нас прямым путем,\nпутем тех, кого Ты облагодетельствовал, не тех, на кого пал гнев, и не заблудших.1",
+                  "transliteration": null
+                },
+                "surahCode": "al_fatiha"
+              },
+              {
+                "orderIndex": 4,
+                "stepCode": "additional_surah",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": null,
+                "availableSurahs": []
+              },
+              {
+                "orderIndex": 5,
+                "stepCode": "ruku",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Наклонитесь вперёд, положив руки на колени.",
+                  "recitationArabic": "سُبْحَانَ رَبِّيَ الْعَظِيم",
+                  "translation": null,
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 6,
+                "stepCode": "sujud",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Опуститесь в земной поклон, касаясь лбом и носом земли.",
+                  "recitationArabic": "سُبْحَانَ رَبِّيَ الْأَعْلَى",
+                  "translation": null,
+                  "transliteration": null
+                }
+              }
+            ]
+          },
+          "meta": {
+            "lastModifiedAt": "2026-05-08T15:36:58.554Z"
+          }
+        }
+      }
+    },
+    {
+      "context": {
+        "prayerCode": "fajr",
+        "languageCode": "ru",
+        "script": "cyrillic",
+        "genderCode": "female",
+        "madhhabCode": "shafii",
+        "rakah": "1"
+      },
+      "response": {
+        "status": 200,
+        "url": "https://prayday.io/api/prayer?prayerCode=fajr&languageCode=ru&script=cyrillic&genderCode=female&madhhabCode=shafii&rakah=1",
+        "body": {
+          "data": {
+            "context": {
+              "prayerCode": "fajr",
+              "madhhabCode": "shafii",
+              "genderCode": "female",
+              "languageCode": "ru",
+              "rakah": 1,
+              "script": "cyrillic",
+              "totalRakahCount": 2
+            },
+            "steps": [
+              {
+                "orderIndex": 1,
+                "stepCode": "takbir",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Встав, он направляет взгляд на место, которое будет касаться его лбом во время земного поклона, поднимает руки до уровня ушей или плеч и произносит:2",
+                  "recitationArabic": "اللَّهُ أَكْبَر",
+                  "translation": "Аллах Велик",
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 2,
+                "stepCode": "qiyam",
+                "recitationMode": "LOUD",
+                "hasRecitation": false,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Стоя прямо, сложите руки на груди.",
+                  "recitationArabic": null,
+                  "translation": null,
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 3,
+                "stepCode": "al_fatiha",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Встав, он направляет взгляд на место, которое будет касаться его лбом во время земного поклона, поднимает руки до уровня ушей или плеч и произносит:1",
+                  "recitationArabic": "بِسْمِ اللَّهِ الرَّحْمَـٰنِ الرَّحِيمِ\nالْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ\nالرَّحْمَـٰنِ الرَّحِيمِ\nمَالِكِ يَوْمِ الدِّينِ\nإِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ\nاهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ\nصِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ",
+                  "translation": "Во имя Аллаха, Милостивого, Милосердного!\nХвала Аллаху, Господу миров,\nМилостивому, Милосердному,\nВластелину Дня воздаяния!\nТебе одному мы поклоняемся и Тебя одного молим о помощи.\nВеди нас прямым путем,\nпутем тех, кого Ты облагодетельствовал, не тех, на кого пал гнев, и не заблудших.1",
+                  "transliteration": null
+                },
+                "surahCode": "al_fatiha"
+              },
+              {
+                "orderIndex": 4,
+                "stepCode": "additional_surah",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": null,
+                "availableSurahs": []
+              },
+              {
+                "orderIndex": 5,
+                "stepCode": "ruku",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Наклонитесь вперёд, положив руки на колени.",
+                  "recitationArabic": "سُبْحَانَ رَبِّيَ الْعَظِيم",
+                  "translation": null,
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 6,
+                "stepCode": "sujud",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Опуститесь в земной поклон, касаясь лбом и носом земли.",
+                  "recitationArabic": "سُبْحَانَ رَبِّيَ الْأَعْلَى",
+                  "translation": null,
+                  "transliteration": null
+                }
+              }
+            ]
+          },
+          "meta": {
+            "lastModifiedAt": "2026-05-08T15:36:58.554Z"
+          }
+        }
+      }
+    },
+    {
+      "context": {
+        "prayerCode": "fajr",
+        "languageCode": "ru",
+        "script": "cyrillic",
+        "genderCode": "female",
+        "madhhabCode": "maliki",
+        "rakah": "1"
+      },
+      "response": {
+        "status": 200,
+        "url": "https://prayday.io/api/prayer?prayerCode=fajr&languageCode=ru&script=cyrillic&genderCode=female&madhhabCode=maliki&rakah=1",
+        "body": {
+          "data": {
+            "context": {
+              "prayerCode": "fajr",
+              "madhhabCode": "maliki",
+              "genderCode": "female",
+              "languageCode": "ru",
+              "rakah": 1,
+              "script": "cyrillic",
+              "totalRakahCount": 2
+            },
+            "steps": [
+              {
+                "orderIndex": 1,
+                "stepCode": "takbir",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Встав, он направляет взгляд на место, которое будет касаться его лбом во время земного поклона, поднимает руки до уровня ушей или плеч и произносит:2",
+                  "recitationArabic": "اللَّهُ أَكْبَر",
+                  "translation": "Аллах Велик",
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 2,
+                "stepCode": "qiyam",
+                "recitationMode": "LOUD",
+                "hasRecitation": false,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Стоя прямо, сложите руки на груди.",
+                  "recitationArabic": null,
+                  "translation": null,
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 3,
+                "stepCode": "al_fatiha",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Встав, он направляет взгляд на место, которое будет касаться его лбом во время земного поклона, поднимает руки до уровня ушей или плеч и произносит:1",
+                  "recitationArabic": "بِسْمِ اللَّهِ الرَّحْمَـٰنِ الرَّحِيمِ\nالْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ\nالرَّحْمَـٰنِ الرَّحِيمِ\nمَالِكِ يَوْمِ الدِّينِ\nإِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ\nاهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ\nصِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ",
+                  "translation": "Во имя Аллаха, Милостивого, Милосердного!\nХвала Аллаху, Господу миров,\nМилостивому, Милосердному,\nВластелину Дня воздаяния!\nТебе одному мы поклоняемся и Тебя одного молим о помощи.\nВеди нас прямым путем,\nпутем тех, кого Ты облагодетельствовал, не тех, на кого пал гнев, и не заблудших.1",
+                  "transliteration": null
+                },
+                "surahCode": "al_fatiha"
+              },
+              {
+                "orderIndex": 4,
+                "stepCode": "additional_surah",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": null,
+                "availableSurahs": []
+              },
+              {
+                "orderIndex": 5,
+                "stepCode": "ruku",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Наклонитесь вперёд, положив руки на колени.",
+                  "recitationArabic": "سُبْحَانَ رَبِّيَ الْعَظِيم",
+                  "translation": null,
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 6,
+                "stepCode": "sujud",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Опуститесь в земной поклон, касаясь лбом и носом земли.",
+                  "recitationArabic": "سُبْحَانَ رَبِّيَ الْأَعْلَى",
+                  "translation": null,
+                  "transliteration": null
+                }
+              }
+            ]
+          },
+          "meta": {
+            "lastModifiedAt": "2026-05-08T15:36:58.554Z"
+          }
+        }
+      }
+    },
+    {
+      "context": {
+        "prayerCode": "fajr",
+        "languageCode": "ru",
+        "script": "cyrillic",
+        "genderCode": "female",
+        "madhhabCode": "hanbali",
+        "rakah": "1"
+      },
+      "response": {
+        "status": 200,
+        "url": "https://prayday.io/api/prayer?prayerCode=fajr&languageCode=ru&script=cyrillic&genderCode=female&madhhabCode=hanbali&rakah=1",
+        "body": {
+          "data": {
+            "context": {
+              "prayerCode": "fajr",
+              "madhhabCode": "hanbali",
+              "genderCode": "female",
+              "languageCode": "ru",
+              "rakah": 1,
+              "script": "cyrillic",
+              "totalRakahCount": 2
+            },
+            "steps": [
+              {
+                "orderIndex": 1,
+                "stepCode": "takbir",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Встав, он направляет взгляд на место, которое будет касаться его лбом во время земного поклона, поднимает руки до уровня ушей или плеч и произносит:2",
+                  "recitationArabic": "اللَّهُ أَكْبَر",
+                  "translation": "Аллах Велик",
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 2,
+                "stepCode": "qiyam",
+                "recitationMode": "LOUD",
+                "hasRecitation": false,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Стоя прямо, сложите руки на груди.",
+                  "recitationArabic": null,
+                  "translation": null,
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 3,
+                "stepCode": "al_fatiha",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Встав, он направляет взгляд на место, которое будет касаться его лбом во время земного поклона, поднимает руки до уровня ушей или плеч и произносит:1",
+                  "recitationArabic": "بِسْمِ اللَّهِ الرَّحْمَـٰنِ الرَّحِيمِ\nالْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ\nالرَّحْمَـٰنِ الرَّحِيمِ\nمَالِكِ يَوْمِ الدِّينِ\nإِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ\nاهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ\nصِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ",
+                  "translation": "Во имя Аллаха, Милостивого, Милосердного!\nХвала Аллаху, Господу миров,\nМилостивому, Милосердному,\nВластелину Дня воздаяния!\nТебе одному мы поклоняемся и Тебя одного молим о помощи.\nВеди нас прямым путем,\nпутем тех, кого Ты облагодетельствовал, не тех, на кого пал гнев, и не заблудших.1",
+                  "transliteration": null
+                },
+                "surahCode": "al_fatiha"
+              },
+              {
+                "orderIndex": 4,
+                "stepCode": "additional_surah",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": null,
+                "availableSurahs": []
+              },
+              {
+                "orderIndex": 5,
+                "stepCode": "ruku",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Наклонитесь вперёд, положив руки на колени.",
+                  "recitationArabic": "سُبْحَانَ رَبِّيَ الْعَظِيم",
+                  "translation": null,
+                  "transliteration": null
+                }
+              },
+              {
+                "orderIndex": 6,
+                "stepCode": "sujud",
+                "recitationMode": "LOUD",
+                "hasRecitation": true,
+                "content": {
+                  "movementTitle": null,
+                  "movementDescription": "Опуститесь в земной поклон, касаясь лбом и носом земли.",
+                  "recitationArabic": "سُبْحَانَ رَبِّيَ الْأَعْلَى",
+                  "translation": null,
+                  "transliteration": null
+                }
+              }
+            ]
+          },
+          "meta": {
+            "lastModifiedAt": "2026-05-08T15:36:58.554Z"
+          }
+        }
+      }
+    }
+  ],
+  "surahs": [
+    {
+      "surahCode": "al_fatiha",
+      "context": {
+        "languageCode": "en",
+        "script": "latin"
+      },
+      "response": {
+        "status": 404,
+        "url": "https://prayday.io/api/surah/al_fatiha?languageCode=en&script=latin",
+        "body": {
+          "message": "Cannot GET /api/surah/al_fatiha?languageCode=en&script=latin",
+          "error": "Not Found",
+          "statusCode": 404
+        }
+      }
+    },
+    {
+      "surahCode": "al_fatiha",
+      "context": {
+        "languageCode": "en",
+        "script": "cyrillic"
+      },
+      "response": {
+        "status": 404,
+        "url": "https://prayday.io/api/surah/al_fatiha?languageCode=en&script=cyrillic",
+        "body": {
+          "message": "Cannot GET /api/surah/al_fatiha?languageCode=en&script=cyrillic",
+          "error": "Not Found",
+          "statusCode": 404
+        }
+      }
+    },
+    {
+      "surahCode": "al_fatiha",
+      "context": {
+        "languageCode": "ru",
+        "script": "latin"
+      },
+      "response": {
+        "status": 404,
+        "url": "https://prayday.io/api/surah/al_fatiha?languageCode=ru&script=latin",
+        "body": {
+          "message": "Cannot GET /api/surah/al_fatiha?languageCode=ru&script=latin",
+          "error": "Not Found",
+          "statusCode": 404
+        }
+      }
+    },
+    {
+      "surahCode": "al_fatiha",
+      "context": {
+        "languageCode": "ru",
+        "script": "cyrillic"
+      },
+      "response": {
+        "status": 404,
+        "url": "https://prayday.io/api/surah/al_fatiha?languageCode=ru&script=cyrillic",
+        "body": {
+          "message": "Cannot GET /api/surah/al_fatiha?languageCode=ru&script=cyrillic",
+          "error": "Not Found",
+          "statusCode": 404
+        }
+      }
+    }
+  ]
+}

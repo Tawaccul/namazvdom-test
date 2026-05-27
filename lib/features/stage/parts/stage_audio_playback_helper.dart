@@ -12,6 +12,8 @@ class StageAudioPlaybackHelper {
     required String id,
     required String Function(String entryKey) audioUrlForEntry,
   }) {
+    final stepAudio = step.audioUrl.trim();
+    final url = stepAudio.isNotEmpty ? stepAudio : audioUrlForEntry(id);
     return QuranAyah(
       surahId: 0,
       ayahId: id.hashCode,
@@ -23,7 +25,7 @@ class StageAudioPlaybackHelper {
       ayahTr: step.transliteration,
       reciterId: 'custom',
       reciterName: 'custom',
-      audioUrl: audioUrlForEntry(id),
+      audioUrl: url,
     );
   }
 

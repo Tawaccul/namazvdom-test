@@ -5,9 +5,10 @@ import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_radii.dart';
 
 class StageCard extends StatelessWidget {
-  const StageCard({super.key, required this.child});
+  const StageCard({super.key, required this.child, this.withShadow = false});
 
   final Widget child;
+  final bool withShadow;
 
   @override
   Widget build(BuildContext context) {
@@ -17,6 +18,15 @@ class StageCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: colors.card,
         borderRadius: BorderRadius.circular(AppRadii.card),
+        boxShadow: withShadow
+            ? const [
+                BoxShadow(
+                  color: Color(0x33000000),
+                  blurRadius: 16,
+                  offset: Offset(0, 4),
+                ),
+              ]
+            : null,
       ),
       child: child,
     );
@@ -57,7 +67,7 @@ class StageStepCard extends StatelessWidget {
             title,
             style: TextStyle(
               fontSize: textSize.sp,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w600,
               color: colors.textPrimary,
             ),
           ),

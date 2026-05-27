@@ -43,6 +43,10 @@ final Map<String, String> _ruTransliterationBySource = {
   _normalizeTransliterationKey("Assalaamu 'alaykum wa rahmatullah"):
       "Ас-саляму 'аляйкум ва рахматуллах",
   _normalizeTransliterationKey(
+        "Subhanaka Allahumma wa bi-hamdika, wa tabaraka-smuka, wa ta'ala jadduka, wa la ilaha ghayruk",
+      ):
+      "Субхана-кя, Аллахумма, ва би-хамди-кя, ва табаракя исму-кя ва та аля джадду-кя ва ля иляха гайру-кя",
+  _normalizeTransliterationKey(
         "Assalaamu'alaynaa wa'alaa'ibaadillaahissaliheen",
       ):
       "Ас-саляму 'аляйна ва 'аля 'ибадилляхис-салихин",
@@ -70,6 +74,8 @@ final Map<String, String> _ruTransliterationBySource = {
       "Кама салляйта 'аля Ибрахима ва 'аля али Ибрахим",
   _normalizeTransliterationKey('Lam Yalid Wa Lam Yūlad'):
       'Лям ялид ва лям юляд',
+  _normalizeTransliterationKey('Lam Yalid Wa Lam Yulad'):
+      'Лям ялид ва лям юляд',
   _normalizeTransliterationKey('Maliki yawmiddin'): 'Малики йаумид-дин',
   _normalizeTransliterationKey('Malikinnas'): 'Маликин-нас',
   _normalizeTransliterationKey('Min sharri maa khalaq'):
@@ -80,7 +86,11 @@ final Map<String, String> _ruTransliterationBySource = {
       'Миналь-джиннати ван-нас',
   _normalizeTransliterationKey("QuI a'oothu birabbil falaq"):
       "Куль а'узу бираббиль-фаляк",
+  _normalizeTransliterationKey("Qul a'oothu birabbil falaq"):
+      "Куль а'узу бираббиль-фаляк",
   _normalizeTransliterationKey("QuI a'oothu birabbinnas"):
+      "Куль а'узу бираббин-нас",
+  _normalizeTransliterationKey("Qul a'oothu birabbinnas"):
       "Куль а'узу бираббин-нас",
   _normalizeTransliterationKey('Qul hu wal lahu ahad'):
       'Куль хуваллаху ахад',
@@ -102,6 +112,8 @@ final Map<String, String> _ruTransliterationBySource = {
       ):
       "Ва барик 'аля Мухаммадин ва 'аля али Мухаммад",
   _normalizeTransliterationKey('Wa lam ya kul lahu kufuwan ahad'):
+      'Ва лям якул-ляху куфуван ахад',
+  _normalizeTransliterationKey('Wa lam yakul lahu kufuwan ahad'):
       'Ва лям якул-ляху куфуван ахад',
   _normalizeTransliterationKey('Wamin sharri ghasiqin ithaa waqab'):
       'Ва мин шарри гасикин иза вакаб',

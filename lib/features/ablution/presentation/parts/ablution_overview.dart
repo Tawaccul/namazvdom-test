@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../../app/l10n/app_localization.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_radii.dart';
+import '../../../../core/text/capitalize.dart';
 import '../../../stage/parts/stage_card.dart';
 import '../../../stage/parts/stage_overview_layer.dart';
 import '../../../stage/parts/stage_progress_bar.dart';
@@ -103,7 +104,7 @@ Widget buildAblutionOverviewPage({
                 controller: pageScrollController,
                 physics: const NeverScrollableScrollPhysics(),
                 padding: EdgeInsets.only(
-                  top: topInset + 17.h,
+                  top: topInset + 5.h,
                   bottom: 20,
                 ),
                 child: Column(
@@ -180,7 +181,7 @@ class _AblutionOverviewStepCard extends StatelessWidget {
             context.t(step.titleKey),
             style: TextStyle(
               fontSize: cardTextSize.sp,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w600,
               color: colors.textPrimary,
             ),
           ),
@@ -258,17 +259,17 @@ class _AblutionOverviewTextCard extends StatelessWidget {
           ),
           SizedBox(height: 20.h),
           Text(
-            transliteration,
+            capitalizeFirst(transliteration),
             style: TextStyle(
               fontSize: cardTextSize.sp,
               fontStyle: FontStyle.italic,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w600,
               color: colors.textPrimary,
             ),
           ),
           SizedBox(height: 4.h),
           Text(
-            context.t(text.translationKey),
+            capitalizeFirst(context.t(text.translationKey)),
             style: TextStyle(
               fontSize: cardTextSize.sp,
               fontWeight: FontWeight.w500,

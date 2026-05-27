@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../app/app_dependencies_scope.dart';
+import '../../../core/audio/audio_asset_resolver.dart';
 import '../../../core/text/transliteration_localizer.dart';
 import '../../prayer/domain/usecases/get_prayer_surah.dart';
 import '../../settings/language/data/language_repository_memory.dart';
@@ -104,24 +105,28 @@ class StageAdditionalSurahState {
       surahCode: surahCode,
       languageCode: languageCode,
     );
-    return surah.ayahs
-        .map(
-          (ayah) => RakaatStep(
-            orderIndex: orderIndex,
-            title: title,
-            movementDescription: '',
-            arabic: ayah.recitationArabic,
-            transliteration: localizedTransliteration(
-              ayah.transliteration,
-              languageCode,
-            ),
-            translation: ayah.translation,
-            stepCode: 'additional_surah',
-            audioUrl: audioUrl,
-            surahCode: surahCode,
-            additionalSurahOptionCode: surahCode,
+    final mapped = <RakaatStep>[];
+    for (var i = 0; i < surah.ayahs.length; i++) {
+      final ayah = surah.ayahs[i];
+      final perAyahAudio = AudioAssetResolver.forSurahAyah(surahCode, i);
+      mapped.add(
+        RakaatStep(
+          orderIndex: orderIndex,
+          title: title,
+          movementDescription: '',
+          arabic: ayah.recitationArabic,
+          transliteration: localizedTransliteration(
+            ayah.transliteration,
+            languageCode,
           ),
-        )
-        .toList(growable: false);
+          translation: ayah.translation,
+          stepCode: 'additional_surah',
+          audioUrl: perAyahAudio.isNotEmpty ? perAyahAudio : audioUrl,
+          surahCode: surahCode,
+          additionalSurahOptionCode: surahCode,
+        ),
+      );
+    }
+    return mapped;
   }
 }
