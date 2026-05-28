@@ -106,6 +106,7 @@ class _StageStepScreenState extends State<StageStepScreen>
   int _overviewSelectedFlatIndex = 0;
   int _overviewOriginFlatIndex = 0;
   bool _scaleGestureTriggered = false;
+  bool _isOpeningOverviewMode = false;
   bool _isAnimatingOverviewMatrix = false;
   bool _isClampingOverviewTransform = false;
   bool _isStageTransitioning = false;
@@ -795,43 +796,59 @@ class _StageStepScreenState extends State<StageStepScreen>
     setIsAnimatingOverviewMatrix: (value) => _isAnimatingOverviewMatrix = value,
   );
 
-  Future<void> _openOverviewMode() => StageOverviewStateHelper.openOverviewMode(
-    isOverviewMode: _isOverviewMode,
-    showOverviewLayer: _showOverviewLayer,
-    isAnimatingOverviewMatrix: _isAnimatingOverviewMatrix,
-    isStageTransitioning: _isStageTransitioning,
-    currentFlatPageIndex: _currentFlatPageIndex,
-    pageForFlatIndex: _pageForFlatIndex,
-    cancelAutoplaySequence: _cancelAutoplaySequence,
-    pauseAudio: _audio.pause,
-    mounted: mounted,
-    transformationController: _transformationController,
-    overviewMatrixForPage: _overviewMatrixForPage,
-    overviewPreviewScale: _overviewPreviewScale,
-    animateOverviewMatrix: _animateOverviewMatrix,
-    setTopControlsRevealToken: (value) =>
-        _scrollState.topControlsRevealToken = value,
-    topControlsRevealToken: _scrollState.topControlsRevealToken,
-    setStateSafe: _setStateSafe,
-    setOverviewOriginFlatIndex: (value) => _overviewOriginFlatIndex = value,
-    setOverviewSelectedFlatIndex: (value) => _overviewSelectedFlatIndex = value,
-    setOverviewPinchCloseTriggered: (value) =>
-        _overviewPinchCloseTriggered = value,
-    setOverviewGestureLock: (value) => _overviewGestureLock = value,
-    setOverviewPendingCloseFlatIndex: (value) =>
-        _overviewPendingCloseFlatIndex = value,
-    setShowTopControls: (value) => _scrollState.showTopControls = value,
-    setShowOverviewLayer: (value) => _showOverviewLayer = value,
-    setIsOverviewMode: (value) => _isOverviewMode = value,
-    setIsOverviewClosing: (value) => _isOverviewClosing = value,
-    setShowOverviewExitButton: (value) => _showOverviewExitButton = value,
-    setShowPinned: (value) => _scrollState.showPinned = value,
-    clearAudioPlaybackKeys: () {
-      _playingStepKey = null;
-      _startedPlaybackStepKey = null;
-    },
-    isOverviewLayerShown: () => _showOverviewLayer,
-  );
+  Future<void> _openOverviewMode() async {
+    if (_isOpeningOverviewMode ||
+        _isOverviewMode ||
+        _showOverviewLayer ||
+        _isOverviewClosing ||
+        _isAnimatingOverviewMatrix ||
+        _isStageTransitioning) {
+      return;
+    }
+    _isOpeningOverviewMode = true;
+    try {
+      await StageOverviewStateHelper.openOverviewMode(
+        isOverviewMode: _isOverviewMode,
+        showOverviewLayer: _showOverviewLayer,
+        isAnimatingOverviewMatrix: _isAnimatingOverviewMatrix,
+        isStageTransitioning: _isStageTransitioning,
+        currentFlatPageIndex: _currentFlatPageIndex,
+        pageForFlatIndex: _pageForFlatIndex,
+        cancelAutoplaySequence: _cancelAutoplaySequence,
+        pauseAudio: _audio.pause,
+        mounted: mounted,
+        transformationController: _transformationController,
+        overviewMatrixForPage: _overviewMatrixForPage,
+        overviewPreviewScale: _overviewPreviewScale,
+        animateOverviewMatrix: _animateOverviewMatrix,
+        setTopControlsRevealToken: (value) =>
+            _scrollState.topControlsRevealToken = value,
+        topControlsRevealToken: _scrollState.topControlsRevealToken,
+        setStateSafe: _setStateSafe,
+        setOverviewOriginFlatIndex: (value) => _overviewOriginFlatIndex = value,
+        setOverviewSelectedFlatIndex: (value) =>
+            _overviewSelectedFlatIndex = value,
+        setOverviewPinchCloseTriggered: (value) =>
+            _overviewPinchCloseTriggered = value,
+        setOverviewGestureLock: (value) => _overviewGestureLock = value,
+        setOverviewPendingCloseFlatIndex: (value) =>
+            _overviewPendingCloseFlatIndex = value,
+        setShowTopControls: (value) => _scrollState.showTopControls = value,
+        setShowOverviewLayer: (value) => _showOverviewLayer = value,
+        setIsOverviewMode: (value) => _isOverviewMode = value,
+        setIsOverviewClosing: (value) => _isOverviewClosing = value,
+        setShowOverviewExitButton: (value) => _showOverviewExitButton = value,
+        setShowPinned: (value) => _scrollState.showPinned = value,
+        clearAudioPlaybackKeys: () {
+          _playingStepKey = null;
+          _startedPlaybackStepKey = null;
+        },
+        isOverviewLayerShown: () => _showOverviewLayer,
+      );
+    } finally {
+      _isOpeningOverviewMode = false;
+    }
+  }
 
   Future<void> _closeOverviewMode({bool applySelection = false}) =>
       StageOverviewStateHelper.closeOverviewMode(
