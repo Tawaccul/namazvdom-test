@@ -26,8 +26,14 @@ class PrayerRepositoryImpl implements PrayerRepository {
   final Map<String, Future<PrayerRakaat>> _inflightRakaatByKey = {};
   final Map<String, Future<PrayerSurah>> _inflightSurahByKey = {};
 
+  // Drops cache written under an older schema (runs once per app session).
+  Future<void>? _schemaEnsured;
+  Future<void> _ensureCacheSchema() =>
+      _schemaEnsured ??= _cache.ensureSchemaVersion();
+
   @override
   Future<PrayerMeta> getRemoteMeta({PrayerRequestContext? context}) async {
+    await _ensureCacheSchema();
     final scopeKey = _scopeKeyFor(context);
     await _syncMetaAndInvalidateIfNeeded(context: context);
     final cached = _remoteMetaCacheByScope[scopeKey];
@@ -42,6 +48,7 @@ class PrayerRepositoryImpl implements PrayerRepository {
   Future<PrayerRakaat> getRakaat({
     required PrayerRequestContext context,
   }) async {
+    await _ensureCacheSchema();
     await _syncMetaAndInvalidateIfNeeded(context: context);
 
     final cached = await _cache.readRakaat(cacheKey: context.cacheKey);
@@ -62,6 +69,7 @@ class PrayerRepositoryImpl implements PrayerRepository {
     required String surahCode,
     required String languageCode,
   }) async {
+    await _ensureCacheSchema();
     final key = '${languageCode.trim()}|${surahCode.trim()}';
     final cached = await _cache.readSurah(key: key);
     if (cached != null) return cached.toEntity();

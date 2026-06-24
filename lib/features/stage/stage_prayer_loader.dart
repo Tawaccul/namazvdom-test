@@ -20,9 +20,16 @@ import 'models/rakaat_models.dart';
 class StagePrayerLoader {
   const StagePrayerLoader._();
 
-  // Temporary local-content mode: keep prayer and additional surah content
-  // limited to bundled assets until backend content is enabled again.
-  static bool forceLocalOnly = true;
+  // Kill-switch: если true — игнорируем сервер и всегда показываем
+  // встроенный (локальный) контент. В обычном режиме = false:
+  // сначала сервер, при любой ошибке / отсутствии интернета — автоматически
+  // встроенные данные.
+  //
+  // false: сначала сервер (модель теперь парсит реальную схему
+  // movement/recitations/duas), при любой ошибке / отсутствии интернета —
+  // автоматический откат на встроенный локальный контент. Кэш и проверка
+  // обновлений по полям meta (eTag/lastModifiedAt/scope) — в репозитории.
+  static bool forceLocalOnly = false;
 
   static Future<List<RakaatData>> load(
     BuildContext context, {
@@ -35,6 +42,8 @@ class StagePrayerLoader {
       LanguageRepositoryMemory.instance.getSelectedLanguage().id,
     );
     final normalizedPrayerCode = _normalizePrayerCode(prayerCode);
+
+    // Аварийный режим — только локальные данные.
     if (forceLocalOnly) {
       final localOnlyData = await _tryLoadPrayerFromLocalAssets(
         prayerCode: normalizedPrayerCode,
@@ -46,13 +55,7 @@ class StagePrayerLoader {
       throw StateError('prayer_not_found');
     }
 
-    if (normalizedPrayerCode == 'fajr') {
-      final fixedLocal = await _tryLoadPrayerFromLocalAssets(
-        prayerCode: normalizedPrayerCode,
-        translations: translationMap,
-      );
-      if (fixedLocal != null && fixedLocal.isNotEmpty) return fixedLocal;
-    }
+    // Основной режим: сначала пытаемся получить контент с сервера.
     final fallbackChain = _buildContextFallbackChain(
       prayerCode: normalizedPrayerCode,
     );
@@ -69,31 +72,42 @@ class StagePrayerLoader {
           languageCode: _resolveLanguageCode(rakaats, requestContext),
         );
         if (mapped.isNotEmpty) return mapped;
+        // Сервер ответил пусто — пробуем локальный fallback ниже.
         lastError = StateError('empty_remote_prayer');
         break;
       } catch (error) {
+        // Контент не найден на сервере (404) — сразу локальный fallback.
         if (_isPrayerNotFoundError(error)) {
           final localFallback = await _tryLoadPrayerFromLocalAssets(
             prayerCode: normalizedPrayerCode,
             translations: translationMap,
           );
-          if (localFallback != null) return localFallback;
+          if (localFallback != null && localFallback.isNotEmpty) {
+            return localFallback;
+          }
           throw StateError('prayer_not_found');
         }
         lastError = error;
+        // Сервер не нашёл нужный язык — пробуем следующий контекст.
         final hasNext = index < fallbackChain.length - 1;
         final canRetryWithNextLanguage =
             hasNext && _isLanguageNotFoundError(error.toString());
         if (canRetryWithNextLanguage) continue;
+        // Любая другая ошибка (нет интернета, таймаут, 5xx и т.п.) —
+        // выходим из цикла и отдаём встроенные данные.
         break;
       }
     }
 
+    // Финальный fallback: при ЛЮБОЙ ошибке сервера / отсутствии интернета
+    // показываем встроенный (локальный) контент приложения.
     final localFallback = await _tryLoadPrayerFromLocalAssets(
       prayerCode: normalizedPrayerCode,
       translations: translationMap,
     );
-    if (localFallback != null) return localFallback;
+    if (localFallback != null && localFallback.isNotEmpty) {
+      return localFallback;
+    }
 
     throw lastError ?? StateError('prayer_load_failed');
   }
@@ -209,13 +223,98 @@ Future<List<RakaatData>> _mapPrayerToStageRakaats(
             audioUrl: stepAudioPath,
           ),
         );
-        final normalized = _normalizeSurahOptions(step.availableSurahs);
-        additionalSurahOptions.addAll(
-          normalized.map(
-            (option) =>
-                RakaatSurahOption(code: option.code, label: option.name),
-          ),
-        );
+        // Server now embeds the selectable surahs under `surahs`; older
+        // payloads used `availableSurahs`. The chosen surah's ayahs are
+        // loaded by code from bundled assets when the user picks one.
+        if (step.surahs.isNotEmpty) {
+          for (final surah in step.surahs) {
+            additionalSurahOptions.add(
+              RakaatSurahOption(
+                code: surah.code,
+                label: surah.name.isNotEmpty
+                    ? surah.name
+                    : _stageStepTitle(surah.code),
+              ),
+            );
+          }
+        } else {
+          final normalized = _normalizeSurahOptions(step.availableSurahs);
+          additionalSurahOptions.addAll(
+            normalized.map(
+              (option) =>
+                  RakaatSurahOption(code: option.code, label: option.name),
+            ),
+          );
+        }
+
+        // Preload the ayahs of the default surah (al_ikhlas, else the first)
+        // from the embedded data, so they show instantly on the additional
+        // surah screen instead of after an async fetch on selection.
+        if (step.surahs.isNotEmpty) {
+          final defaultSurah = step.surahs.firstWhere(
+            (s) => s.code.trim().toLowerCase() == 'al_ikhlas',
+            orElse: () => step.surahs.first,
+          );
+          final code = defaultSurah.code.trim().toLowerCase();
+          final label = defaultSurah.name.isNotEmpty
+              ? defaultSurah.name
+              : _stageStepTitle(code);
+          for (var i = 0; i < defaultSurah.recitations.length; i++) {
+            final ayah = defaultSurah.recitations[i];
+            final perAyahAudio = AudioAssetResolver.forSurahAyah(code, i);
+            final arabicAudio = perAyahAudio.isNotEmpty
+                ? perAyahAudio
+                : AudioAssetResolver.forStageArabic(ayah.recitationArabic);
+            stageSteps.add(
+              RakaatStep(
+                orderIndex: step.orderIndex,
+                title: label,
+                movementDescription: '',
+                arabic: ayah.recitationArabic,
+                transliteration: localizedTransliteration(
+                  ayah.transliteration,
+                  normalizedLanguageCode,
+                ),
+                translation: ayah.translation,
+                stepCode: 'additional_surah',
+                audioUrl: arabicAudio.isNotEmpty ? arabicAudio : stepAudioPath,
+                surahCode: code,
+                additionalSurahOptionCode: code,
+              ),
+            );
+          }
+        }
+        continue;
+      }
+
+      // Obligatory surah embedded by the server (e.g. al_fatiha): expand the
+      // surah's ayahs into entries sharing the step's orderIndex.
+      if (step.surahs.isNotEmpty) {
+        final surah = step.surahs.first;
+        final surahCodeKey = surah.code.trim().toLowerCase();
+        for (var i = 0; i < surah.recitations.length; i++) {
+          final ayah = surah.recitations[i];
+          final perAyahAudio = AudioAssetResolver.forSurahAyah(surahCodeKey, i);
+          final arabicAudio = perAyahAudio.isNotEmpty
+              ? perAyahAudio
+              : AudioAssetResolver.forStageArabic(ayah.recitationArabic);
+          stageSteps.add(
+            RakaatStep(
+              orderIndex: step.orderIndex,
+              title: _stageStepTitle(step.stepCode),
+              movementDescription: step.content.movementDescription,
+              arabic: ayah.recitationArabic,
+              transliteration: localizedTransliteration(
+                ayah.transliteration,
+                normalizedLanguageCode,
+              ),
+              translation: ayah.translation,
+              stepCode: step.stepCode,
+              audioUrl: arabicAudio.isNotEmpty ? arabicAudio : stepAudioPath,
+              surahCode: surahCodeKey,
+            ),
+          );
+        }
         continue;
       }
 
@@ -235,24 +334,38 @@ Future<List<RakaatData>> _mapPrayerToStageRakaats(
         continue;
       }
 
-      final arabicAudio = AudioAssetResolver.forStageArabic(
-        step.content.recitationArabic,
-      );
-      stageSteps.add(
-        RakaatStep(
-          orderIndex: step.orderIndex,
-          title: _stageStepTitle(step.stepCode),
-          movementDescription: step.content.movementDescription,
-          arabic: step.content.recitationArabic,
-          transliteration: localizedTransliteration(
-            step.content.transliteration,
-            normalizedLanguageCode,
+      // A step may carry several recitation entries (e.g. tashahhud / salawat
+      // split into parts). Each becomes an entry sharing the step's orderIndex,
+      // so they render together on one screen — like the local content does.
+      final entries = step.recitations.isNotEmpty
+          ? step.recitations
+          : const [
+              PrayerStepRecitation(
+                recitationArabic: '',
+                translation: '',
+                transliteration: '',
+              ),
+            ];
+      for (final entry in entries) {
+        final arabicAudio = AudioAssetResolver.forStageArabic(
+          entry.recitationArabic,
+        );
+        stageSteps.add(
+          RakaatStep(
+            orderIndex: step.orderIndex,
+            title: _stageStepTitle(step.stepCode),
+            movementDescription: step.content.movementDescription,
+            arabic: entry.recitationArabic,
+            transliteration: localizedTransliteration(
+              entry.transliteration,
+              normalizedLanguageCode,
+            ),
+            translation: entry.translation,
+            stepCode: step.stepCode,
+            audioUrl: arabicAudio.isNotEmpty ? arabicAudio : stepAudioPath,
           ),
-          translation: step.content.translation,
-          stepCode: step.stepCode,
-          audioUrl: arabicAudio.isNotEmpty ? arabicAudio : stepAudioPath,
-        ),
-      );
+        );
+      }
     }
 
     final visibleSteps = rakaat.context.rakah == 1
@@ -272,9 +385,11 @@ Future<List<RakaatData>> _mapPrayerToStageRakaats(
       ),
     );
   }
-  return _normalizeFajrStepCounts(mapped, prayerCode: prayerCode);
+  return mapped;
 }
 
+// Used only by the LOCAL fallback content path to match the designed Fajr
+// step counts. The server path is authoritative and is NOT normalized.
 List<RakaatData> _normalizeFajrStepCounts(
   List<RakaatData> input, {
   required String prayerCode,
@@ -658,7 +773,32 @@ Future<_LocalRakaatMappedData> _mapLocalStepsToRakaatData({
             ? null
             : _lookupTranslationValue(translations, commonTitleKey)) ??
         (stepMap['title'] as String? ?? '').trim();
+    // Для женского профиля сначала пытаемся подобрать вариант с суффиксом
+    // `Female` (например fajr.r1.s1.descriptionFemale). Если такого ключа
+    // нет в переводах — фолбэк на обычный `description`.
+    final isFemale = GenderRepositoryMemory.instance
+            .getSelectedGender()
+            .id
+            .trim()
+            .toLowerCase() ==
+        'female';
     final movementDescription =
+        (isFemale
+            ? _lookupTranslationValue(
+                translations,
+                _femaleVariantOfKey(
+                  explicitDescriptionKey.isEmpty
+                      ? fallbackDescriptionKey
+                      : explicitDescriptionKey,
+                ),
+              )
+            : null) ??
+        (isFemale
+            ? _lookupTranslationValue(
+                translations,
+                _femaleVariantOfKey(fallbackDescriptionKey),
+              )
+            : null) ??
         _lookupTranslationValue(
           translations,
           explicitDescriptionKey.isEmpty
@@ -866,7 +1006,19 @@ List<RakaatStep> _injectDuaIstiftahAfterOpeningTakbir(
   final title =
       _lookupTranslationValue(translations, 'stage.stepNames.duaIstiftah') ??
       'Dua Istiftah';
+  final isFemaleProfile = GenderRepositoryMemory.instance
+          .getSelectedGender()
+          .id
+          .trim()
+          .toLowerCase() ==
+      'female';
   final description =
+      (isFemaleProfile
+          ? _lookupTranslationValue(
+              translations,
+              'stage.stepNames.duaIstiftahDescriptionFemale',
+            )
+          : null) ??
       _lookupTranslationValue(
         translations,
         'stage.stepNames.duaIstiftahDescription',
@@ -923,6 +1075,8 @@ String? _commonStageStepTitleKey(String title) {
       'stage.stepNames.protectionFromDevil',
     "dua'a istighfar" => 'stage.stepNames.protectionFromDevil',
     'dua istighfar' => 'stage.stepNames.protectionFromDevil',
+    "dua'a istiadha" => 'stage.stepNames.protectionFromDevil',
+    'dua istiadha' => 'stage.stepNames.protectionFromDevil',
     'reading surah al-fatiha' => 'stage.stepNames.readingAlFatiha',
     'ameen' => 'stage.stepNames.ameen',
     'reading additional surahs' => 'stage.stepNames.readingAdditionalSurahs',
@@ -935,6 +1089,8 @@ String? _commonStageStepTitleKey(String title) {
     'the end of prayer' => 'stage.stepNames.endOfPrayer',
     'turn your head to the right' => 'stage.stepNames.turnRight',
     'turn your head to the left' => 'stage.stepNames.turnLeft',
+    'turning the head to the right' => 'stage.stepNames.turnRight',
+    'turning the head to the left' => 'stage.stepNames.turnLeft',
     _ => null,
   };
 }
@@ -1022,6 +1178,17 @@ String _translateKey(
   final resolved = _readNestedTranslationValue(translations, normalized);
   if (resolved is String && resolved.trim().isNotEmpty) return resolved.trim();
   return fallback.isEmpty ? normalized : fallback;
+}
+
+/// Возвращает гендерный вариант ключа перевода для женского профиля:
+/// `*.description` → `*.descriptionFemale`. Остальные ключи возвращает
+/// без изменений (для них переводчик не подготовил женский вариант).
+String _femaleVariantOfKey(String keyPath) {
+  if (keyPath.isEmpty) return keyPath;
+  if (keyPath.endsWith('.description')) {
+    return '${keyPath.substring(0, keyPath.length - '.description'.length)}.descriptionFemale';
+  }
+  return keyPath;
 }
 
 String? _lookupTranslationValue(Map<String, dynamic> root, String? keyPath) {

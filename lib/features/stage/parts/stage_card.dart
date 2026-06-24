@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_radii.dart';
+import '../../../core/text/gendered_description.dart';
 
 class StageCard extends StatelessWidget {
   const StageCard({super.key, required this.child, this.withShadow = false});

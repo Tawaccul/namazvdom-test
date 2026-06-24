@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../app/theme/app_radii.dart';
 import '../../../app/ui_kit/app_blurred_top_overlay.dart';
 import '../../../app/ui_kit/app_button.dart';
+import '../../../core/widgets/content_freeze_layer.dart';
 import '../../../core/widgets/pressable.dart';
 import '../models/stage_step_screen_models.dart';
 import '../stage_onboarding_overlay.dart';
@@ -153,6 +154,8 @@ class StageStepScreenScaffold extends StatelessWidget {
                   children: [
                     IgnorePointer(
                       ignoring: showOverviewLayer,
+                      child: ContentFreezeLayer(
+                      frozen: isOverviewClosing,
                       child: AppBlurredTopOverlay(
                         visible: showTopBlur && !isOverviewMode,
                         height: MediaQuery.paddingOf(context).top + 20.h,
@@ -179,7 +182,7 @@ class StageStepScreenScaffold extends StatelessWidget {
                                     scale: showTopControls ? 1 : 0.9,
                                     alignment: Alignment.center,
                                     child: AnimatedOpacity(
-                                      duration: const Duration(milliseconds: 300),
+                                      duration: const Duration(milliseconds: 220),
                                       curve: Curves.easeOutCubic,
                                       opacity: showTopControls ? 1 : 0,
                                       child: StageTopBar(
@@ -203,6 +206,7 @@ class StageStepScreenScaffold extends StatelessWidget {
                             ),
                           ),
                         ),
+                      ),
                       ),
                     ),
                     if (showOverviewLayer)

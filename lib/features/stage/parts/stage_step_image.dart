@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../app/theme/app_colors.dart';
+import 'themed_namaz_image.dart';
 
 const Map<String, String> _stepImageBaseNameByCode = {
   'takbir': 'takbir',
@@ -70,6 +71,13 @@ class StageStepImage extends StatelessWidget {
 
     final width = 244.w;
     if (stepImageAsset.toLowerCase().endsWith('.svg')) {
+      if (isThemedNamazImage(stepImageAsset)) {
+        return ThemedNamazImage(
+          assetPath: stepImageAsset,
+          width: width,
+          fit: BoxFit.contain,
+        );
+      }
       return SvgPicture.asset(
         stepImageAsset,
         width: width,

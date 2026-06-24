@@ -16,6 +16,7 @@ import '../../../stage/parts/stage_card.dart';
 import '../../../stage/parts/stage_progress_bar.dart';
 import '../../../stage/parts/stage_top_bar.dart';
 import '../models/ablution_manifest_models.dart';
+import 'ablution_description_filter.dart';
 import 'ablution_layout_data.dart';
 
 Widget buildAblutionPageContent({
@@ -156,14 +157,16 @@ Widget buildAblutionPageContent({
   return Builder(
     builder: (context) {
       final layout = AblutionLayoutData.of(context);
-      final topContentPadding = layout.topInset;
       final bottomInset = layout.bottomInset;
       return ListView(
         controller: scrollController,
         clipBehavior: Clip.none,
         physics: const ClampingScrollPhysics(),
         padding: EdgeInsets.only(
-          top: topContentPadding,
+          // Жёстко 60 пикселей — то же значение что и в overview-странице.
+          // Гарантирует одинаковый layout до/после открытия overview
+          // на всех устройствах (без скачка после возврата).
+          top: 60,
           bottom: 28.h + bottomInset,
         ),
         children: [
@@ -307,7 +310,9 @@ class _AblutionStepCard extends StatelessWidget {
           ),
           SizedBox(height: 6.h),
           Text(
-            context.t(step.descriptionKey),
+            filteredAblutionDescription(
+              context.t(genderedDescriptionKey(step.descriptionKey)),
+            ),
             style: TextStyle(
               fontSize: cardTextSize.sp,
               height: 1.45,

@@ -33,7 +33,6 @@ class AblutionScreenState extends State<AblutionScreen>
   static const double _overviewPreviewScale = 0.50;
   static const double _overviewDragFriction = 0.00001;
   static const double _overviewPanSpeedMultiplier = 1.0;
-  static const double _overviewClosingTopInset = 30;
   static const double _overviewPreviewTopShift = 10;
   static const double _overviewCanvasInset = 280;
   static const double _overviewFitPadding = 24;
@@ -312,9 +311,12 @@ class AblutionScreenState extends State<AblutionScreen>
   Future<void> _prevStep() async {
     if (_totalSteps == 0) return;
     if (_clampedStepIndex > 0) {
+      // _selectStepIndex сам зовёт haptic — не дублируем здесь.
       await _selectStepIndex(_clampedStepIndex - 1, direction: -1);
       return;
     }
+    // Граничный кейс (уже на первом шаге) — даём отклик на тап.
+    _triggerLightHaptic();
     _stopAudioSilently();
     await _popToHome();
   }
@@ -324,6 +326,7 @@ class AblutionScreenState extends State<AblutionScreen>
       await _selectStepIndex(_clampedStepIndex + 1, direction: 1);
       return;
     }
+    _triggerLightHaptic();
     _stopAudioSilently();
   }
 
@@ -451,18 +454,15 @@ class AblutionScreenState extends State<AblutionScreen>
     final size = MediaQuery.sizeOf(context);
     return Size(size.width, size.height);
   }
-  double _overviewRestingTopInset() {
-    return math.max(
-      MediaQuery.paddingOf(context).top,
-      _overviewClosingTopInset.h,
-    );
-  }
-  double _overviewPreviewTopInset() {
-    return math.max(
-      MediaQuery.paddingOf(context).top,
-      _overviewRestingTopInset() - _overviewPreviewTopShift.h,
-    );
-  }
+  // Полностью константный отступ от верха экрана для overview-режима.
+  // Не зависит от safe area / device pixel ratio / screen size — гарантирует
+  // одинаковое отдаление на всех устройствах. 60 px перекрывает notch на
+  // всех iPhone и стандартных Android-устройствах.
+  static const double _overviewFixedTopInset = 60;
+
+  double _overviewRestingTopInset() => _overviewFixedTopInset;
+  double _overviewPreviewTopInset() =>
+      _overviewFixedTopInset - _overviewPreviewTopShift;
   double _overviewTopInsetForScale(double scale) {
     final normalized =
         ((scale - _overviewPreviewScale) / (1 - _overviewPreviewScale)).clamp(

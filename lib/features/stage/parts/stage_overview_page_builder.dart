@@ -57,7 +57,7 @@ class StageOverviewPage extends StatelessWidget {
       child: SingleChildScrollView(
         controller: scrollController,
         physics: const NeverScrollableScrollPhysics(),
-        padding: EdgeInsets.only(top: topInset, bottom: 20),
+        padding:  EdgeInsets.only(top: 60.h, bottom: 20),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,

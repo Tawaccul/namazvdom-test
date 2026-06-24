@@ -60,19 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
         height: 60,
         maxBlurSigma: 60,
         child: Container(
-          decoration: isDark
-              ? const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Color(0xFF24252E),
-                      Color(0xFF1E1F27),
-                      Color(0xFF1A1B22),
-                    ],
-                  ),
-                )
-              : null,
+          color: colors.background,
           child: SafeArea(
             bottom: false,
             top: false,

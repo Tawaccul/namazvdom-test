@@ -134,6 +134,11 @@ class AudioAssetResolver {
         stripped.startsWith('سبحانربيالاعلى')) {
       return '$_base/sajda.mp3';
     }
+    // Rabbi-ghfir-li → rabbigfirli (sitting between the two prostrations)
+    if (stripped.startsWith('رب اغفر لي') ||
+        stripped.startsWith('رباغفرلي')) {
+      return '$_base/rabbigfirli.mp3';
+    }
     // Assalaamu 'alaykum → salam (taslim left/right)
     if (stripped.startsWith('السلام عليكم') ||
         stripped.startsWith('السلامعليكم')) {

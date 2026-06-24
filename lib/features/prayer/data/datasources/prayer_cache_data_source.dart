@@ -16,6 +16,20 @@ class PrayerCacheDataSource {
   static const _surahPrefix = 'prayer_cache:surah:';
   static const _scopesKey = 'prayer_cache:scopes';
   static const _surahIndexKey = 'prayer_cache:surah_index';
+  static const _schemaVersionKey = 'prayer_cache:schema_version';
+
+  /// Bump whenever the cached JSON shape changes so stale entries written by
+  /// an older app build are dropped instead of silently served.
+  static const _schemaVersion = 2;
+
+  /// Clears the whole cache if it was written under a different schema
+  /// version. Must run before any cache read.
+  Future<void> ensureSchemaVersion() async {
+    final stored = _store.getString(_schemaVersionKey);
+    if (stored == '$_schemaVersion') return;
+    await clearAll();
+    await _store.setString(_schemaVersionKey, '$_schemaVersion');
+  }
 
   Future<List<String>> readScopes() async {
     return _store.getStringList(_scopesKey) ?? const <String>[];

@@ -31,12 +31,15 @@ PrayerRakaatResponseModel _rakaatModel({int rakah = 1, int total = 4}) =>
           stepCode: 'takbir',
           recitationMode: 'silent',
           hasRecitation: true,
-          content: PrayerStepContentModel(
-            movementDescription: 'Raise hands',
-            recitationArabic: 'اللَّهُ أَكْبَرُ',
-            translation: 'God is Greatest',
-            transliteration: 'Allahu Akbar',
-          ),
+          movementDescription: 'Raise hands',
+          recitations: [
+            PrayerStepRecitationModel(
+              recitationArabic: 'اللَّهُ أَكْبَرُ',
+              translation: 'God is Greatest',
+              transliteration: 'Allahu Akbar',
+            ),
+          ],
+          surahs: [],
           surahCode: null,
           availableSurahs: [],
         ),

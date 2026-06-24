@@ -131,18 +131,21 @@ void main() {
   // PrayerStepModel
   // ---------------------------------------------------------------------------
   group('PrayerStepModel', () {
-    test('fromJson parses basic step fields', () {
+    test('fromJson parses server schema (movement/recitations)', () {
       final model = PrayerStepModel.fromJson({
         'orderIndex': 3,
         'stepCode': 'ruku',
         'recitationMode': 'silent',
         'hasRecitation': true,
-        'content': {
-          'movementDescription': 'Bow down',
-          'recitationArabic': 'سُبْحَانَ رَبِّيَ الْعَظِيمِ',
-          'translation': 'Glory to my Lord the Greatest',
-          'transliteration': 'Subhana rabbiyal azeem',
-        },
+        'movement': {'title': 'Ruku', 'description': 'Bow down'},
+        'recitations': [
+          {
+            'recitationArabic': 'سُبْحَانَ رَبِّيَ الْعَظِيمِ',
+            'translation': 'Glory to my Lord the Greatest',
+            'transliteration': 'Subhana rabbiyal azeem',
+          },
+        ],
+        'duas': [],
         'surahCode': null,
         'availableSurahs': [],
       });
@@ -150,9 +153,39 @@ void main() {
       expect(model.orderIndex, 3);
       expect(model.stepCode, 'ruku');
       expect(model.hasRecitation, true);
-      expect(model.content.movementDescription, 'Bow down');
+      expect(model.movementDescription, 'Bow down');
+      expect(model.recitations.single.recitationArabic,
+          'سُبْحَانَ رَبِّيَ الْعَظِيمِ');
       expect(model.surahCode, isNull);
       expect(model.availableSurahs, isEmpty);
+    });
+
+    test('fromJson prefers dua recitations over the step recitation', () {
+      final model = PrayerStepModel.fromJson({
+        'orderIndex': 16,
+        'stepCode': 'tashahhud',
+        'recitationMode': 'silent',
+        'hasRecitation': true,
+        'movement': {'title': null, 'description': null},
+        'recitations': [
+          {'recitationArabic': 'التَّحِيَّاتُ', 'translation': '', 'transliteration': null},
+        ],
+        'duas': [
+          {
+            'duaCode': 'dua_tashahhud',
+            'recitations': [
+              {'recitationArabic': 'part1', 'translation': 't1', 'transliteration': 'tr1'},
+              {'recitationArabic': 'part2', 'translation': 't2', 'transliteration': 'tr2'},
+            ],
+          },
+        ],
+        'surahCode': null,
+        'availableSurahs': [],
+      });
+
+      expect(model.recitations.length, 2);
+      expect(model.recitations.first.recitationArabic, 'part1');
+      expect(model.recitations.last.transliteration, 'tr2');
     });
 
     test('fromJson filters out surah options with empty code', () {

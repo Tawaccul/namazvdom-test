@@ -13,6 +13,7 @@ import '../../../stage/parts/stage_card.dart';
 import '../../../stage/parts/stage_overview_layer.dart';
 import '../../../stage/parts/stage_progress_bar.dart';
 import '../models/ablution_manifest_models.dart';
+import 'ablution_description_filter.dart';
 import 'ablution_layout_data.dart';
 
 Widget buildAblutionOverviewLayer({
@@ -91,7 +92,6 @@ Widget buildAblutionOverviewPage({
         maxHeight: double.infinity,
         child: Builder(
           builder: (context) {
-            final topInset = AblutionLayoutData.of(context).topInset;
             return NotificationListener<ScrollMetricsNotification>(
               onNotification: (notification) {
                 setOverviewOverflow(
@@ -103,14 +103,22 @@ Widget buildAblutionOverviewPage({
               child: SingleChildScrollView(
                 controller: pageScrollController,
                 physics: const NeverScrollableScrollPhysics(),
-                padding: EdgeInsets.only(
-                  top: topInset,
+                padding: const EdgeInsets.only(
+                  // Жёстко 60 пикселей — то же значение что и в обычной
+                  // странице (_overviewFixedTopInset). Гарантирует
+                  // одинаковое отдаление на всех устройствах.
+                  top: 2,
                   bottom: 20,
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    // Spacer высотой как StageTopBar + SizedBox(16.h) в
+                    // обычной странице — чтобы ProgressBlock был на той же
+                    // координате что и в обычной странице. Иначе при
+                    // возврате из overview контент «прыгает».
+                    SizedBox(height: 41.h + 16.h),
                     StageProgressBlock(
                       title: title,
                       stepIndex: stepNumber,
@@ -187,7 +195,9 @@ class _AblutionOverviewStepCard extends StatelessWidget {
           ),
           SizedBox(height: 6.h),
           Text(
-            context.t(step.descriptionKey),
+            filteredAblutionDescription(
+              context.t(genderedDescriptionKey(step.descriptionKey)),
+            ),
             style: TextStyle(
               fontSize: cardTextSize.sp,
               height: 1.45,

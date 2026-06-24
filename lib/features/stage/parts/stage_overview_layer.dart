@@ -61,6 +61,12 @@ class _StageOverviewLayerState<T> extends State<StageOverviewLayer<T>>
       old.transformationController.removeListener(_onMatrixChanged);
       widget.transformationController.addListener(_onMatrixChanged);
     }
+    // Когда pan заблокирован снаружи (overview закрывается / лочится
+    // жестами) — гасим ballistic-инерцию чтобы она не модифицировала
+    // transform во время close-анимации.
+    if (old.panEnabled && !widget.panEnabled && _scrollAnim.isAnimating) {
+      _scrollAnim.stop();
+    }
   }
 
   @override
@@ -177,7 +183,15 @@ class _StageOverviewLayerState<T> extends State<StageOverviewLayer<T>>
                     child: RepaintBoundary(
                       child: GestureDetector(
                         behavior: HitTestBehavior.translucent,
-                        onTap: () => widget.onPageTap(page),
+                        onTap: () {
+                          // Перед переходом обязательно гасим
+                          // ballistic-инерцию pan-а, иначе она продолжает
+                          // двигать transformationController параллельно с
+                          // анимацией закрытия overview и оставляет
+                          // визуальные артефакты.
+                          _scrollAnim.stop();
+                          widget.onPageTap(page);
+                        },
                         child: IgnorePointer(
                           ignoring: true,
                           child: widget.pageBuilder(page),
